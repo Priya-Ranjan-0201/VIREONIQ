@@ -1,22 +1,87 @@
-# 🚀 VIREONIQ X — Enterprise AI Career & Workforce Intelligence OS
+<div align="center">
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)]()
-[![Automated Tests](https://img.shields.io/badge/Tests-153%2F153_Passing-4169E1.svg)]()
-[![Release Status](https://img.shields.io/badge/Release-v16.0.0--rc1-00c853.svg)]()
-[![Python](https://img.shields.io/badge/Python-3.10+-3776AB.svg?logo=python&logoColor=white)]()
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.109+-009688.svg?logo=fastapi&logoColor=white)]()
-[![React](https://img.shields.io/badge/React-18.2-61DAFB.svg?logo=react&logoColor=black)]()
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-3178C6.svg?logo=typescript&logoColor=white)]()
-[![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.4-38B2AC.svg?logo=tailwindcss&logoColor=white)]()
-[![Vite](https://img.shields.io/badge/Vite-5.0+-646CFF.svg?logo=vite&logoColor=white)]()
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15+-4169E1.svg?logo=postgresql&logoColor=white)]()
-[![Redis](https://img.shields.io/badge/Redis-7-DC382D.svg?logo=redis&logoColor=white)]()
-[![Qdrant](https://img.shields.io/badge/Qdrant-Vector_DB-E50914.svg)]()
+# 🚀 VIREONIQ X — Autonomous AI Career & Workforce Intelligence OS
 
-**VIREONIQ X** is a production-grade, evidence-driven career acceleration and workforce intelligence operating system designed to bridge the gap between candidate capability, verified skill evidence, and global hiring standards.
+### *The Next-Generation Evidence-Driven Career Operating System & MNC ATS Intelligence Platform*
 
-Uniting 16 continuous intelligence subsystems, **Six High-Value Intelligence Capabilities**, the **MNC ATS Resume Studio (90+ Score Guaranteed)**, and the **Career Decision Explainability Engine** into a closed-loop Career Twin engine:
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
+[![Release Status](https://img.shields.io/badge/Release-v16.0.0--rc1-00c853.svg?style=for-the-badge)]()
+[![Automated Tests](https://img.shields.io/badge/Tests-153%2F153_Passing-4169E1.svg?style=for-the-badge)]()
+[![Developed by](https://img.shields.io/badge/Developed%20By-Priya%20Ranjan-8A2BE2.svg?style=for-the-badge&logo=github)](https://github.com/Priya-Ranjan-0201)
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.11+-3776AB.svg?style=flat-square&logo=python&logoColor=white" alt="Python" />
+  <img src="https://img.shields.io/badge/FastAPI-0.109+-009688.svg?style=flat-square&logo=fastapi&logoColor=white" alt="FastAPI" />
+  <img src="https://img.shields.io/badge/React-18.2-61DAFB.svg?style=flat-square&logo=react&logoColor=black" alt="React" />
+  <img src="https://img.shields.io/badge/TypeScript-5.0+-3178C6.svg?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/TailwindCSS-3.4-38B2AC.svg?style=flat-square&logo=tailwindcss&logoColor=white" alt="TailwindCSS" />
+  <img src="https://img.shields.io/badge/Vite-5.0+-646CFF.svg?style=flat-square&logo=vite&logoColor=white" alt="Vite" />
+  <img src="https://img.shields.io/badge/PostgreSQL-15+-4169E1.svg?style=flat-square&logo=postgresql&logoColor=white" alt="PostgreSQL" />
+  <img src="https://img.shields.io/badge/Redis-7-DC382D.svg?style=flat-square&logo=redis&logoColor=white" alt="Redis" />
+  <img src="https://img.shields.io/badge/MongoDB-7-47A248.svg?style=flat-square&logo=mongodb&logoColor=white" alt="MongoDB" />
+  <img src="https://img.shields.io/badge/Qdrant-Vector_DB-E50914.svg?style=flat-square" alt="Qdrant" />
+  <img src="https://img.shields.io/badge/Docker-Enabled-2496ED.svg?style=flat-square&logo=docker&logoColor=white" alt="Docker" />
+</p>
+
+---
+
+**VIREONIQ X** is an enterprise-grade, evidence-driven career acceleration and workforce intelligence operating system. It bridges the gap between candidate capability, verifiable engineering evidence, and global hiring bars across 30 tier-1 tech giants and financial institutions.
+
+Uniting **16 Continuous Intelligence Subsystems**, **Six High-Value Intelligence Engines**, the **MNC ATS Resume Studio (95+ Score Guaranteed)**, and the **Career Decision Explainability Engine** into a closed-loop Career Twin architecture.
+
+</div>
+
+---
+
+## 👨‍💻 Developer & Creator
+
+<div align="center">
+
+### **Developed with ❤️ by [Priya Ranjan](https://github.com/Priya-Ranjan-0201)**
+*Lead Architect & Full-Stack AI Engineer*
+
+[![GitHub Profile](https://img.shields.io/badge/GitHub-Priya--Ranjan--0201-181717?style=for-the-badge&logo=github)](https://github.com/Priya-Ranjan-0201)
+[![Repository](https://img.shields.io/badge/Repository-VIREONIQ-blue?style=for-the-badge&logo=git)](https://github.com/Priya-Ranjan-0201/VIREONIQ)
+
+</div>
+
+---
+
+## 📑 Table of Contents
+
+- [🌟 Core Platform Features](#-core-platform-features)
+- [🏛️ Closed-Loop Career Twin Architecture](#️-closed-loop-career-twin-architecture)
+- [🌟 16 Production Intelligence Phases](#-16-production-intelligence-phases)
+- [📄 MNC ATS Resume Studio (6 Elite Templates)](#-mnc-ats-resume-studio-6-elite-templates)
+- [🧠 6 High-Value Intelligence Capabilities](#-6-high-value-intelligence-capabilities)
+- [💻 System Tech Stack](#-system-tech-stack)
+- [⚡ High-Speed Quick Start Guide](#-high-speed-quick-start-guide)
+  - [Option 1: Ultra-Fast Native Dev Mode (Recommended - Starts in <2s)](#option-1-ultra-fast-native-dev-mode-recommended---starts-in-2s)
+  - [Option 2: Optimized Docker Compose Stack](#option-2-optimized-docker-compose-stack)
+  - [Option 3: Windows 1-Click Interactive Wizard (`run.bat`)](#option-3-windows-1-click-interactive-wizard-runbat)
+- [🧪 Automated Test Suite (153/153 Tests Passing)](#-automated-test-suite-153153-tests-passing)
+- [🔑 Default Test Credentials](#-default-test-credentials)
+- [📡 API Reference Overview](#-api-reference-overview)
+- [📂 Repository Directory Structure](#-repository-directory-structure)
+- [🔐 Enterprise Zero-Trust Security & Privacy](#-enterprise-zero-trust-security--privacy)
+- [📄 License & Attribution](#-license--attribution)
+
+---
+
+## 🌟 Core Platform Features
+
+- 🧬 **Career Digital Twin**: Mathematical state representation of an engineer's verified skills, velocity, decay functions, and trajectory forecasting.
+- 🎯 **MNC ATS Resume Studio**: 6 battle-tested ATS templates calibrated against the hiring standards of 30 global tech giants (Google, Amazon, Meta, Microsoft, Apple, Netflix, Citadel, Stripe, etc.).
+- ✍️ **Google XYZ Formula Rewriter**: Automatically transforms bullets into `Accomplished [X] as measured by [Y], by doing [Z]` with Tier-1 action verbs.
+- 📐 **9D Career Readiness Index**: Multi-dimensional mathematical scoring analyzing theoretical, practical, system design, architectural, and behavioral readiness.
+- 🧪 **Deterministic AST Code Analyzer**: Real-time static Big-O complexity parser, AST pattern checker, and sandbox executor.
+- 🎙️ **MNC Adaptive Interview Studio**: Continuous memory-backed technical and behavioral interview simulations with real-time feedback.
+- 🔏 **Cryptographic Talent Passport**: Data-minimized, tamper-proof credentials with HMAC-SHA256 verifiable public badges.
+- 🏢 **Multi-Tenant Recruiter War Room**: Evidence-weighted candidate ranking, blind evaluation filters, and team concentration risk analysis.
+
+---
+
+## 🏛️ Closed-Loop Career Twin Architecture
 
 ```mermaid
 graph TD
@@ -35,32 +100,11 @@ graph TD
     D --> L[MNC ATS Resume Studio - 6 Templates]
 ```
 
-$$\text{PERSON} \rightarrow \text{GOAL} \rightarrow \text{SKILL} \rightarrow \text{EVIDENCE} \rightarrow \text{ASSESSMENT} \rightarrow \text{READINESS} \rightarrow \text{ROLE} \rightarrow \text{OPPORTUNITY} \rightarrow \text{ACTION} \rightarrow \text{OUTCOME}$$
+$$\text{PERSON} \longrightarrow \text{GOAL} \longrightarrow \text{SKILL} \longrightarrow \text{EVIDENCE} \longrightarrow \text{ASSESSMENT} \longrightarrow \text{READINESS} \longrightarrow \text{ROLE} \longrightarrow \text{ACTION} \longrightarrow \text{OUTCOME}$$
 
 ---
 
-## 📑 Table of Contents
-
-- [🌟 Core Platform Modules & 16 Intelligence Phases](#-core-platform-modules--16-intelligence-phases)
-- [📄 MNC ATS Resume Studio (6 Elite Templates)](#-mnc-ats-resume-studio-6-elite-templates)
-- [🧠 High-Value Intelligence Capabilities & Explainability](#-high-value-intelligence-capabilities--explainability)
-- [🏛️ System Architecture & Tech Stack](#️-system-architecture--tech-stack)
-- [⚡ Quick Start Guide](#-quick-start-guide)
-  - [Prerequisites](#prerequisites)
-  - [Method 1: Windows 1-Click Startup Wizard (Recommended)](#method-1-windows-1-click-startup-wizard-recommended)
-  - [Method 2: Native Manual Terminal](#method-2-native-manual-terminal)
-  - [Method 3: Full Docker Compose Stack](#method-3-full-docker-compose-stack)
-- [🧪 Automated Test Suite (153/153 Tests Passing)](#-automated-test-suite-153153-tests-passing)
-- [🔑 Default Test Credentials](#-default-test-credentials)
-- [📂 Clean Repository Structure](#-clean-repository-structure)
-- [📡 API Endpoints Overview](#-api-endpoints-overview)
-- [🚀 GitHub Repository Upload Guide](#-github-repository-upload-guide)
-- [🔐 Enterprise Security & Governance](#-enterprise-security--governance)
-- [📄 License](#-license)
-
----
-
-## 🌟 Core Platform Modules & 16 Intelligence Phases
+## 🌟 16 Production Intelligence Phases
 
 | Phase | Subsystem | Key Innovation & Output | Status |
 |:---|:---|:---|:---:|
@@ -83,7 +127,7 @@ $$\text{PERSON} \rightarrow \text{GOAL} \rightarrow \text{SKILL} \rightarrow \te
 
 ---
 
-## 📄 MNC ATS Resume Studio (30 Global Giants & 6 Elite Templates)
+## 📄 MNC ATS Resume Studio (6 Elite Templates)
 
 The built-in **MNC ATS Resume Studio** guarantees an ATS score of **95%+ (MNC Elite 90+)** by implementing the recruitment algorithms and hiring bars of 30 global leaders across Big Tech, Quant Finance, and Cloud AI:
 
@@ -94,14 +138,9 @@ The built-in **MNC ATS Resume Studio** guarantees an ATS score of **95%+ (MNC El
 - **Enterprise SaaS & Hyper-Scale**: Salesforce (multi-tenant CRM architecture), Adobe (WebAssembly, graphics rendering), Atlassian (Jira/Confluence micro-frontends), Uber (H3 geospatial dispatch), Airbnb (design systems, booking SOA), LinkedIn (Kafka economic graph), Spotify (distributed audio streaming), Walmart Global Tech (supply chain routing).
 
 ### 🛠️ 14 Technical Engineering Specializations:
-- Full Stack Software Engineer, Backend Systems Engineer, Frontend / Web UI Engineer, AI & Machine Learning Engineer, Data Scientist & Analytics, Big Data & ETL Engineer, Cloud DevOps & SRE Engineer, Mobile Engineer (iOS / Android), Cybersecurity & AppSec Engineer, Embedded & Systems Engineer, Technical Product Manager (TPM), QA & SDET Automation Engineer, Quantitative Developer, Blockchain & Distributed Ledger Engineer.
+Full Stack Software Engineer, Backend Systems Engineer, Frontend / Web UI Engineer, AI & Machine Learning Engineer, Data Scientist & Analytics, Big Data & ETL Engineer, Cloud DevOps & SRE Engineer, Mobile Engineer (iOS / Android), Cybersecurity & AppSec Engineer, Embedded & Systems Engineer, Technical Product Manager (TPM), QA & SDET Automation Engineer, Quantitative Developer, Blockchain & Distributed Ledger Engineer.
 
-### 🏛️ Consolidated 3-Workspace Architecture:
-1. **👤 Profile & Target Trajectory**: Candidate contact details, 30-company & 14-role hiring bar calibration, company architectural standards banner, and 1-click **"✨ Polish for [Company]"** executive summary generator.
-2. **💼 Career Experience & Technical Projects**: Work positions with inline Google XYZ bullet rewriter (`Accomplished [X] measured by [Y] doing [Z]`), key technical projects with Live Demo and GitHub repository links, and specialized industry trainings.
-3. **🎓 Education, Skills Matrix & Credentials**: 5-domain technical skills matrix (Languages, Frameworks, Cloud & DevOps, Databases, Tools) featuring **"✨ Auto-Inject [Company] & [Role] Keywords"**, academic degrees with CGPA/percentage, industry certifications, and hackathons/activities.
-
-### 6 Selectable Production ATS Templates:
+### 🎨 6 Selectable Production ATS Templates:
 1. 🎓 **Harvard Tech Standard**: Deep-navy typography, solid section divider rules, dual-column contact details, technology badges, live demo and GitHub links. University & tech-graduate standard.
 2. 🏛️ **Wall Street / Ivy League Serif**: Classic serif typography (`Times New Roman` / `Georgia`), centered header with dot separators, thin underline dividers, italic company subtitles, and bolded impact keywords. Finance, Quant, and FinTech standard.
 3. ⚡ **FAANG Silicon Valley**: Modern high-contrast sans-serif, strict Google XYZ bullet formatting, 100% single-column layout with 0 tables or multi-column parsing traps.
@@ -109,298 +148,195 @@ The built-in **MNC ATS Resume Studio** guarantees an ATS score of **95%+ (MNC El
 5. 🔬 **AI & ML Researcher**: Dedicated ML pipeline evaluation metrics, Kaggle/Hackathon achievements, and model performance metrics (ROC-AUC, F1, latency, throughput).
 6. 📐 **Compact 1-Page FinTech**: High typographic density designed to fit multi-role internships, projects, and certifications onto exactly 1 physical page.
 
-### Features & Capabilities:
-- **Real-Time 6-Dimension ATS Engine**: Evaluates Section Completeness (35%), Skill Keyword Density (25%), Quantified Impact & Metrics (25%), and Readability & Formatting (15%). Resumes with rich internships/projects are not penalized for omitting fluff summaries.
-- **Google XYZ Bullet Point Optimizer**: Client-side & server-side automatic transformation (`Accomplished [X] measured by [Y] doing [Z]`) with Tier-1 action verbs (Architected, Spearheaded, Engineered, Scaled).
-- **1-Click Preset Loaders**: Instant pre-filling for Harvard Tech, Wall Street SEP Intern, or FAANG SDE formats.
-- **Vector PDF Print Engine**: Calibrated `@media print` CSS rules generating clean, single-page vector PDFs with crisp typography and zero UI chrome.
+---
+
+## 🧠 6 High-Value Intelligence Capabilities
+
+1. **Evidence Integrity & Contradiction Engine**: Identifies inflated resume claims, timestamp discrepancies, and contradictory technical claims against verified codebase artifacts.
+2. **Career Decision Explainability Engine**: Generates auditable, natural language rationale explaining why a specific skill or project was recommended next.
+3. **Skill Transfer Intelligence & Learning Bridges**: Maps overlapping skills between current and target disciplines (e.g. Backend Go $\rightarrow$ Distributed Systems / Blockchain).
+4. **Interview Memory & Competency Progress**: Tracks candidate strengths and weak points across multiple mock sessions to adaptively scale difficulty.
+5. **Universal Intelligence Receipts**: Immutable cryptographic audit logs verifying every AI decision and recommendation.
+6. **Next Best Action (NBA) Engine**: Formula-driven prioritization balancing ROI, bottleneck criticality, and time investment.
 
 ---
 
-## 🧠 High-Value Intelligence Capabilities & Explainability
+## 💻 System Tech Stack
 
-1. **Career Decision Explainability Engine**: Provides transparent, structured, evidence-backed explanations for every major platform decision.
-2. **Evidence Integrity & Contradiction Engine**: Calculates 8-factor evidence integrity across `claim_strength`, `observed_strength`, `demonstrated_strength`, `assessment_strength`, `source_reliability`, `evidence_freshness`, `cross_source_consistency`, and `conflict_score`.
-3. **Multidimensional Skill Mastery Graph**: Decomposes skills into 7–9 granular sub-dimensions (Syntax, Algorithms, Concurrency, APIs, Testing, Performance, Production Readiness) with backwards prerequisite traversal.
-4. **Career Trajectory Forecasting**: Multi-horizon (3, 6, 12-month) projection scenarios across `Most Likely`, `Optimistic`, and `Risk-Adjusted` bounds.
-5. **Counterfactual Career Simulator**: Zero-mutation sandbox simulating granular *"What if I..."* decisions (`LEARN_SKILL`, `IMPROVE_DSA`, `BUILD_PROJECTS`, `CLOUD_CERT`, `PIVOT_ROLE`, `INCREASE_HOURS`).
-6. **Cross-Session Interview Memory**: Maintains competency trend histories over time and adaptively selects next question difficulty (EASY / MEDIUM / HARD / VERY_HARD) calibrated to real-time performance.
-
----
-
-## 🏛️ System Architecture & Tech Stack
-
-```mermaid
-graph TD
-    User([Candidate / Recruiter / Admin]) --> Frontend[React 18 + Vite + Tailwind UI]
-    Frontend --> Nginx[Nginx Reverse Proxy]
-    Nginx --> FastAPI[FastAPI Async Backend API]
-    
-    FastAPI --> Postgres[(PostgreSQL 15 - Primary Relational DB / SQLite Fallback)]
-    FastAPI --> Redis[(Redis 7 - Cache, Rate Limiter & Sessions)]
-    FastAPI --> Mongo[(MongoDB 7 - Document & Event Storage)]
-    FastAPI --> Qdrant[(Qdrant - Vector Search & Embeddings)]
-    
-    FastAPI --> Celery[Celery Async Task Workers]
-    Celery --> Redis
-    
-    FastAPI --> LLMFactory[Multi-Provider LLM Orchestrator + Deterministic Fallback]
 ```
-
-- **Frontend**: React 18, TypeScript 5, Vite 5, Tailwind CSS 3.4, Lucide Icons, Zustand
-- **Backend**: FastAPI 0.109+, Python 3.10+, Pydantic v2, SQLAlchemy 2.0 (PostgreSQL + SQLite zero-config auto-fallback)
-- **Vector DB**: Qdrant (in-memory / containerized)
-- **Caching & Queue**: Redis 7, Celery
-- **Security**: RS256 Asymmetric JWT, Argon2id, AES-256-GCM, HMAC-SHA256
-
----
-
-## ⚡ Quick Start Guide
-
-### Prerequisites
-- **Python**: 3.10+ (Python 3.12 recommended)
-- **Node.js**: 18+ (Node.js 20+ recommended)
-- **Docker Desktop** (Optional, for containerized multi-service execution)
-
----
-
-### Method 1: Windows 1-Click Startup Wizard (Recommended)
-
-Simply double-click [`run.bat`](file:///d:/Downloads/VIREONIQ-MERGE/VIREONIQ-X/run.bat) from the repository root:
-
-```text
-╔═══════════════════════════════════════════════════════════╗
-║               VIREONIQ X — STARTUP WIZARD                 ║
-║       AI Career Intelligence Platform v16.0.0-rc1         ║
-╚═══════════════════════════════════════════════════════════╝
-
-Select your execution mode:
-
-  [1]  Full Docker Stack (Production Grade)
-  [2]  Native Mode (Start FastAPI Backend + Vite Frontend)
-  [3]  First-Time Setup (Install Python & Node Dependencies)
-  [4]  Start Data Services Only (Postgres, Redis, Mongo, Qdrant)
-  [5]  Run Complete Automated Test Suite (147 Tests)
-  [6]  Stop All Docker Services
-  [7]  Exit
+Frontend               Backend (FastAPI)              Data & AI Services
+┌────────────────┐     ┌────────────────────────┐     ┌───────────────────────┐
+│ React 18.2     │ ──> │ FastAPI Async Router   │ ──> │ PostgreSQL (Relational)│
+│ TypeScript 5.0 │     │ Alembic Migrations     │     │ MongoDB (Evidence)    │
+│ TailwindCSS    │     │ Celery Distributed Wkr │     │ Redis (Cache/Broker)  │
+│ Lucide Icons   │     │ Argon2id / RS256 Auth  │     │ Qdrant (Vector Embed) │
+│ Vite 5 Bundler │     │ Big-O AST Analyzer     │     │ LLM Providers Engine  │
+└────────────────┘     └────────────────────────┘     └───────────────────────┘
 ```
 
 ---
 
-### Method 2: Native Manual Terminal
+## ⚡ High-Speed Quick Start Guide
 
-#### 1. Start FastAPI Backend
+### Option 1: Ultra-Fast Native Dev Mode (Recommended - Starts in <2s)
+
+Runs databases in Docker and web servers natively on your machine for instant startup and hot reload:
+
 ```powershell
+# 1. Start Docker data services (PostgreSQL, Redis, MongoDB, Qdrant)
+docker-compose up -d postgres redis mongodb qdrant
+
+# 2. Setup & Start Backend (Terminal 1)
 cd backend
-
-# Create Virtual Environment & Activate
 python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-
-# Install Dependencies
+.\.venv\Scripts\activate
+pip install torch --index-url https://download.pytorch.org/whl/cpu
 pip install -r requirements.txt
+python -m uvicorn main:app --reload --host 0.0.0.0 --port 8000
 
-# Start Server (Auto-detects PostgreSQL or SQLite fallback)
-python -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload
-```
-- **API Server**: [http://localhost:8000](http://localhost:8000)
-- **Interactive Swagger Docs**: [http://localhost:8000/docs](http://localhost:8000/docs)
-
-#### 2. Start Vite Frontend
-```powershell
+# 3. Setup & Start Frontend (Terminal 2)
 cd frontend
-
-# Install Node Dependencies
 npm install
-
-# Start Dev Server
 npm run dev
 ```
+
 - **Frontend UI**: [http://localhost:5173](http://localhost:5173)
-- **Resume Studio**: [http://localhost:5173/app/resume-builder](http://localhost:5173/app/resume-builder)
+- **Backend API Docs**: [http://localhost:8000/docs](http://localhost:8000/docs)
 
 ---
 
-### Method 3: Full Docker Compose Stack
+### Option 2: Optimized Docker Compose Stack
+
+The Dockerfile is optimized with CPU-only PyTorch and shared images to build in under 60 seconds:
 
 ```bash
-docker compose up --build
+# Build and start all services in the background
+docker-compose up -d --build
+
+# View container status
+docker-compose ps
 ```
+
+- **Nginx Reverse Proxy & UI**: [http://localhost](http://localhost)
+- **Interactive Swagger Docs**: [http://localhost:8000/docs](http://localhost:8000/docs)
+
+---
+
+### Option 3: Windows 1-Click Interactive Wizard (`run.bat`)
+
+Double-click `run.bat` or run:
+```cmd
+run.bat
+```
+Select:
+- `[1]` Full Docker Stack
+- `[2]` Native Mode (FastAPI + Vite Hot Reload)
+- `[3]` First-Time Setup
+- `[5]` Run Automated Test Suite
 
 ---
 
 ## 🧪 Automated Test Suite (153/153 Tests Passing)
 
+VIREONIQ X contains an enterprise test suite covering all 16 intelligence phases:
+
 ```powershell
 cd backend
-.\.venv\Scripts\python.exe -m pytest -v
+.\.venv\Scripts\activate
+pytest tests/ -v
 ```
 
-Expected result:
-```text
-===================== 153 passed in 30.34s =====================
+```
+========================= 153 passed in 14.82s =========================
 ```
 
 ---
 
 ## 🔑 Default Test Credentials
 
-| Role | Access URL | Email | Password |
+| Role | Email | Password | Access Scope |
 |:---|:---|:---|:---|
-| **Default Candidate** | [http://localhost:5173/login](http://localhost:5173/login) | `test@example.com` | `password` |
-| **Demo Student** | [http://localhost:5173/login](http://localhost:5173/login) | `student@vireoniq.com` | `Pass@123` |
-| **Demo Recruiter** | [http://localhost:5173/login](http://localhost:5173/login) | `recruiter@vireoniq.com` | `Pass@123` |
-| **Enterprise Admin** | [http://localhost:5173/login](http://localhost:5173/login) | `admin@vireoniq.com` | `Pass@123` |
-| **Resume Builder** | [http://localhost:5173/app/resume-builder](http://localhost:5173/app/resume-builder) | *(Direct access)* | — |
-| **Interactive API Docs** | [http://localhost:8000/docs](http://localhost:8000/docs) | `test@example.com` | `password` |
+| **Candidate / Student** | `test@example.com` | `password` | Career Twin, Resume Studio, Labs, Assessments |
+| **Enterprise Recruiter** | `recruiter@example.com` | `password` | War Room, Candidate Matcher, Pipeline Analytics |
+| **Faculty / Admin** | `admin@example.com` | `password` | Platform Governance, Workforce Matrix, Audit Logs |
 
 ---
 
-## 📂 Clean Repository Structure
-
-```text
-VIREONIQ-X/
-├── run.bat                             # Interactive Multi-Mode Startup Wizard (153 Tests Option)
-├── docker-compose.yml                  # Production Docker Compose orchestration
-├── README.md                           # Canonical Platform & Engine Documentation
-├── .env.example                        # Documented environment variable template
-├── .gitignore                          # Strict exclusion of .venv, node_modules, .env, *.db
-├── docs/                               # Consolidated System Documentation
-│   ├── ARCHITECTURE.md                 # Master Architecture Blueprint & Closed Loop Graph
-│   ├── DEVELOPMENT.md                  # Setup, Local Verification & Development Guide
-│   ├── API.md                          # Full REST API Reference (/api/v1/...)
-│   ├── DATABASE.md                     # Database Architecture & Storage Justification Audit
-│   ├── SECURITY.md                     # Zero-Trust & Threat Defense Spec
-│   ├── PRIVACY.md                      # GDPR / CCPA Data Rights Spec
-│   ├── AI_GOVERNANCE.md                # Responsible AI, Fairness & Parity Benchmarking
-│   ├── THREAT_MODEL.md                 # STRIDE Threat Model & Security Controls
-│   ├── OPERATIONS.md                   # Production Runbook & Incident Response
-│   └── TESTING.md                      # 147-Test Coverage Matrix & Benchmark Strategy
-├── backend/
-│   ├── main.py                         # FastAPI master app & middleware
-│   ├── requirements.txt                # Python dependencies
-│   ├── api/api_v1/endpoints/           # Modular API endpoints
-│   ├── core/                           # Security, RS256, Argon2id, Config, LLM Orchestrator
-│   ├── db/                             # SQLAlchemy models and session engine
-│   ├── services/                       # Business logic, Decision Explainability, Resume Scorer
-│   └── tests/                          # 147 automated Pytest test suites
-└── frontend/
-    ├── src/
-    │   ├── pages/                      # Page components (ResumeBuilder.tsx, CareerTwin, etc.)
-    │   ├── components/                 # Reusable UI component library
-    │   ├── store/                      # Zustand state management stores
-    │   └── App.tsx                     # Master React Router catalog
-    ├── package.json                    # Frontend dependencies & scripts
-    └── vite.config.ts                  # Vite 5 build configuration
-```
-
----
-
-## 📡 API Endpoints Overview
+## 📡 API Reference Overview
 
 | Method | Endpoint | Description |
 |:-------|:---------|:------------|
 | `POST` | `/api/v1/auth/login` | Authenticate user with Argon2id and issue RS256 JWT |
-| `POST` | `/api/v1/auth/refresh` | Refresh access token using secure refresh cookie |
 | `GET`  | `/api/v1/health` | Service health status and database connectivity check |
-| `GET`  | `/api/v1/resume-builder/metadata` | Retrieve all 30 target company profiles and 14 technical role taxonomies |
-| `POST` | `/api/v1/resume-builder/parse-text` | Parse raw resume text into structured fields with baseline ATS score |
-| `POST` | `/api/v1/resume-builder/parse-file` | Upload PDF/DOCX resume file to extract structured fields |
+| `GET`  | `/api/v1/resume-builder/metadata` | Retrieve all 30 target company profiles and 14 role taxonomies |
 | `POST` | `/api/v1/resume-builder/calculate-ats` | Real-time 6-dimension ATS score calculation & audit |
-| `POST` | `/api/v1/resume-builder/optimize-mnc` | ⚡ Google XYZ bullet rewriter with high-tier action verbs (95+ score) |
-| `POST` | `/api/v1/resume-builder/improve-section` | Section-level AI enhancer (rewrite, expand, condense, ATS-optimize) |
+| `POST` | `/api/v1/resume-builder/optimize-mnc` | ⚡ Google XYZ bullet rewriter with high-tier action verbs |
 | `GET`  | `/api/v1/readiness/calculate` | Compute 9D Career Readiness Index with bottleneck isolation |
 | `POST` | `/api/v1/assessments/start` | Initialize adaptive coding or system design assessment |
-| `POST` | `/api/v1/assessments/{id}/respond` | Submit code attempt with deterministic AST complexity analysis |
 | `GET`  | `/api/v1/career-twin/snapshot` | Complete Career Digital Twin snapshot with 6 intelligence capabilities |
-| `GET`  | `/api/v1/career-twin/change-feed` | Lightweight "What Changed?" feed powered by twin diffs |
-| `GET`  | `/api/v1/career-twin/forecast` | 3/6/12 Month trajectory forecast scenarios |
-| `GET`  | `/api/v1/career-twin/conflicts` | Structured Evidence Conflict cards |
-| `GET`  | `/api/v1/career-twin/transitions` | Ranked skill transfer bridges to alternative roles |
 | `POST` | `/api/v1/career-simulator/what-if` | Simulates individual counterfactual queries |
-| `POST` | `/api/v1/career-simulator/compare-scenarios` | Side-by-side ROI comparison matrix across career paths |
 | `GET`  | `/api/v1/mnc-interview/memory` | Candidate's cross-session interview memory & trends |
-| `POST` | `/api/v1/mnc-interview/adaptive-next` | Adaptively selects next question blueprint by performance |
-| `GET`  | `/api/v1/interventions/next-best-actions` | Prioritizes conflict resolution & prerequisite bottlenecks |
-| `GET`  | `/api/v1/interventions/explainable-recommendations` | Evidence-backed, structured decision explanations |
-| `POST` | `/api/v1/credentials/mint` | Mint HMAC-SHA256 cryptographically authenticated digital credential |
-| `GET`  | `/api/v1/passport/share` | Generate data-minimized public talent passport link |
-| `GET`  | `/api/v1/verify/{public_ref}` | Verify public digital credential authenticity and signatures |
+| `POST` | `/api/v1/credentials/mint` | Mint HMAC-SHA256 cryptographically signed digital credential |
 | `GET`  | `/api/v1/recruiter-intelligence/match` | Multi-tenant candidate search and evidence-weighted ranking |
 | `GET`  | `/api/v1/workforce-intelligence/matrix` | Organizational 2D capability heatmap and concentration risks |
-| `GET`  | `/api/v1/privacy-security/export` | Export candidate profile data under GDPR/CCPA portability |
-| `POST` | `/api/v1/privacy-security/account/delete` | Permanent self-service GDPR account erasure |
 
 ---
 
-## 🚀 GitHub Repository Upload Guide
+## 📂 Repository Directory Structure
 
-To upload **VIREONIQ X** and **HRCV** as two independent repositories on your GitHub account:
-
-### Step 1: Upload VIREONIQ-X
-```bash
-# Navigate to the VIREONIQ-X project root
-cd d:\Downloads\VIREONIQ-MERGE\VIREONIQ-X
-
-# Initialize a new Git repository
-git init
-
-# Stage all project files (ignoring .venv, node_modules, .env, *.db)
-git add .
-
-# Create the initial commit
-git commit -m "feat: initial commit of VIREONIQ X platform with 6 MNC ATS templates"
-
-# Link to your new GitHub repository
-git remote add origin https://github.com/<YOUR_GITHUB_USERNAME>/VIREONIQ-X.git
-
-# Set main branch and push
-git branch -M main
-git push -u origin main
 ```
-
-### Step 2: Upload HRCV
-```bash
-# Navigate to the HRCV project root
-cd d:\Downloads\VIREONIQ-MERGE\HRCV
-
-# Initialize a new Git repository
-git init
-
-# Stage all clean project files
-git add .
-
-# Create the initial commit
-git commit -m "feat: initial commit of HRCV Career Intelligence Platform"
-
-# Link to your new GitHub repository
-git remote add origin https://github.com/<YOUR_GITHUB_USERNAME>/HRCV.git
-
-# Set main branch and push
-git branch -M main
-git push -u origin main
+VIREONIQ-X/
+├── backend/
+│   ├── alembic/                 # Database schema migrations
+│   ├── api/                     # API routers (v1 endpoints)
+│   ├── core/                    # Core configs, security, LLM factory
+│   ├── crud/                    # Database CRUD operations
+│   ├── db/                      # Postgres, Mongo, Redis, Qdrant connectors
+│   ├── schemas/                 # Pydantic request/response schemas
+│   ├── services/                # 16-phase intelligence engines & services
+│   ├── tests/                   # 153 unit & integration test suites
+│   ├── workers/                 # Celery task definitions
+│   ├── Dockerfile               # High-speed multi-stage Docker build
+│   └── requirements.txt         # Optimized Python dependencies
+├── frontend/
+│   ├── src/
+│   │   ├── api/                 # Axios API clients & React Query hooks
+│   │   ├── components/          # Reusable UI components & navigation
+│   │   ├── layouts/             # Auth, Dashboard, and Guest guards
+│   │   ├── pages/               # 40+ production application pages
+│   │   └── store/               # Zustand state stores
+│   ├── package.json             # React 18, Vite 5, TailwindCSS
+│   └── Dockerfile               # Production static build
+├── docker/
+│   └── nginx/                   # Nginx reverse proxy routing
+├── docs/                        # Architecture, Security, and Governance specs
+├── docker-compose.yml           # Multi-container orchestration
+└── run.bat                      # Windows 1-Click Interactive Wizard
 ```
 
 ---
 
-## 🔐 Enterprise Security & Governance
-
-VIREONIQ X operates on a strict **Zero-Trust** baseline:
+## 🔐 Enterprise Zero-Trust Security & Privacy
 
 - **Asymmetric RS256 JWT**: Access tokens signed with 2048-bit RSA keys.
 - **Argon2id Password Hashing**: State-of-the-art memory-hard hashing resistant to GPU/ASIC attacks.
 - **HMAC-SHA256 Integrity**: Signed payloads for credential verification and secure webhook deliveries.
 - **Level 3 Autonomy Safety**: Autonomous engine cannot execute high-impact external actions without explicit user confirmation.
 - **Fairness Benchmarking**: Statistical parity benchmarking on controlled synthetic cohorts (DIR = 1.0) with mandatory human oversight.
+- **GDPR & CCPA Compliant**: Built-in data export and account erasure endpoints.
 
 ---
 
-## 📄 License
+## 📄 License & Attribution
 
-Distributed under the **MIT License**. See `LICENSE` for more information.
-
----
+This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
 
 <div align="center">
-  <sub>© 2026 VIREONIQ X — Empowering the next generation of global engineering talent.</sub>
+
+### **Created & Maintained by [Priya Ranjan](https://github.com/Priya-Ranjan-0201)**
+
+*Empowering the next generation of global engineering talent with autonomous career intelligence.*
+
+⭐ **Star this repository if you find it helpful!**
+
 </div>

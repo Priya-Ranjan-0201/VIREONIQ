@@ -36,6 +36,7 @@ services:
       - "6333:6333"
 
   backend:
+    image: vireoniq-backend:latest
     build:
       context: ./backend
       dockerfile: Dockerfile
@@ -81,9 +82,7 @@ services:
       - jwt_keys:/app/keys
 
   celery-worker:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    image: vireoniq-backend:latest
     command: celery -A workers.celery_app worker --loglevel=info
     environment:
       - DATABASE_URL=${DATABASE_URL}
@@ -116,6 +115,7 @@ services:
       - SECRET_KEY=${SECRET_KEY}
       - ENVIRONMENT=${ENVIRONMENT}
     depends_on:
+      - backend
       - redis
       - postgres
     volumes:
@@ -123,9 +123,7 @@ services:
       - jwt_keys:/app/keys
 
   celery-beat:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    image: vireoniq-backend:latest
     command: celery -A workers.celery_app beat --loglevel=info
     environment:
       - DATABASE_URL=${DATABASE_URL}
