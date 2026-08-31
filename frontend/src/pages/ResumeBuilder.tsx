@@ -123,51 +123,27 @@ export interface TemplateOption {
 export const TEMPLATES_CONFIG: TemplateOption[] = [
   {
     id: "harvard",
-    name: "Harvard Tech Standard",
-    badge: "Babul Kumar Format (Page 1)",
-    description: "Deep-blue titles, horizontal divider rules, tech badges, and GitHub/Demo links.",
-    icon: "🎓",
+    name: "Template 1: Modern Clean",
+    badge: "Modern Sans",
+    description: "Crisp typography, solid section divider rules, tech badges, and clean layout.",
+    icon: "📄",
     accent: "from-blue-600 to-indigo-600"
   },
   {
     id: "wallstreet",
-    name: "Wall Street / Ivy League",
-    badge: "JP Morgan Format (Page 2)",
-    description: "Classic serif typography, centered header, thin underline dividers, and bold metrics.",
-    icon: "🏛️",
+    name: "Template 2: Classic Minimal",
+    badge: "Traditional Serif",
+    description: "Classic typography, centered header, thin underline dividers, and clean structure.",
+    icon: "📑",
     accent: "from-amber-600 to-yellow-600"
   },
   {
     id: "faang",
-    name: "FAANG Single-Column",
-    badge: "Google & Meta Standard",
-    description: "Modern sans-serif, pure Google XYZ bullet formula, and zero-table ATS architecture.",
+    name: "Template 3: Executive Compact",
+    badge: "ATS Streamlined",
+    description: "Single-column format, bullet impact emphasis, and 1-page compact layout.",
     icon: "⚡",
     accent: "from-emerald-600 to-teal-600"
-  },
-  {
-    id: "executive",
-    name: "Executive MNC Minimalist",
-    badge: "Fortune 500 Leadership",
-    description: "High typographic hierarchy, left accent bar, and high-impact business outcomes.",
-    icon: "💼",
-    accent: "from-purple-600 to-pink-600"
-  },
-  {
-    id: "aiml",
-    name: "AI & ML Researcher",
-    badge: "Kaggle & Deep Learning",
-    description: "Tailored for AI/ML pipelines, research projects, F1/ROC-AUC metrics, and hackathons.",
-    icon: "🤖",
-    accent: "from-cyan-600 to-blue-600"
-  },
-  {
-    id: "compact",
-    name: "Compact 1-Page FinTech",
-    badge: "High-Density Fit",
-    description: "Engineered to fit multi-role experience, projects, and certifications on exactly 1 page.",
-    icon: "📄",
-    accent: "from-rose-600 to-red-600"
   }
 ];
 
@@ -1481,57 +1457,52 @@ export const ResumeBuilder = () => {
   const scoreBg = atsScore >= 90 ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-300" : "bg-amber-500/10 border-amber-500/30 text-amber-300";
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500 pb-24">
+    <div className="space-y-6 animate-in fade-in duration-500 pb-24">
       
-      {/* ─── Header & Target Calibration Bar ─── */}
-      <header className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-white/10 pb-5">
+      {/* ─── Clean Modern Header ─── */}
+      <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-5">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-gradient-to-r from-primary/20 via-accent/20 to-emerald-500/20 border border-primary/30 rounded-full text-xs font-bold text-white uppercase tracking-wider mb-2 shadow-sm">
-            <Sparkles className="w-3.5 h-3.5 text-accent animate-pulse" />
-            <span>30 Global Leaders • 14 Tech Tracks</span>
-            <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-md text-[10px] font-mono">
-              90+ ATS Guaranteed
-            </span>
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-primary/10 border border-primary/20 rounded-full text-xs font-semibold text-primary mb-2">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Universal ATS Resume Studio</span>
           </div>
-          <h1 className="text-2xl lg:text-3xl font-black tracking-tight bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent">
-            Resume Calibration Studio
+          <h1 className="text-2xl lg:text-3xl font-black tracking-tight text-white">
+            AI Resume Builder
           </h1>
           <p className="text-slate-400 text-xs mt-1">
-            Engineered for Google, Amazon, JP Morgan, Nvidia, Stripe & 25+ global leaders with 6 ATS-verified layout engines.
+            Build, polish, and export a clean, ATS-compliant professional resume in seconds.
           </p>
         </div>
 
-        {/* Live ATS Score Pill & Quick Boost Button */}
+        {/* Action Controls */}
         <div className="flex items-center gap-3">
-          <div className={`px-4 py-2 rounded-2xl border flex items-center gap-2.5 ${scoreBg}`}>
-            <ShieldCheck className="w-5 h-5 shrink-0" />
-            <div>
-              <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">{targetCompany} Target</div>
-              <div className="text-sm font-black leading-none">{atsScore}% • {resumeData.ats_tier || "MNC Elite 90+"}</div>
-            </div>
+          <div className={`px-3.5 py-1.5 rounded-xl border flex items-center gap-2 ${scoreBg}`}>
+            <ShieldCheck className="w-4 h-4 shrink-0 text-emerald-400" />
+            <div className="text-xs font-bold leading-none">{atsScore}% ATS Score</div>
           </div>
+
           <Button
             onClick={() => setIsAiGenerateModalOpen(true)}
-            className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:opacity-95 text-white font-bold text-xs py-2.5 px-4 rounded-xl shadow-lg shadow-indigo-500/25 flex items-center gap-1.5 border border-indigo-400/30 animate-pulse"
+            className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:opacity-95 text-white font-bold text-xs py-2 px-4 rounded-xl shadow-md flex items-center gap-1.5"
           >
             <Sparkles className="w-3.5 h-3.5 text-yellow-300" />
-            <span>✨ AI Generate Best Resume</span>
+            <span>✨ AI Generate Resume</span>
           </Button>
 
           <Button
             onClick={handleMncAutoBoost}
             disabled={isOptimizing}
-            className="bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:opacity-95 text-white font-bold text-xs py-2.5 px-4 rounded-xl shadow-lg shadow-emerald-500/20"
+            className="bg-white/10 hover:bg-white/15 text-white border border-white/10 font-bold text-xs py-2 px-3.5 rounded-xl"
           >
             {isOptimizing ? (
               <div className="flex items-center gap-2">
                 <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                <span>Calibrating...</span>
+                <span>Polishing...</span>
               </div>
             ) : (
               <div className="flex items-center gap-1.5">
-                <Flame className="w-3.5 h-3.5 text-amber-300 fill-amber-300" />
-                <span>Calibrate for {targetCompany}</span>
+                <Wand2 className="w-3.5 h-3.5 text-emerald-400" />
+                <span>Auto-Polish</span>
               </div>
             )}
           </Button>
@@ -1541,7 +1512,7 @@ export const ResumeBuilder = () => {
       <div className="space-y-6">
           
           {/* Workspace Subheader & View Controls */}
-          <div className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-2xl bg-slate-900/60 border border-white/10 backdrop-blur-xl">
+          <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 rounded-2xl bg-slate-900/60 border border-white/10 backdrop-blur-xl">
             {/* View Mode Switcher */}
             <div className="flex items-center gap-1 bg-black/40 p-1 rounded-xl border border-white/10 text-xs">
               <button
@@ -1570,16 +1541,6 @@ export const ResumeBuilder = () => {
               </button>
             </div>
 
-            {/* Import / Upload Resume Modal Trigger */}
-            <Button
-              onClick={() => setShowImportModal(true)}
-              variant="outline"
-              className="border-accent/40 bg-accent/10 hover:bg-accent/20 text-accent font-bold text-xs flex items-center gap-1.5 py-1.5 px-3 h-auto"
-            >
-              <Upload className="w-3.5 h-3.5" />
-              <span>Import / Paste Resume</span>
-            </Button>
-
             {/* Quick Presets Loaders */}
             <div className="flex items-center gap-2 overflow-x-auto custom-scrollbar">
               <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest shrink-0">Presets:</span>
@@ -1587,67 +1548,77 @@ export const ResumeBuilder = () => {
                 onClick={() => handleLoadPreset("Harvard Tech (Babul Kumar Style)")}
                 className="px-2.5 py-1 rounded-lg bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 text-[11px] font-semibold text-blue-300 shrink-0"
               >
-                🎓 Harvard (Babul)
+                Full Stack
               </button>
               <button
                 onClick={() => handleLoadPreset("Wall Street (JP Morgan SDE Intern Style)")}
                 className="px-2.5 py-1 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-[11px] font-semibold text-amber-300 shrink-0"
               >
-                🏛️ Wall Street (JP Morgan)
+                Backend
               </button>
               <button
                 onClick={() => handleLoadPreset("FAANG Senior SDE (Alex Morgan)")}
                 className="px-2.5 py-1 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-[11px] font-semibold text-emerald-300 shrink-0"
               >
-                ⚡ FAANG SDE
+                Systems & Cloud
               </button>
             </div>
 
-            {/* Canvas Actions: Copy Text & Download PDF */}
+            {/* Import & Actions */}
             <div className="flex items-center gap-2">
+              <Button
+                onClick={() => setShowImportModal(true)}
+                variant="outline"
+                className="border-white/10 bg-white/5 hover:bg-white/10 text-slate-200 text-xs font-semibold flex items-center gap-1.5 py-1.5 px-3 h-auto"
+              >
+                <Upload className="w-3.5 h-3.5" />
+                <span>Import Resume</span>
+              </Button>
               <Button
                 onClick={handleCopyPlainText}
                 variant="outline"
                 className="border-white/10 text-xs text-slate-300 hover:text-white flex items-center gap-1.5 py-1.5 px-3 h-auto"
               >
                 {copiedText ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                <span>{copiedText ? "Copied!" : "ATS Plain-Text"}</span>
+                <span>{copiedText ? "Copied!" : "Plain Text"}</span>
               </Button>
               <Button
                 onClick={handlePrintPdf}
                 className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs flex items-center gap-1.5 py-1.5 px-3.5 h-auto shadow-md"
               >
                 <Printer className="w-3.5 h-3.5" />
-                <span>Print / Save PDF</span>
+                <span>Print / PDF</span>
               </Button>
             </div>
           </div>
 
-          {/* ─── TEMPLATE SELECTOR CAROUSEL (6 MNC TEMPLATES) ─── */}
+          {/* ─── 3 SIMPLIFIED CLEAN TEMPLATES SELECTOR ─── */}
           <div className="space-y-2">
             <div className="flex items-center justify-between text-xs text-slate-400">
-              <span className="font-bold text-slate-300 uppercase tracking-wider text-[10px]">Select Live ATS Template ({TEMPLATES_CONFIG.length} Available):</span>
+              <span className="font-bold text-slate-300 uppercase tracking-wider text-[10px]">Select Template:</span>
               <span className="text-[11px] text-emerald-400 font-semibold">100% Single-Page Compatible & Table-Free</span>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               {TEMPLATES_CONFIG.map(t => {
                 const isActive = templateStyle === t.id;
                 return (
                   <button
                     key={t.id}
                     onClick={() => setTemplateStyle(t.id)}
-                    className={`p-3 rounded-2xl text-left transition-all relative overflow-hidden border ${
+                    className={`p-3.5 rounded-2xl text-left transition-all relative border flex items-center justify-between ${
                       isActive
-                        ? "bg-slate-800/90 border-accent shadow-lg shadow-accent/20 ring-1 ring-accent"
+                        ? "bg-slate-800/90 border-indigo-500 shadow-md shadow-indigo-500/20 ring-1 ring-indigo-500"
                         : "bg-black/40 border-white/10 hover:border-white/20 hover:bg-white/[0.04]"
                     }`}
                   >
-                    <div className="flex items-center justify-between mb-1.5">
-                      <span className="text-lg">{t.icon}</span>
-                      {isActive && <CheckCircle2 className="w-3.5 h-3.5 text-accent" />}
+                    <div className="flex items-center gap-3">
+                      <span className="text-2xl">{t.icon}</span>
+                      <div>
+                        <div className="font-bold text-xs text-white leading-tight">{t.name}</div>
+                        <div className="text-[10px] text-slate-400 mt-0.5">{t.description}</div>
+                      </div>
                     </div>
-                    <div className="font-bold text-xs text-white leading-tight">{t.name}</div>
-                    <div className="text-[9px] text-slate-400 mt-1 line-clamp-1">{t.badge}</div>
+                    {isActive && <CheckCircle2 className="w-4 h-4 text-indigo-400 shrink-0" />}
                   </button>
                 );
               })}
@@ -1666,22 +1637,22 @@ export const ResumeBuilder = () => {
                   {[
                     {
                       id: "profile_target",
-                      label: "1. Profile & Target",
-                      subtitle: "Contact, Target & Summary",
+                      label: "1. Profile & Summary",
+                      subtitle: "Contact Info & Bio",
                       icon: Target,
                       accent: "text-blue-400 bg-blue-500/10 border-blue-500/30"
                     },
                     {
                       id: "experience_projects",
                       label: "2. Experience & Projects",
-                      subtitle: "Work, Projects & Demos",
+                      subtitle: "Work History & Demos",
                       icon: Briefcase,
                       accent: "text-emerald-400 bg-emerald-500/10 border-emerald-500/30"
                     },
                     {
                       id: "education_skills",
                       label: "3. Skills & Education",
-                      subtitle: "Matrix, Degrees & Certs",
+                      subtitle: "Skills Matrix & Degrees",
                       icon: Cpu,
                       accent: "text-purple-400 bg-purple-500/10 border-purple-500/30"
                     },
@@ -1716,87 +1687,14 @@ export const ResumeBuilder = () => {
                 {activeSection === "profile_target" && (
                   <div className="space-y-6">
                     {/* Target Calibration Card */}
-                    <div className="glass-panel rounded-3xl p-6 border border-white/10 space-y-4 bg-gradient-to-br from-indigo-950/40 via-slate-900/60 to-black/60 shadow-xl">
-                      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-4">
-                        <div>
-                          <span className="text-[10px] font-bold uppercase tracking-wider text-accent">Career Calibration Hub</span>
-                          <h3 className="text-base font-black text-white flex items-center gap-2 mt-0.5">
-                            <Building2 className="w-4 h-4 text-accent" /> Target Company & Technical Track
-                          </h3>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs text-slate-400">Current Target:</span>
-                          <span className="px-3 py-1 rounded-full bg-accent/20 border border-accent/40 text-accent font-bold text-xs">
-                            {targetCompany} • {targetRole}
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="grid sm:grid-cols-2 gap-4">
-                        {/* Company Dropdown (30 Global Leaders) */}
-                        <div className="space-y-1.5">
-                          <label className="text-[11px] font-bold text-slate-300 uppercase tracking-wider block">
-                            Target Company (30 Global Giants)
-                          </label>
-                          <select
-                            value={targetCompany}
-                            onChange={e => {
-                              setTargetCompany(e.target.value);
-                              toast.info(`Target company set to ${e.target.value}! Click "Calibrate" to optimize.`);
-                            }}
-                            className="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-accent cursor-pointer"
-                          >
-                            {COMPANY_CATEGORIES.map(category => (
-                              <optgroup key={category} label={category} className="bg-slate-950 text-slate-400 font-bold">
-                                {TARGET_COMPANIES.filter(c => c.category === category).map(c => (
-                                  <option key={c.name} value={c.name} className="bg-slate-900 text-white font-normal">
-                                    {c.icon} {c.name}
-                                  </option>
-                                ))}
-                              </optgroup>
-                            ))}
-                          </select>
-                        </div>
-
-                        {/* Role Dropdown (14 Technical Roles) */}
-                        <div className="space-y-1.5">
-                          <label className="text-[11px] font-bold text-slate-300 uppercase tracking-wider block">
-                            Specialization (14 Tech Roles)
-                          </label>
-                          <select
-                            value={targetRole}
-                            onChange={e => {
-                              setTargetRole(e.target.value);
-                              toast.info(`Target role set to ${e.target.value}!`);
-                            }}
-                            className="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-accent cursor-pointer"
-                          >
-                            {TECH_ROLES.map(role => (
-                              <option key={role} value={role} className="bg-slate-900 text-white">
-                                {role}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-                      </div>
-
-                      {/* Company Tagline & Culture Standards */}
-                      {selectedCompanyInfo && (
-                        <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/10 flex items-start gap-3">
-                          <span className="text-2xl shrink-0">{selectedCompanyInfo.icon}</span>
-                          <div className="text-xs">
-                            <span className="font-bold text-white block mb-0.5">{selectedCompanyInfo.name} Engineering Benchmark</span>
-                            <span className="text-slate-300 leading-relaxed">{selectedCompanyInfo.tagline}</span>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-
                     {/* Candidate Contact Information */}
                     <div className="glass-panel rounded-3xl p-6 space-y-4 border border-white/10">
-                      <h3 className="text-base font-bold text-white flex items-center gap-2">
-                        <Target className="w-4 h-4 text-accent" /> Candidate Contact Details
-                      </h3>
+                      <div className="flex items-center justify-between border-b border-white/10 pb-3">
+                        <h3 className="text-base font-bold text-white flex items-center gap-2">
+                          <Target className="w-4 h-4 text-primary" /> Personal & Contact Details
+                        </h3>
+                        <span className="text-[11px] text-slate-400">ATS Primary Information</span>
+                      </div>
                       <div className="grid sm:grid-cols-2 gap-3.5">
                         <div>
                           <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Full Name</label>
@@ -2662,17 +2560,17 @@ export const ResumeBuilder = () => {
             {(viewMode === "preview" || viewMode === "split") && (
               <div className={`${viewMode === "split" ? "lg:col-span-5" : "col-span-1"} space-y-6`}>
                 
-                {/* ─── MNC ATS Score Gauge Widget ─── */}
-                <div className="glass-panel rounded-3xl p-5 border border-white/10 space-y-4 bg-gradient-to-b from-slate-900/90 to-black/80 shadow-2xl">
+                {/* ─── ATS Score Widget ─── */}
+                <div className="glass-panel rounded-3xl p-5 border border-white/10 space-y-3 bg-gradient-to-b from-slate-900/90 to-black/80 shadow-2xl">
                   <div className="flex items-center justify-between">
                     <div>
-                      <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">{targetCompany} ATS Benchmark</div>
+                      <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">ATS Compliance</div>
                       <h4 className="text-base font-black text-white flex items-center gap-2">
-                        <ShieldCheck className="w-4 h-4 text-emerald-400" /> MNC ATS Scanner
+                        <ShieldCheck className="w-4 h-4 text-emerald-400" /> Live ATS Score
                       </h4>
                     </div>
-                    <span className={`px-2.5 py-1 rounded-full text-xs font-black border ${scoreBg}`}>
-                      {resumeData.ats_tier || "MNC Elite 90+"}
+                    <span className={`px-2.5 py-1 rounded-full text-xs font-bold border ${scoreBg}`}>
+                      {atsScore >= 90 ? "Top 5% Resume" : "Standard Fit"}
                     </span>
                   </div>
 
@@ -2683,10 +2581,10 @@ export const ResumeBuilder = () => {
                     </div>
                     <div className="text-xs text-slate-300 space-y-0.5">
                       <div className="font-semibold text-white">
-                        {atsScore >= 90 ? "🟢 Tier-1 MNC Compliant" : "🟡 Baseline Fit"}
+                        {atsScore >= 90 ? "🟢 Fully ATS-Optimized" : "🟡 Good General Fit"}
                       </div>
                       <div className="text-[11px] text-slate-400 leading-snug">
-                        Matches automated parsers at Google, Amazon, Taleo & Workday.
+                        Standard single-column layout, action verbs, and quantified metrics verified.
                       </div>
                     </div>
                   </div>
@@ -2699,20 +2597,20 @@ export const ResumeBuilder = () => {
                   <div className="bg-slate-100 border-b border-slate-200 px-5 py-2.5 flex items-center justify-between text-xs text-slate-500 no-print">
                     <span className="font-semibold text-slate-700 flex items-center gap-1.5">
                       <FileText className="w-3.5 h-3.5 text-primary" />
-                      Live ATS Canvas ({TEMPLATES_CONFIG.find(t => t.id === templateStyle)?.name})
+                      Live Preview ({TEMPLATES_CONFIG.find(t => t.id === templateStyle)?.name})
                     </span>
                     <span className="text-[11px] text-slate-400">8.5" × 11" Standard ATS Format</span>
                   </div>
 
                   {/* ──────────────────────────────────────────────────────────── */}
-                  {/* TEMPLATE 1: HARVARD TECH STANDARD (Babul Kumar Format)      */}
+                  {/* TEMPLATE 1: MODERN CLEAN                                     */}
                   {/* ──────────────────────────────────────────────────────────── */}
                   {templateStyle === "harvard" && (
                     <div className="p-7 space-y-4 text-[10.5px] leading-relaxed font-sans text-slate-900">
                       {/* Name & Contact Bar */}
                       <div>
                         <h2 className="text-2xl font-black tracking-tight text-[#1e3a8a]">
-                          {resumeData.name || "Babul Kumar"}
+                          {resumeData.name || "Alex Morgan"}
                         </h2>
                         <div className="grid grid-cols-2 text-[10px] mt-1 text-slate-800">
                           <div>
@@ -3481,10 +3379,10 @@ export const ResumeBuilder = () => {
       )}
         </div>
 
-      {/* ─── AI RESUME GENERATION STUDIO MODAL (98+ ATS GUARANTEED) ─── */}
+      {/* ─── CLEAN AI RESUME GENERATION MODAL ─── */}
       {isAiGenerateModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in">
-          <div className="bg-slate-950 border border-indigo-500/30 rounded-3xl max-w-2xl w-full p-6 space-y-5 shadow-2xl relative max-h-[90vh] overflow-y-auto custom-scrollbar">
+          <div className="bg-slate-950 border border-indigo-500/30 rounded-3xl max-w-xl w-full p-6 space-y-5 shadow-2xl relative max-h-[90vh] overflow-y-auto custom-scrollbar">
             <button
               onClick={() => setIsAiGenerateModalOpen(false)}
               className="absolute top-5 right-5 text-slate-400 hover:text-white p-1.5 rounded-xl hover:bg-white/10 transition-all"
@@ -3493,112 +3391,97 @@ export const ResumeBuilder = () => {
             </button>
 
             <div className="space-y-1">
-              <div className="inline-flex items-center gap-2 px-3 py-1 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 border border-indigo-500/30 rounded-full text-[10px] font-bold text-indigo-300 uppercase tracking-wider">
-                <Wand2 className="w-3 h-3 text-yellow-300 animate-spin" />
-                <span>Autonomous AI Resume Synthesizer</span>
-                <span className="bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded text-[9px] font-mono">98+ ATS Guaranteed</span>
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-500/10 border border-indigo-500/30 rounded-full text-xs font-semibold text-indigo-300">
+                <Sparkles className="w-3.5 h-3.5 text-yellow-300" />
+                <span>AI Resume Synthesizer</span>
               </div>
-              <h2 className="text-xl font-black text-white tracking-tight">
-                Generate Best-in-Class Tier-1 MNC Resume
+              <h2 className="text-xl font-bold text-white tracking-tight">
+                Generate Professional ATS Resume
               </h2>
               <p className="text-xs text-slate-400">
-                Synthesizes Google XYZ STAR bullets, architectural impact metrics, categorized skills, and verified formatting calibrated for your target MNC.
+                Automatically builds structured work experiences, quantified impact metrics, and verified skills.
               </p>
             </div>
 
-            <div className="grid sm:grid-cols-2 gap-4">
+            <div className="grid sm:grid-cols-2 gap-3.5">
               {/* Candidate Name */}
               <div>
-                <label className="text-[10px] font-bold text-slate-300 uppercase tracking-wider block mb-1.5">Candidate Full Name</label>
+                <label className="text-[10px] font-bold text-slate-300 uppercase tracking-wider block mb-1.5">Candidate Name</label>
                 <input
                   type="text"
                   value={genName}
                   onChange={e => setGenName(e.target.value)}
                   placeholder="e.g. Alex Morgan"
-                  className="w-full bg-slate-900 border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-indigo-500"
+                  className="w-full bg-slate-900 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-indigo-500"
                 />
               </div>
 
               {/* Candidate Email */}
               <div>
-                <label className="text-[10px] font-bold text-slate-300 uppercase tracking-wider block mb-1.5">Professional Email</label>
+                <label className="text-[10px] font-bold text-slate-300 uppercase tracking-wider block mb-1.5">Email Address</label>
                 <input
                   type="email"
                   value={genEmail}
                   onChange={e => setGenEmail(e.target.value)}
                   placeholder="e.g. alex.morgan@example.com"
-                  className="w-full bg-slate-900 border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-indigo-500"
+                  className="w-full bg-slate-900 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-indigo-500"
                 />
               </div>
 
-              {/* Target MNC / Global Leader */}
+              {/* Experience Seniority */}
               <div>
-                <label className="text-[10px] font-bold text-slate-300 uppercase tracking-wider block mb-1.5">Target MNC / Global Leader</label>
-                <select
-                  value={genCompany}
-                  onChange={e => setGenCompany(e.target.value)}
-                  className="w-full bg-slate-900 border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-indigo-500 cursor-pointer"
-                >
-                  {TARGET_COMPANIES.map(c => (
-                    <option key={c.name} value={c.name}>{c.icon} {c.name}</option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Target Engineering Specialization */}
-              <div>
-                <label className="text-[10px] font-bold text-slate-300 uppercase tracking-wider block mb-1.5">Target Specialization Track</label>
-                <select
-                  value={genRole}
-                  onChange={e => setGenRole(e.target.value)}
-                  className="w-full bg-slate-900 border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-indigo-500 cursor-pointer"
-                >
-                  {TECH_ROLES.map(r => (
-                    <option key={r} value={r}>{r}</option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Seniority / Level */}
-              <div>
-                <label className="text-[10px] font-bold text-slate-300 uppercase tracking-wider block mb-1.5">Experience Seniority Tier</label>
+                <label className="text-[10px] font-bold text-slate-300 uppercase tracking-wider block mb-1.5">Experience Level</label>
                 <select
                   value={genLevel}
                   onChange={e => setGenLevel(e.target.value)}
-                  className="w-full bg-slate-900 border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-indigo-500 cursor-pointer"
+                  className="w-full bg-slate-900 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-indigo-500 cursor-pointer"
                 >
-                  <option value="New Grad / Junior (0-2 yrs)">New Grad / Junior (0-2 yrs)</option>
-                  <option value="Mid-Level (2-5 yrs)">Mid-Level Software Engineer (2-5 yrs)</option>
-                  <option value="Senior (5-8 yrs)">Senior Software Engineer (5-8 yrs)</option>
-                  <option value="Staff / Principal / Architect (8+ yrs)">Staff / Principal / Architect (8+ yrs)</option>
+                  <option value="New Grad / Junior (0-2 yrs)">Junior / Entry Level (0-2 yrs)</option>
+                  <option value="Mid-Level (2-5 yrs)">Mid-Level Professional (2-5 yrs)</option>
+                  <option value="Senior (5-8 yrs)">Senior Professional (5-8 yrs)</option>
+                  <option value="Staff / Principal / Architect (8+ yrs)">Lead / Principal (8+ yrs)</option>
                 </select>
               </div>
 
-              {/* ATS Template Engine */}
+              {/* Layout Template */}
               <div>
-                <label className="text-[10px] font-bold text-slate-300 uppercase tracking-wider block mb-1.5">Preferred ATS Layout Engine</label>
+                <label className="text-[10px] font-bold text-slate-300 uppercase tracking-wider block mb-1.5">Resume Template</label>
                 <select
                   value={genStyle}
                   onChange={e => setGenStyle(e.target.value as TemplateStyle)}
-                  className="w-full bg-slate-900 border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-indigo-500 cursor-pointer"
+                  className="w-full bg-slate-900 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-indigo-500 cursor-pointer"
                 >
                   {TEMPLATES_CONFIG.map(t => (
-                    <option key={t.id} value={t.id}>{t.icon} {t.name} ({t.badge})</option>
+                    <option key={t.id} value={t.id}>{t.icon} {t.name}</option>
                   ))}
                 </select>
               </div>
             </div>
 
-            {/* Focus Keywords / Domain Specialization */}
+            {/* Target Role / Specialization */}
             <div>
               <label className="text-[10px] font-bold text-slate-300 uppercase tracking-wider block mb-1.5">
-                Key Strengths & Architectural Focus (Optional)
+                Specialization / Field (Optional)
+              </label>
+              <input
+                type="text"
+                value={genRole}
+                onChange={e => setGenRole(e.target.value)}
+                placeholder="e.g. Full Stack Developer, Data Analyst, Product Engineer"
+                className="w-full bg-slate-900 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-indigo-500"
+              />
+            </div>
+
+            {/* Focus Keywords / Skills */}
+            <div>
+              <label className="text-[10px] font-bold text-slate-300 uppercase tracking-wider block mb-1.5">
+                Key Skills & Technologies (Optional)
               </label>
               <textarea
                 value={genHighlights}
                 onChange={e => setGenHighlights(e.target.value)}
-                placeholder="e.g. Distributed systems, high-concurrency microservices, sub-10ms Redis caching, Kafka streaming, multi-region Kubernetes..."
-                className="w-full h-20 bg-slate-900 border border-white/10 rounded-xl p-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 resize-none"
+                placeholder="e.g. React, Node.js, Python, PostgreSQL, AWS, Docker, Git..."
+                className="w-full h-18 bg-slate-900 border border-white/10 rounded-xl p-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 resize-none"
               />
             </div>
 
@@ -3606,7 +3489,7 @@ export const ResumeBuilder = () => {
             <div className="flex items-center justify-between pt-2 border-t border-white/10">
               <div className="text-[11px] text-emerald-400 font-semibold flex items-center gap-1.5">
                 <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                <span>Includes Google XYZ formulas & 98+ ATS verification</span>
+                <span>Quantified bullets & high-score ATS format</span>
               </div>
               <div className="flex items-center gap-2">
                 <Button
@@ -3619,17 +3502,17 @@ export const ResumeBuilder = () => {
                 <Button
                   onClick={handleAiGenerateBestResume}
                   disabled={isGeneratingAi}
-                  className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:opacity-90 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-lg shadow-indigo-500/25 flex items-center gap-2"
+                  className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-md flex items-center gap-2"
                 >
                   {isGeneratingAi ? (
                     <>
                       <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                      <span>Synthesizing Best Resume...</span>
+                      <span>Generating Resume...</span>
                     </>
                   ) : (
                     <>
                       <Sparkles className="w-3.5 h-3.5 text-yellow-300" />
-                      <span>⚡ Synthesize Best Resume</span>
+                      <span>Generate Resume</span>
                     </>
                   )}
                 </Button>
