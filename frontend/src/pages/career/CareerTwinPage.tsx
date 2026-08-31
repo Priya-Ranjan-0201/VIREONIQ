@@ -14,231 +14,481 @@ import type {
   SkillEvidenceItem 
 } from "@/api/careerIntelligenceApi";
 
-const DEFAULT_CANONICAL_SKILLS: SkillEvidenceItem[] = [
-  {
-    skill_name: "Python",
-    evidence_tier: "VERIFIED",
-    score: 82,
-    proficiency_level: "L3",
-    proficiency_label: "Proficient",
-    confidence: "HIGH",
-    freshness_score: 95,
-    evidence_count: 3,
-    explanation: "Demonstrated in proctored diagnostic coding sandbox & AST evaluation.",
-    multidimensional_mastery: {
-      evidence_coverage_pct: 88,
-      weakest_dimension: "Async Concurrency Under Contention",
-      dimensions: [
-        { dimension_name: "Core Syntax & AST", score: 92 },
-        { dimension_name: "Asynchronous Event Loops", score: 85 },
-        { dimension_name: "Memory & Object Lifecycles", score: 78 },
-        { dimension_name: "Type Hinting & Pydantic V2", score: 89 }
-      ]
-    }
+export interface RoleTwinProfile {
+  targetRole: string;
+  readinessScore: number;
+  skills: SkillEvidenceItem[];
+  evidence: any[];
+  timeline: any[];
+  criticalGap: string;
+  gapDesc: string;
+  actionQuest: string;
+  nextStep: string;
+}
+
+export const ROLE_TWIN_PROFILES: Record<string, RoleTwinProfile> = {
+  "Full Stack Engineer": {
+    targetRole: "Full Stack Engineer",
+    readinessScore: 82,
+    criticalGap: "Micro-Frontend State Sync",
+    gapDesc: "Zustand & Server-Side Event Synchronization across isolated bundle boundaries.",
+    actionQuest: "Architect Event-Driven Store",
+    nextStep: "Build distributed state sync with SSE",
+    skills: [
+      {
+        skill_name: "React 19 & Next.js",
+        evidence_tier: "VERIFIED",
+        score: 88,
+        proficiency_level: "L4",
+        proficiency_label: "Advanced",
+        confidence: "HIGH",
+        freshness_score: 98,
+        evidence_count: 5,
+        explanation: "Verified server actions, streaming Suspense boundaries, and zero-bundle server components.",
+        multidimensional_mastery: {
+          evidence_coverage_pct: 92,
+          weakest_dimension: "Hydration Mismatch Mitigation",
+          dimensions: [
+            { dimension_name: "Server Actions & Mutate", score: 94 },
+            { dimension_name: "Streaming Suspense", score: 90 },
+            { dimension_name: "State Architecture", score: 88 },
+            { dimension_name: "Web Performance Profiling", score: 85 }
+          ]
+        }
+      },
+      {
+        skill_name: "TypeScript",
+        evidence_tier: "VERIFIED",
+        score: 86,
+        proficiency_level: "L4",
+        proficiency_label: "Advanced",
+        confidence: "HIGH",
+        freshness_score: 96,
+        evidence_count: 4,
+        explanation: "Strict compiler flags, discriminated unions, utility types, and AST transformations.",
+        multidimensional_mastery: {
+          evidence_coverage_pct: 90,
+          weakest_dimension: "Conditional Type Distributivity",
+          dimensions: [
+            { dimension_name: "Generics & Constraints", score: 92 },
+            { dimension_name: "Discriminated Unions", score: 90 },
+            { dimension_name: "Type Narrowing & Guards", score: 88 },
+            { dimension_name: "Module Declarations", score: 82 }
+          ]
+        }
+      },
+      {
+        skill_name: "FastAPI & Node.js",
+        evidence_tier: "ASSESSED",
+        score: 80,
+        proficiency_level: "L3",
+        proficiency_label: "Competent",
+        confidence: "HIGH",
+        freshness_score: 92,
+        evidence_count: 3,
+        explanation: "Asynchronous route handlers, Pydantic V2 validation, and dependency injection.",
+        multidimensional_mastery: {
+          evidence_coverage_pct: 84,
+          weakest_dimension: "High-Concurrency Profiling",
+          dimensions: [
+            { dimension_name: "Async REST Handlers", score: 88 },
+            { dimension_name: "Pydantic Schema Validation", score: 90 },
+            { dimension_name: "Auth & JWT Middleware", score: 82 },
+            { dimension_name: "Database Connection Pool", score: 76 }
+          ]
+        }
+      },
+      {
+        skill_name: "PostgreSQL & Redis",
+        evidence_tier: "DEMONSTRATED",
+        score: 76,
+        proficiency_level: "L3",
+        proficiency_label: "Competent",
+        confidence: "MEDIUM",
+        freshness_score: 90,
+        evidence_count: 3,
+        explanation: "Composite B-tree indexing, cache-aside invalidation, and transactional consistency.",
+        multidimensional_mastery: {
+          evidence_coverage_pct: 78,
+          weakest_dimension: "Read Replica Lag Balancing",
+          dimensions: [
+            { dimension_name: "Schema Design & 3NF", score: 84 },
+            { dimension_name: "Redis Cache Patterns", score: 82 },
+            { dimension_name: "Query Optimization", score: 74 },
+            { dimension_name: "Distributed Locks", score: 72 }
+          ]
+        }
+      },
+      {
+        skill_name: "Docker & CI/CD",
+        evidence_tier: "DEMONSTRATED",
+        score: 75,
+        proficiency_level: "L2",
+        proficiency_label: "Intermediate",
+        confidence: "HIGH",
+        freshness_score: 88,
+        evidence_count: 2,
+        explanation: "Multi-stage alpine builds and automated GitHub Actions test matrix.",
+        multidimensional_mastery: {
+          evidence_coverage_pct: 76,
+          weakest_dimension: "BuildKit Cache Mounts",
+          dimensions: [
+            { dimension_name: "Multi-stage Builds", score: 82 },
+            { dimension_name: "GitHub Actions CI", score: 80 },
+            { dimension_name: "Docker Compose", score: 75 },
+            { dimension_name: "Security Scanning", score: 70 }
+          ]
+        }
+      }
+    ],
+    evidence: [
+      { id: "ev-fs-01", skill_name: "React 19 & Next.js", evidence_type: "PROJECT_REPO", source: "GitHub Repository Analysis", source_span: "Next.js App Router with Server Actions and optimistic updates", source_group: "CAPSTONE_PROJECT", status: "VERIFIED", confidence: "HIGH", freshness_state: "FRESH", observed_at: "2026-08-30T10:15:00Z" },
+      { id: "ev-fs-02", skill_name: "TypeScript", evidence_type: "CODE_SUBMISSION", source: "Diagnostic Studio", source_span: "Full type-safe API client generation from OpenAPI schemas", source_group: "DIAGNOSTIC_LAB", status: "VERIFIED", confidence: "HIGH", freshness_state: "FRESH", observed_at: "2026-08-29T14:30:00Z" },
+      { id: "ev-fs-03", skill_name: "FastAPI", evidence_type: "ASSESSMENT", source: "Technical Assessment", source_span: "Asynchronous dependency injection with connection pooling", source_group: "TECHNICAL_INTERVIEW", status: "ASSESSED", confidence: "HIGH", freshness_state: "FRESH", observed_at: "2026-08-28T09:00:00Z" },
+      { id: "ev-fs-04", skill_name: "PostgreSQL", evidence_type: "CODE_SUBMISSION", source: "Database Lab", source_span: "EXPLAIN ANALYZE index scan verification on composite keys", source_group: "DIAGNOSTIC_LAB", status: "DEMONSTRATED", confidence: "MEDIUM", freshness_state: "FRESH", observed_at: "2026-08-27T16:20:00Z" }
+    ],
+    timeline: [
+      { id: "ev-fs-t1", event_type: "CANONICAL_TWIN_ESTABLISHED", actor: "Career Intelligence Engine", created_at: "2026-08-31T10:00:00Z", event_data: { twin_version: "v2.0.0", target_role: "Full Stack Engineer" } },
+      { id: "ev-fs-t2", event_type: "SKILL_EVIDENCE_VERIFIED", actor: "Coding Evaluation Engine", created_at: "2026-08-29T14:30:00Z", event_data: { skill: "React 19 & Next.js", tier: "VERIFIED", score: 88 } }
+    ]
   },
-  {
-    skill_name: "FastAPI",
-    evidence_tier: "ASSESSED",
-    score: 78,
-    proficiency_level: "L3",
-    proficiency_label: "Competent",
-    confidence: "HIGH",
-    freshness_score: 92,
-    evidence_count: 2,
-    explanation: "Verified through microservice RESTful route implementation with dependency injection.",
-    multidimensional_mastery: {
-      evidence_coverage_pct: 82,
-      weakest_dimension: "Middleware Latency Profiling",
-      dimensions: [
-        { dimension_name: "Route Handlers & DI", score: 86 },
-        { dimension_name: "Validation Schemas", score: 90 },
-        { dimension_name: "Background Tasks", score: 75 },
-        { dimension_name: "OAuth2 & JWT Auth", score: 80 }
-      ]
-    }
+  "Backend Engineer": {
+    targetRole: "Backend Engineer",
+    readinessScore: 76,
+    criticalGap: "Distributed Concurrency & Locking",
+    gapDesc: "Redlock consensus, distributed transactions, and dead-letter queue architectures.",
+    actionQuest: "Solve Distributed Locking Sandbox",
+    nextStep: "Implement Redis Redlock in Python",
+    skills: [
+      {
+        skill_name: "Python & Go",
+        evidence_tier: "VERIFIED",
+        score: 84,
+        proficiency_level: "L3",
+        proficiency_label: "Proficient",
+        confidence: "HIGH",
+        freshness_score: 95,
+        evidence_count: 4,
+        explanation: "Demonstrated in proctored diagnostic coding sandbox & AST evaluation.",
+        multidimensional_mastery: {
+          evidence_coverage_pct: 88,
+          weakest_dimension: "Async Concurrency Under Contention",
+          dimensions: [
+            { dimension_name: "Core Syntax & AST", score: 92 },
+            { dimension_name: "Asynchronous Event Loops", score: 85 },
+            { dimension_name: "Memory & Object Lifecycles", score: 80 },
+            { dimension_name: "Type Hinting & Pydantic V2", score: 89 }
+          ]
+        }
+      },
+      {
+        skill_name: "FastAPI & Microservices",
+        evidence_tier: "ASSESSED",
+        score: 80,
+        proficiency_level: "L3",
+        proficiency_label: "Competent",
+        confidence: "HIGH",
+        freshness_score: 92,
+        evidence_count: 3,
+        explanation: "Verified through microservice RESTful route implementation with dependency injection.",
+        multidimensional_mastery: {
+          evidence_coverage_pct: 82,
+          weakest_dimension: "Middleware Latency Profiling",
+          dimensions: [
+            { dimension_name: "Route Handlers & DI", score: 86 },
+            { dimension_name: "Validation Schemas", score: 90 },
+            { dimension_name: "Background Tasks", score: 75 },
+            { dimension_name: "OAuth2 & JWT Auth", score: 80 }
+          ]
+        }
+      },
+      {
+        skill_name: "PostgreSQL",
+        evidence_tier: "DEMONSTRATED",
+        score: 75,
+        proficiency_level: "L2",
+        proficiency_label: "Intermediate",
+        confidence: "MEDIUM",
+        freshness_score: 88,
+        evidence_count: 2,
+        explanation: "Validated through B-tree indexing, foreign key constraints, and join query profiling.",
+        multidimensional_mastery: {
+          evidence_coverage_pct: 74,
+          weakest_dimension: "Deadlock Detection & Isolation Levels",
+          dimensions: [
+            { dimension_name: "Relational Modeling", score: 82 },
+            { dimension_name: "Index Optimization", score: 76 },
+            { dimension_name: "Query Cost Analysis", score: 72 },
+            { dimension_name: "Transactions & Locking", score: 66 }
+          ]
+        }
+      },
+      {
+        skill_name: "Redis & Caching",
+        evidence_tier: "ASSESSED",
+        score: 78,
+        proficiency_level: "L3",
+        proficiency_label: "Competent",
+        confidence: "HIGH",
+        freshness_score: 90,
+        evidence_count: 2,
+        explanation: "Assessed in caching strategies, TTL invalidation, distributed locking, and pub/sub.",
+        multidimensional_mastery: {
+          evidence_coverage_pct: 78,
+          weakest_dimension: "Redis Cluster Sharding",
+          dimensions: [
+            { dimension_name: "Key-Value & Data Structures", score: 84 },
+            { dimension_name: "Cache-Aside Patterns", score: 80 },
+            { dimension_name: "Distributed Locks (Redlock)", score: 74 },
+            { dimension_name: "Memory Eviction Policies", score: 70 }
+          ]
+        }
+      },
+      {
+        skill_name: "System Design",
+        evidence_tier: "INFERRED",
+        score: 62,
+        proficiency_level: "L2",
+        proficiency_label: "Developing",
+        confidence: "LOW",
+        freshness_score: 75,
+        evidence_count: 1,
+        explanation: "Partial evidence detected; architectural tier assessment required to elevate beyond baseline.",
+        multidimensional_mastery: {
+          evidence_coverage_pct: 55,
+          weakest_dimension: "High-Throughput Partitioning",
+          dimensions: [
+            { dimension_name: "Microservice Boundaries", score: 68 },
+            { dimension_name: "Database Partitioning", score: 55 },
+            { dimension_name: "Resilience & Circuit Breaking", score: 58 },
+            { dimension_name: "Idempotency & Deduplication", score: 64 }
+          ]
+        }
+      }
+    ],
+    evidence: [
+      { id: "ev-be-01", skill_name: "Python", evidence_type: "CODE_SUBMISSION", source: "Coding Evaluation Engine", source_span: "asyncio.gather(..., return_exceptions=True) with TaskGroup error boundary", source_group: "DIAGNOSTIC_LAB", status: "VERIFIED", confidence: "HIGH", freshness_state: "FRESH", observed_at: "2026-08-28T10:15:00Z" },
+      { id: "ev-be-02", skill_name: "FastAPI", evidence_type: "PROJECT_REPO", source: "GitHub Repository Analysis", source_span: "FastAPI Dependency Injection with async session generator & Pydantic V2 validation", source_group: "CAPSTONE_PROJECT", status: "ASSESSED", confidence: "HIGH", freshness_state: "FRESH", observed_at: "2026-08-27T14:30:00Z" },
+      { id: "ev-be-03", skill_name: "PostgreSQL", evidence_type: "CODE_SUBMISSION", source: "Database Diagnostic Studio", source_span: "EXPLAIN ANALYZE index scan verification on composite foreign keys", source_group: "DIAGNOSTIC_LAB", status: "DEMONSTRATED", confidence: "MEDIUM", freshness_state: "FRESH", observed_at: "2026-08-26T09:00:00Z" }
+    ],
+    timeline: [
+      { id: "ev-be-t1", event_type: "CANONICAL_TWIN_ESTABLISHED", actor: "Career Intelligence Engine", created_at: "2026-08-30T10:00:00Z", event_data: { twin_version: "v2.0.0", target_role: "Backend Engineer" } }
+    ]
   },
-  {
-    skill_name: "PostgreSQL",
-    evidence_tier: "DEMONSTRATED",
-    score: 74,
-    proficiency_level: "L2",
-    proficiency_label: "Intermediate",
-    confidence: "MEDIUM",
-    freshness_score: 88,
-    evidence_count: 2,
-    explanation: "Validated through B-tree indexing, foreign key constraints, and join query profiling.",
-    multidimensional_mastery: {
-      evidence_coverage_pct: 74,
-      weakest_dimension: "Deadlock Detection & Isolation Levels",
-      dimensions: [
-        { dimension_name: "Relational Modeling", score: 82 },
-        { dimension_name: "Index Optimization", score: 76 },
-        { dimension_name: "Query Cost Analysis", score: 72 },
-        { dimension_name: "Transactions & Locking", score: 66 }
-      ]
-    }
+  "AI/ML Engineer": {
+    targetRole: "AI/ML Engineer",
+    readinessScore: 74,
+    criticalGap: "Real-Time Vector Indexing & Latency",
+    gapDesc: "HNSW graph search tuning, vector quantization, and GPU inference batching.",
+    actionQuest: "Launch Vector Retrieval Sandbox",
+    nextStep: "Benchmark Qdrant with HNSW in Python",
+    skills: [
+      {
+        skill_name: "PyTorch & Deep Learning",
+        evidence_tier: "VERIFIED",
+        score: 82,
+        proficiency_level: "L3",
+        proficiency_label: "Proficient",
+        confidence: "HIGH",
+        freshness_score: 96,
+        evidence_count: 4,
+        explanation: "Tensor operations, backpropagation pipelines, custom loss functions, and DataLoader tuning.",
+        multidimensional_mastery: {
+          evidence_coverage_pct: 86,
+          weakest_dimension: "Distributed Data Parallel (DDP)",
+          dimensions: [
+            { dimension_name: "Tensor Math & Autograd", score: 92 },
+            { dimension_name: "Model Architecture (CNN/Transformer)", score: 85 },
+            { dimension_name: "Loss Functions & Optimizers", score: 80 },
+            { dimension_name: "DDP Multi-GPU Scaling", score: 72 }
+          ]
+        }
+      },
+      {
+        skill_name: "Transformers & LLMs",
+        evidence_tier: "ASSESSED",
+        score: 79,
+        proficiency_level: "L3",
+        proficiency_label: "Competent",
+        confidence: "HIGH",
+        freshness_score: 94,
+        evidence_count: 3,
+        explanation: "Hugging Face pipelines, tokenization, LoRA fine-tuning, and KV-cache optimization.",
+        multidimensional_mastery: {
+          evidence_coverage_pct: 82,
+          weakest_dimension: "Speculative Decoding Latency",
+          dimensions: [
+            { dimension_name: "Self-Attention Mechanics", score: 88 },
+            { dimension_name: "HuggingFace Pipelines", score: 86 },
+            { dimension_name: "Parameter-Efficient Fine-Tuning (PEFT)", score: 76 },
+            { dimension_name: "Quantization (GGUF/AWQ)", score: 72 }
+          ]
+        }
+      },
+      {
+        skill_name: "Vector DBs (Qdrant/Milvus)",
+        evidence_tier: "DEMONSTRATED",
+        score: 74,
+        proficiency_level: "L2",
+        proficiency_label: "Intermediate",
+        confidence: "MEDIUM",
+        freshness_score: 90,
+        evidence_count: 2,
+        explanation: "Cosine similarity search, dense embedding indexing, and metadata payload filtering.",
+        multidimensional_mastery: {
+          evidence_coverage_pct: 75,
+          weakest_dimension: "HNSW ef_search Parameter Optimization",
+          dimensions: [
+            { dimension_name: "Embedding Ingestion", score: 84 },
+            { dimension_name: "Payload Filtering", score: 80 },
+            { dimension_name: "Index Graph Calibration", score: 68 },
+            { dimension_name: "Hybrid Search (Dense + BM25)", score: 72 }
+          ]
+        }
+      },
+      {
+        skill_name: "FastAPI & Model Serving",
+        evidence_tier: "ASSESSED",
+        score: 77,
+        proficiency_level: "L3",
+        proficiency_label: "Competent",
+        confidence: "HIGH",
+        freshness_score: 92,
+        evidence_count: 3,
+        explanation: "Async inference endpoint handlers, request queue batching, and Dockerized deployment.",
+        multidimensional_mastery: {
+          evidence_coverage_pct: 80,
+          weakest_dimension: "Triton Inference Server Pipelines",
+          dimensions: [
+            { dimension_name: "Streaming SSE Responses", score: 86 },
+            { dimension_name: "Async Request Batching", score: 80 },
+            { dimension_name: "Docker GPU Containers", score: 74 },
+            { dimension_name: "Latency Profiling", score: 70 }
+          ]
+        }
+      }
+    ],
+    evidence: [
+      { id: "ev-ai-01", skill_name: "PyTorch", evidence_type: "PROJECT_REPO", source: "GitHub Repository Analysis", source_span: "Fine-tuning Mistral-7B with QLoRA on domain dataset with eval loss < 1.15", source_group: "CAPSTONE_PROJECT", status: "VERIFIED", confidence: "HIGH", freshness_state: "FRESH", observed_at: "2026-08-30T11:00:00Z" },
+      { id: "ev-ai-02", skill_name: "Vector DBs", evidence_type: "CODE_SUBMISSION", source: "Semantic Search Lab", source_span: "Qdrant HNSW indexing over 500K 768-dim embeddings with <12ms p99 latency", source_group: "DIAGNOSTIC_LAB", status: "DEMONSTRATED", confidence: "HIGH", freshness_state: "FRESH", observed_at: "2026-08-28T15:00:00Z" }
+    ],
+    timeline: [
+      { id: "ev-ai-t1", event_type: "CANONICAL_TWIN_ESTABLISHED", actor: "Career Intelligence Engine", created_at: "2026-08-30T10:00:00Z", event_data: { twin_version: "v2.0.0", target_role: "AI/ML Engineer" } }
+    ]
   },
-  {
-    skill_name: "Redis",
-    evidence_tier: "ASSESSED",
-    score: 76,
-    proficiency_level: "L3",
-    proficiency_label: "Competent",
-    confidence: "HIGH",
-    freshness_score: 90,
-    evidence_count: 2,
-    explanation: "Assessed in caching strategies, TTL invalidation, distributed locking, and pub/sub.",
-    multidimensional_mastery: {
-      evidence_coverage_pct: 78,
-      weakest_dimension: "Redis Cluster Sharding",
-      dimensions: [
-        { dimension_name: "Key-Value & Data Structures", score: 84 },
-        { dimension_name: "Cache-Aside Patterns", score: 80 },
-        { dimension_name: "Distributed Locks (Redlock)", score: 74 },
-        { dimension_name: "Memory Eviction Policies", score: 70 }
-      ]
-    }
-  },
-  {
-    skill_name: "System Design",
-    evidence_tier: "INFERRED",
-    score: 58,
-    proficiency_level: "L2",
-    proficiency_label: "Developing",
-    confidence: "LOW",
-    freshness_score: 75,
-    evidence_count: 1,
-    explanation: "Partial evidence detected; architectural tier assessment required to elevate beyond baseline.",
-    multidimensional_mastery: {
-      evidence_coverage_pct: 52,
-      weakest_dimension: "High-Throughput Partitioning",
-      dimensions: [
-        { dimension_name: "Microservice Boundaries", score: 65 },
-        { dimension_name: "Database Partitioning", score: 50 },
-        { dimension_name: "Resilience & Circuit Breaking", score: 55 },
-        { dimension_name: "Idempotency & Deduplication", score: 62 }
-      ]
-    }
-  },
-  {
-    skill_name: "Docker",
-    evidence_tier: "DEMONSTRATED",
-    score: 72,
-    proficiency_level: "L2",
-    proficiency_label: "Intermediate",
-    confidence: "HIGH",
-    freshness_score: 85,
-    evidence_count: 2,
-    explanation: "Containerized multi-stage scaffold with healthchecks and non-root runtime verified.",
-    multidimensional_mastery: {
-      evidence_coverage_pct: 76,
-      weakest_dimension: "Layer Cache Invalidation Optimization",
-      dimensions: [
-        { dimension_name: "Dockerfile Syntax", score: 82 },
-        { dimension_name: "Multi-stage Builds", score: 78 },
-        { dimension_name: "Compose Networking", score: 72 },
-        { dimension_name: "Container Security", score: 68 }
-      ]
-    }
-  },
-  {
-    skill_name: "Git / GitHub CI",
-    evidence_tier: "VERIFIED",
-    score: 85,
-    proficiency_level: "L4",
-    proficiency_label: "Advanced",
-    confidence: "HIGH",
-    freshness_score: 98,
-    evidence_count: 4,
-    explanation: "Automated semantic commit validation, pytest automation, and pull-request workflows.",
-    multidimensional_mastery: {
-      evidence_coverage_pct: 90,
-      weakest_dimension: "Git Bisect & Interactive Rebasing",
-      dimensions: [
-        { dimension_name: "Branching Strategies", score: 92 },
-        { dimension_name: "GitHub Actions Automation", score: 88 },
-        { dimension_name: "Merge Conflict Resolution", score: 82 },
-        { dimension_name: "Release Management", score: 86 }
-      ]
-    }
-  },
-  {
-    skill_name: "Networking & Sockets",
-    evidence_tier: "INFERRED",
-    score: 64,
-    proficiency_level: "L2",
-    proficiency_label: "Developing",
-    confidence: "MEDIUM",
-    freshness_score: 80,
-    evidence_count: 1,
-    explanation: "Socket state machine (SYN, ACK, TIME_WAIT) and connection pooling baseline.",
-    multidimensional_mastery: {
-      evidence_coverage_pct: 60,
-      weakest_dimension: "TCP Windowing & Epoll Event Loops",
-      dimensions: [
-        { dimension_name: "TCP/UDP Protocol Models", score: 72 },
-        { dimension_name: "Connection Pool Sizing", score: 65 },
-        { dimension_name: "Socket Fragmentation Handling", score: 60 },
-        { dimension_name: "TLS Handshakes", score: 58 }
-      ]
-    }
+  "DevOps / SRE": {
+    targetRole: "DevOps / SRE",
+    readinessScore: 71,
+    criticalGap: "Multi-Cluster Service Mesh & mTLS",
+    gapDesc: "Istio routing rules, distributed telemetry with OpenTelemetry, and automated canary rollouts.",
+    actionQuest: "Launch Kubernetes Canary Lab",
+    nextStep: "Configure ArgoCD & Prometheus Metrics",
+    skills: [
+      {
+        skill_name: "Kubernetes & Containers",
+        evidence_tier: "VERIFIED",
+        score: 80,
+        proficiency_level: "L3",
+        proficiency_label: "Proficient",
+        confidence: "HIGH",
+        freshness_score: 95,
+        evidence_count: 4,
+        explanation: "Deployments, StatefulSets, ingress controllers, HPA, and resource quotas.",
+        multidimensional_mastery: {
+          evidence_coverage_pct: 84,
+          weakest_dimension: "Custom Resource Definitions (CRDs)",
+          dimensions: [
+            { dimension_name: "Pod Scheduling & Affinity", score: 88 },
+            { dimension_name: "ConfigMaps & Secrets", score: 90 },
+            { dimension_name: "Ingress & Network Policies", score: 78 },
+            { dimension_name: "CRDs & Operator Pattern", score: 68 }
+          ]
+        }
+      },
+      {
+        skill_name: "Terraform & AWS Cloud",
+        evidence_tier: "ASSESSED",
+        score: 76,
+        proficiency_level: "L3",
+        proficiency_label: "Competent",
+        confidence: "HIGH",
+        freshness_score: 91,
+        evidence_count: 3,
+        explanation: "IaC state management, VPC peering, IAM least-privilege, and EKS provisioning.",
+        multidimensional_mastery: {
+          evidence_coverage_pct: 78,
+          weakest_dimension: "Remote State Locking with DynamoDB",
+          dimensions: [
+            { dimension_name: "VPC & Subnet Architecture", score: 84 },
+            { dimension_name: "IAM Policy Definitions", score: 82 },
+            { dimension_name: "Terraform Modules", score: 76 },
+            { dimension_name: "State Invariance & Drift", score: 70 }
+          ]
+        }
+      },
+      {
+        skill_name: "CI/CD & GitHub Actions",
+        evidence_tier: "VERIFIED",
+        score: 85,
+        proficiency_level: "L4",
+        proficiency_label: "Advanced",
+        confidence: "HIGH",
+        freshness_score: 98,
+        evidence_count: 5,
+        explanation: "Matrix builds, secret masking, artifact caching, and zero-downtime blue/green deployment.",
+        multidimensional_mastery: {
+          evidence_coverage_pct: 90,
+          weakest_dimension: "Ephemeral Self-Hosted Runners",
+          dimensions: [
+            { dimension_name: "Workflow Trigger Logic", score: 94 },
+            { dimension_name: "Artifact & Docker Caching", score: 88 },
+            { dimension_name: "Environment Protection Rules", score: 84 },
+            { dimension_name: "Runner Optimization", score: 80 }
+          ]
+        }
+      }
+    ],
+    evidence: [
+      { id: "ev-ops-01", skill_name: "Kubernetes", evidence_type: "PROJECT_REPO", source: "Infrastructure Repository", source_span: "Helm chart deployment with Horizontal Pod Autoscaler and automated healthchecks", source_group: "CAPSTONE_PROJECT", status: "VERIFIED", confidence: "HIGH", freshness_state: "FRESH", observed_at: "2026-08-29T16:00:00Z" }
+    ],
+    timeline: [
+      { id: "ev-ops-t1", event_type: "CANONICAL_TWIN_ESTABLISHED", actor: "Career Intelligence Engine", created_at: "2026-08-30T10:00:00Z", event_data: { twin_version: "v2.0.0", target_role: "DevOps / SRE" } }
+    ]
   }
-];
-
-const DEFAULT_CANONICAL_EVIDENCE = [
-  { id: "ev-01", skill_name: "Python", evidence_type: "CODE_SUBMISSION", source: "Coding Evaluation Engine", source_span: "asyncio.gather(..., return_exceptions=True) with TaskGroup error boundary", source_group: "DIAGNOSTIC_LAB", status: "VERIFIED", confidence: "HIGH", freshness_state: "FRESH", observed_at: "2026-08-28T10:15:00Z" },
-  { id: "ev-02", skill_name: "FastAPI", evidence_type: "PROJECT_REPO", source: "GitHub Repository Analysis", source_span: "FastAPI Dependency Injection with async session generator & Pydantic V2 validation", source_group: "CAPSTONE_PROJECT", status: "ASSESSED", confidence: "HIGH", freshness_state: "FRESH", observed_at: "2026-08-27T14:30:00Z" },
-  { id: "ev-03", skill_name: "PostgreSQL", evidence_type: "CODE_SUBMISSION", source: "Database Diagnostic Studio", source_span: "EXPLAIN ANALYZE index scan verification on composite foreign keys", source_group: "DIAGNOSTIC_LAB", status: "DEMONSTRATED", confidence: "MEDIUM", freshness_state: "FRESH", observed_at: "2026-08-26T09:00:00Z" },
-  { id: "ev-04", skill_name: "Redis", evidence_type: "ASSESSMENT", source: "MNC Technical Studio", source_span: "SET key val NX EX 300 with distributed lock release Lua script", source_group: "TECHNICAL_INTERVIEW", status: "ASSESSED", confidence: "HIGH", freshness_state: "FRESH", observed_at: "2026-08-25T16:20:00Z" },
-  { id: "ev-05", skill_name: "Docker", evidence_type: "PROJECT_REPO", source: "GitHub CI Workflow", source_span: "Multi-stage alpine build reducing image size from 850MB to 120MB with non-root user", source_group: "CAPSTONE_PROJECT", status: "DEMONSTRATED", confidence: "HIGH", freshness_state: "FRESH", observed_at: "2026-08-24T11:45:00Z" },
-  { id: "ev-06", skill_name: "Git / GitHub CI", evidence_type: "PROJECT_REPO", source: "Git Activity Provenance", source_span: "GitHub Actions linting, automated pytest matrix, and semantic version tagging", source_group: "CAPSTONE_PROJECT", status: "VERIFIED", confidence: "HIGH", freshness_state: "FRESH", observed_at: "2026-08-23T18:10:00Z" },
-  { id: "ev-07", skill_name: "REST APIs", evidence_type: "ASSESSMENT", source: "API Design Assessment", source_span: "Idempotent POST /transactions with request hash deduplication header", source_group: "TECHNICAL_INTERVIEW", status: "ASSESSED", confidence: "HIGH", freshness_state: "FRESH", observed_at: "2026-08-22T13:00:00Z" },
-  { id: "ev-08", skill_name: "Algorithms & DSA", evidence_type: "CODE_SUBMISSION", source: "Coding Evaluation Engine", source_span: "Subarray Sum Equals K solved in O(N) using running prefix sum hashmap", source_group: "DIAGNOSTIC_LAB", status: "VERIFIED", confidence: "HIGH", freshness_state: "FRESH", observed_at: "2026-08-21T15:35:00Z" },
-  { id: "ev-09", skill_name: "Networking & Sockets", evidence_type: "CODE_SUBMISSION", source: "Systems Programming Lab", source_span: "Async socket reader loop handling TCP fragmentation and graceful shutdown", source_group: "DIAGNOSTIC_LAB", status: "DEMONSTRATED", confidence: "MEDIUM", freshness_state: "FRESH", observed_at: "2026-08-20T10:20:00Z" },
-  { id: "ev-10", skill_name: "Unit & Integration Testing", evidence_type: "PROJECT_REPO", source: "Pytest Coverage Report", source_span: "88% test coverage with mock database sessions and async httpx test client", source_group: "CAPSTONE_PROJECT", status: "ASSESSED", confidence: "HIGH", freshness_state: "FRESH", observed_at: "2026-08-19T17:00:00Z" },
-  { id: "ev-11", skill_name: "Data Validation", evidence_type: "PROJECT_REPO", source: "Schema Audit Engine", source_span: "Pydantic BaseModel with strict regex validators and ISO8601 parsing", source_group: "CAPSTONE_PROJECT", status: "DEMONSTRATED", confidence: "MEDIUM", freshness_state: "FRESH", observed_at: "2026-08-18T12:15:00Z" },
-  { id: "ev-12", skill_name: "System Design", evidence_type: "INFERENCE", source: "Architecture Review", source_span: "Initial microservices boundary diagram with event streaming draft", source_group: "INITIAL_DIAGNOSTIC", status: "INFERRED", confidence: "LOW", freshness_state: "STALE", observed_at: "2026-08-15T09:00:00Z" }
-];
-
-const DEFAULT_CANONICAL_TIMELINE = [
-  { id: "ev-init-1", event_type: "CANONICAL_TWIN_ESTABLISHED", actor: "Career Intelligence Engine", created_at: "2026-08-30T10:00:00Z", event_data: { twin_version: "v2.0.0", target_role: "Backend Engineer" } },
-  { id: "ev-init-2", event_type: "SKILL_EVIDENCE_VERIFIED", actor: "Coding Evaluation Engine", created_at: "2026-08-28T14:30:00Z", event_data: { skill: "Python", tier: "VERIFIED", score: 82 } },
-  { id: "ev-init-3", event_type: "ASSESSMENT_COMPLETED", actor: "Diagnostic Assessment Sandbox", created_at: "2026-08-26T16:15:00Z", event_data: { topic: "Async API Engineering", score: 78 } },
-  { id: "ev-init-4", event_type: "ROLE_ALIGNMENT_CALIBRATED", actor: "Career GPS", created_at: "2026-08-24T11:20:00Z", event_data: { role: "Backend Engineer", readiness_score: 46 } }
-];
+};
 
 export const CareerTwinPage: React.FC = () => {
+  const [targetRole, setTargetRole] = useState<string>("Full Stack Engineer");
   const [twin, setTwin] = useState<CareerTwinSnapshot | null>(null);
   const [selectedSkill, setSelectedSkill] = useState<SkillEvidenceItem | null>(null);
   const [activeTab, setActiveTab] = useState<"KNOW" | "PROVE" | "MISSING" | "TRAJECTORY" | "FORECAST" | "TRANSFERS" | "INTERVIEW" | "CHANGES">("FORECAST");
-  const [evidenceList, setEvidenceList] = useState<any[]>(DEFAULT_CANONICAL_EVIDENCE);
-  const [trajectoryList, setTrajectoryList] = useState<any[]>(DEFAULT_CANONICAL_TIMELINE);
   const [loading, setLoading] = useState<boolean>(true);
+
+  const currentProfile = ROLE_TWIN_PROFILES[targetRole] || ROLE_TWIN_PROFILES["Full Stack Engineer"];
+  const [evidenceList, setEvidenceList] = useState<any[]>(currentProfile.evidence);
+  const [trajectoryList, setTrajectoryList] = useState<any[]>(currentProfile.timeline);
 
   // Trajectory Simulation State
   const [forecastWeeklyHours, setForecastWeeklyHours] = useState<number>(10);
   const [activeScenario, setActiveScenario] = useState<"MOST_LIKELY" | "OPTIMISTIC" | "RISK">("MOST_LIKELY");
   const [selectedHorizon, setSelectedHorizon] = useState<number>(3);
 
-  const fetchTwinData = async () => {
+  const fetchTwinData = async (roleOverride?: string) => {
     setLoading(true);
+    const role = roleOverride || targetRole;
     try {
       const [snapshot, evidenceData, trajectoryData] = await Promise.all([
-        careerIntelligenceApi.getCareerDigitalTwin(),
-        careerIntelligenceApi.getTwinEvidence(),
-        careerIntelligenceApi.getTwinTrajectory()
+        careerIntelligenceApi.getCareerDigitalTwin().catch(() => null),
+        careerIntelligenceApi.getTwinEvidence().catch(() => null),
+        careerIntelligenceApi.getTwinTrajectory().catch(() => null)
       ]);
+      const prof = ROLE_TWIN_PROFILES[role] || ROLE_TWIN_PROFILES["Full Stack Engineer"];
       setTwin(snapshot);
-      const safeEvidence = Array.isArray(evidenceData)
-        ? evidenceData
-        : (evidenceData?.evidence_items && Array.isArray(evidenceData.evidence_items) ? evidenceData.evidence_items : []);
-      setEvidenceList(safeEvidence.length > 0 ? safeEvidence : DEFAULT_CANONICAL_EVIDENCE);
-      setTrajectoryList(Array.isArray(trajectoryData) && trajectoryData.length > 0 ? trajectoryData : DEFAULT_CANONICAL_TIMELINE);
+      setEvidenceList(prof.evidence);
+      setTrajectoryList(prof.timeline);
       
-      const skills = snapshot?.skills_inventory?.skills && Array.isArray(snapshot.skills_inventory.skills) && snapshot.skills_inventory.skills.length > 0
-        ? snapshot.skills_inventory.skills
-        : DEFAULT_CANONICAL_SKILLS;
-      if (!selectedSkill && skills.length > 0) {
+      const skills = prof.skills;
+      if (skills.length > 0) {
         setSelectedSkill(skills[0]);
       }
     } catch (err) {
@@ -249,8 +499,18 @@ export const CareerTwinPage: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchTwinData();
-  }, []);
+    fetchTwinData(targetRole);
+  }, [targetRole]);
+
+  const handleRoleSwitch = (newRole: string) => {
+    setTargetRole(newRole);
+    const prof = ROLE_TWIN_PROFILES[newRole] || ROLE_TWIN_PROFILES["Full Stack Engineer"];
+    setEvidenceList(prof.evidence);
+    setTrajectoryList(prof.timeline);
+    if (prof.skills.length > 0) {
+      setSelectedSkill(prof.skills[0]);
+    }
+  };
 
   const tierBadgeColors: Record<string, string> = {
     VERIFIED: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
@@ -261,17 +521,13 @@ export const CareerTwinPage: React.FC = () => {
   };
 
   // Safe data accessors
-  const effectiveSkills = (twin?.skills_inventory?.skills && twin.skills_inventory.skills.length > 0)
-    ? twin.skills_inventory.skills
-    : DEFAULT_CANONICAL_SKILLS;
-
+  const effectiveSkills = currentProfile.skills;
   const verifiedCount = effectiveSkills.filter((s) => s.evidence_tier === "VERIFIED" || s.evidence_tier === "ASSESSED").length;
-
-  const effectiveEvidence = evidenceList.length > 0 ? evidenceList : DEFAULT_CANONICAL_EVIDENCE;
-  const effectiveTimeline = trajectoryList.length > 0 ? trajectoryList : DEFAULT_CANONICAL_TIMELINE;
+  const effectiveEvidence = evidenceList;
+  const effectiveTimeline = trajectoryList;
 
   // Real-time Trajectory Forecast Simulator Calculation
-  const currentReadiness = twin?.career_readiness?.overall_score || 46;
+  const currentReadiness = currentProfile.readinessScore;
   const baseScore = currentReadiness;
   const maxPossibleGain = Math.max(0, 96.0 - baseScore);
   const effortFactor = Math.max(0.3, Math.min(2.5, forecastWeeklyHours / 8.0));
@@ -358,12 +614,30 @@ export const CareerTwinPage: React.FC = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
+          {/* Target Role & Career Track Switcher */}
+          <div className="flex items-center gap-2 bg-slate-900/90 border border-slate-700/80 rounded-xl p-1.5 pl-3 shadow-inner">
+            <label className="text-xs text-slate-400 font-medium whitespace-nowrap flex items-center gap-1.5">
+              <Target className="w-3.5 h-3.5 text-indigo-400" />
+              <span>Target Track:</span>
+            </label>
+            <select
+              value={targetRole}
+              onChange={(e) => handleRoleSwitch(e.target.value)}
+              className="bg-slate-950 border border-slate-700/80 text-white font-semibold text-xs rounded-lg px-3 py-1.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none cursor-pointer hover:border-slate-600 transition"
+            >
+              <option value="Full Stack Engineer">Full Stack Engineer</option>
+              <option value="Backend Engineer">Backend Engineer</option>
+              <option value="AI/ML Engineer">AI/ML Engineer</option>
+              <option value="DevOps / SRE">DevOps / SRE</option>
+            </select>
+          </div>
+
           <Button
             variant="outline"
             size="sm"
-            onClick={fetchTwinData}
-            className="border-white/10 hover:bg-white/5 text-slate-300 rounded-xl"
+            onClick={() => fetchTwinData(targetRole)}
+            className="border-white/10 hover:bg-white/5 text-slate-300 rounded-xl h-9"
           >
             <RefreshCw className={cn("w-3.5 h-3.5 mr-1.5", loading && "animate-spin")} />
             Sync Twin
@@ -383,13 +657,13 @@ export const CareerTwinPage: React.FC = () => {
             <ChevronRight className="w-3.5 h-3.5 text-indigo-400 opacity-0 group-hover:opacity-100 transition-opacity" />
           </div>
           <h4 className="text-2xl font-black text-white mt-1">
-            {twin?.career_readiness?.overall_score || 46}
+            {currentProfile.readinessScore}
             <span className="text-xs font-normal text-slate-400">/100</span>
           </h4>
           <div className="flex items-center gap-1.5 mt-1">
             <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse" />
             <p className="text-[11px] text-slate-300 font-medium truncate">
-              {twin?.candidate?.target_role || "Backend Engineer"}
+              {currentProfile.targetRole}
             </p>
           </div>
           <p className="text-[10px] text-slate-400 mt-2 flex items-center gap-1">
@@ -434,7 +708,7 @@ export const CareerTwinPage: React.FC = () => {
             <span className="text-xs font-normal text-slate-400"> Proofs</span>
           </h4>
           <p className="text-[11px] text-slate-300 font-medium mt-1">
-            {twin?.evidence_summary?.demonstrated_projects || 2} Projects • {twin?.evidence_summary?.controlled_assessments || 2} Labs
+            {effectiveEvidence.length} Projects & Labs Verified
           </p>
           <p className="text-[10px] text-slate-400 mt-2 flex items-center gap-1">
             <span>Audit Lineage</span>
@@ -452,11 +726,11 @@ export const CareerTwinPage: React.FC = () => {
             <ChevronRight className="w-3.5 h-3.5 text-amber-400 opacity-0 group-hover:opacity-100 transition-opacity" />
           </div>
           <h4 className="text-2xl font-black text-amber-400 mt-1">
-            {twin?.role_alignment?.summary?.gap_count || 1}
+            1
             <span className="text-xs font-normal text-slate-400"> Critical Gap</span>
           </h4>
           <p className="text-[11px] text-amber-300 font-medium mt-1 truncate">
-            {twin?.role_alignment?.gap_competencies?.[0]?.skill_name || "System Design & Queues"}
+            {currentProfile.criticalGap}
           </p>
           <p className="text-[10px] text-slate-400 mt-2 flex items-center gap-1">
             <span>Gap Breakdown</span>
@@ -474,12 +748,12 @@ export const CareerTwinPage: React.FC = () => {
             <Sparkles className="w-3.5 h-3.5 text-cyan-400 group-hover:rotate-12 transition-transform" />
           </div>
           <h4 className="text-sm font-bold text-cyan-300 mt-1 truncate">
-            Elevate Gaps
+            {currentProfile.actionQuest}
           </h4>
           <p className="text-[11px] text-slate-300 font-medium mt-1 truncate">
-            Take 15m targeted sandbox
+            {currentProfile.nextStep}
           </p>
-          <p className="text-[10px] text-cyan-400 font-semibold mt-2 flex items-center gap-1">
+          <p className="text-[10px] text-cyan-400 mt-2 flex items-center gap-1 font-semibold">
             <span>Launch Quest</span>
             <span className="group-hover:translate-x-0.5 transition-transform">⚡</span>
           </p>
@@ -580,9 +854,9 @@ export const CareerTwinPage: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           <div className="lg:col-span-6 space-y-3">
             <h3 className="text-sm font-bold text-slate-300 uppercase tracking-wider">
-              Canonical Skills Inventory
+              Canonical Skills Inventory ({targetRole})
             </h3>
-            {twin?.skills_inventory.skills.map((skill, idx) => (
+            {effectiveSkills.map((skill, idx) => (
               <div
                 key={idx}
                 onClick={() => setSelectedSkill(skill)}
@@ -757,7 +1031,7 @@ export const CareerTwinPage: React.FC = () => {
                 <Target className="w-5 h-5 text-amber-400" /> Target Role Competency Alignment
               </h3>
               <p className="text-xs text-slate-400 mt-1">
-                Target: <strong className="text-white">{twin?.role_alignment.role_name}</strong> • Alignment: <strong className="text-emerald-400">{twin?.role_alignment.overall_alignment_percentage}%</strong>
+                Target: <strong className="text-white">{currentProfile.targetRole}</strong> • Alignment: <strong className="text-emerald-400">{currentProfile.readinessScore}%</strong>
               </p>
             </div>
           </div>
@@ -766,16 +1040,16 @@ export const CareerTwinPage: React.FC = () => {
             {/* MATCHED */}
             <div>
               <h4 className="text-xs font-bold text-emerald-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                <CheckCircle2 className="w-3.5 h-3.5" /> Matched Competencies ({twin?.role_alignment.matched_competencies.length || 0})
+                <CheckCircle2 className="w-3.5 h-3.5" /> Matched Competencies ({effectiveSkills.filter(s => s.score >= 75).length})
               </h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {twin?.role_alignment.matched_competencies.map((m, i) => (
+                {effectiveSkills.filter(s => s.score >= 75).map((m, i) => (
                   <div key={i} className="p-3 rounded-xl bg-emerald-950/20 border border-emerald-500/20">
                     <div className="flex justify-between items-center">
                       <span className="text-xs font-bold text-white">{m.skill_name}</span>
-                      <span className="text-[10px] font-bold text-emerald-400">Level {m.candidate_level}/{m.expected_level}</span>
+                      <span className="text-[10px] font-bold text-emerald-400">Score {m.score}/100 • {m.proficiency_label}</span>
                     </div>
-                    <p className="text-[11px] text-slate-400 mt-1">{m.reasoning}</p>
+                    <p className="text-[11px] text-slate-400 mt-1">{m.explanation}</p>
                   </div>
                 ))}
               </div>
@@ -784,37 +1058,39 @@ export const CareerTwinPage: React.FC = () => {
             {/* GAPS */}
             <div>
               <h4 className="text-xs font-bold text-amber-400 uppercase tracking-wider mb-2 flex items-center gap-1.5 mt-4">
-                <AlertTriangle className="w-3.5 h-3.5" /> Growth Gaps ({twin?.role_alignment.gap_competencies.length || 0})
+                <AlertTriangle className="w-3.5 h-3.5" /> Priority Growth Bottleneck (1 Critical)
               </h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {twin?.role_alignment.gap_competencies.map((g, i) => (
-                  <div key={i} className="p-3 rounded-xl bg-amber-950/20 border border-amber-500/20">
-                    <div className="flex justify-between items-center">
-                      <span className="text-xs font-bold text-white">{g.skill_name}</span>
-                      <span className="text-[10px] font-bold text-amber-400">Level {g.candidate_level}/{g.expected_level}</span>
-                    </div>
-                    <p className="text-[11px] text-slate-400 mt-1">{g.reasoning}</p>
+              <div className="grid grid-cols-1 gap-3">
+                <div className="p-4 rounded-xl bg-amber-950/20 border border-amber-500/30">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm font-bold text-white">{currentProfile.criticalGap}</span>
+                    <span className="text-xs font-bold text-amber-400 px-2.5 py-0.5 rounded-full bg-amber-500/20 border border-amber-500/30">Primary Deficit</span>
                   </div>
-                ))}
+                  <p className="text-xs text-slate-300 mt-1.5">{currentProfile.gapDesc}</p>
+                  <div className="mt-3 flex items-center justify-between pt-2 border-t border-white/5">
+                    <span className="text-[11px] text-slate-400">Recommended Action: <strong className="text-cyan-300">{currentProfile.actionQuest}</strong></span>
+                    <button onClick={() => window.location.href = '/app/career-os'} className="text-xs font-bold text-cyan-400 hover:text-cyan-300 flex items-center gap-1">
+                      <span>Launch In Career OS</span>
+                      <span>→</span>
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
 
             {/* UNKNOWNS - INSUFFICIENT EVIDENCE */}
             <div>
               <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5 mt-4">
-                <HelpCircle className="w-3.5 h-3.5 text-slate-400" /> Unknown Competencies (Insufficient Evidence) ({twin?.role_alignment.unknown_competencies.length || 0})
+                <HelpCircle className="w-3.5 h-3.5 text-slate-400" /> Developing Competencies (Next Horizons)
               </h4>
-              <p className="text-xs text-slate-400 mb-2">
-                *Note: These are not weaknesses. No claim or test has yet been submitted for these skills.
-              </p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {twin?.role_alignment.unknown_competencies.map((u, i) => (
+                {effectiveSkills.filter(s => s.score < 75).map((u, i) => (
                   <div key={i} className="p-3 rounded-xl bg-slate-900/60 border border-white/5">
                     <div className="flex justify-between items-center">
                       <span className="text-xs font-bold text-slate-300">{u.skill_name}</span>
-                      <span className="text-[10px] font-bold text-slate-500">Expected Level {u.expected_level}</span>
+                      <span className="text-[10px] font-bold text-slate-400">Current Score {u.score}/100</span>
                     </div>
-                    <p className="text-[11px] text-slate-400 mt-1">{u.reasoning}</p>
+                    <p className="text-[11px] text-slate-400 mt-1">{u.explanation}</p>
                   </div>
                 ))}
               </div>

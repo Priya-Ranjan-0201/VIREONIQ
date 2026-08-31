@@ -15,7 +15,6 @@ const navSections = [
     items: [
       { name: 'Dashboard', href: '/app/dashboard', icon: LayoutDashboard, badge: 'Live' },
       { name: 'Daily Career OS', href: '/app/career-os', icon: Compass },
-      { name: 'Readiness & ROI', href: '/app/readiness', icon: Target },
       { name: 'Career Digital Twin', href: '/app/career-twin', icon: Brain },
       { name: 'Career GPS', href: '/app/career-gps', icon: Navigation },
       { name: 'Community Hub', href: '/app/community', icon: Flame },

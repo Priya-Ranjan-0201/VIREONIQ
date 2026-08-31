@@ -51,7 +51,6 @@ const CredentialProfile = lazyWithRetry(() => import('@/pages/CredentialProfile'
 // Core
 const DashboardPage = lazyWithRetry(() => import('@/pages/dashboard/DashboardPage').then(m => ({ default: m.DashboardPage })));
 const CareerOSPage = lazyWithRetry(() => import('@/pages/interventions/CareerOSPage').then(m => ({ default: m.CareerOSPage })));
-const CareerReadinessPage = lazyWithRetry(() => import('@/pages/readiness/CareerReadinessPage').then(m => ({ default: m.CareerReadinessPage })));
 const CareerTwinPage = lazyWithRetry(() => import('@/pages/career/CareerTwinPage').then(m => ({ default: m.CareerTwinPage })));
 const CareerSimulatorPage = lazyWithRetry(() => import('@/pages/simulator/CareerSimulatorPage').then(m => ({ default: m.CareerSimulatorPage })));
 const ResumeScorePage = lazyWithRetry(() => import('@/pages/resume/ResumeScorePage').then(m => ({ default: m.ResumeScorePage })));
@@ -191,7 +190,6 @@ export default function App() {
                 {/* Core */}
                 <Route path="dashboard" element={<DashboardPage />} />
                 <Route path="career-os" element={<CareerOSPage />} />
-                <Route path="readiness" element={<CareerReadinessPage />} />
                 <Route path="career-twin" element={<CareerTwinPage />} />
                 <Route path="career-simulator" element={<CareerSimulatorPage />} />
                 <Route path="simulator" element={<CareerSimulatorPage />} />
