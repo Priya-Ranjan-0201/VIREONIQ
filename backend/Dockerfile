@@ -11,9 +11,8 @@ WORKDIR /install
 
 COPY requirements.txt .
 
-# Pre-install CPU-only PyTorch (~150MB instead of 3GB+ GPU/CUDA binaries) and dependencies
-RUN pip install --no-cache-dir --prefix=/install torch --index-url https://download.pytorch.org/whl/cpu && \
-    pip install --no-cache-dir --prefix=/install --extra-index-url https://download.pytorch.org/whl/cpu -r requirements.txt
+# Install requirements with timeout and retry resilience
+RUN pip install --no-cache-dir --default-timeout=1000 --retries 5 --prefix=/install --extra-index-url https://download.pytorch.org/whl/cpu -r requirements.txt
 
 # Stage 2: Production Runtime
 FROM python:3.11-slim
