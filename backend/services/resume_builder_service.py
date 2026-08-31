@@ -28,8 +28,14 @@ TIER1_ACTION_VERBS = {
     "led", "directed", "authored", "standardized", "migrated", "benchmarked"
 }
 
-# ─── 14 Core Technical Roles Taxonomy ──────────────────────────────────────────
+# ─── Core Technical Roles & General CV Taxonomy ──────────────────────────────────────────
 ROLE_KEYWORD_TAXONOMY = {
+    "General / Universal CV": [
+        "Engineering", "Development", "Design", "Problem Solving", "Collaboration",
+        "Testing", "Optimization", "Communication", "APIs", "Databases",
+        "Cloud", "Git", "Project Management", "Analytics", "Performance",
+        "Automation", "Security", "Agile", "CI/CD", "Leadership", "Architecture"
+    ],
     "Full Stack Software Engineer": [
         "React", "TypeScript", "Python", "FastAPI", "Node.js", "PostgreSQL",
         "Docker", "AWS", "Redis", "GraphQL", "TailwindCSS", "Next.js",
@@ -573,13 +579,17 @@ Return strict JSON with this exact structure:
         return _rule_based_mnc_optimizer(resume_data, target_role, target_company)
 
 
-def calculate_comprehensive_ats_score(resume_data: Dict[str, Any], target_role: str = "Software Engineer", target_company: str = "Google") -> Dict[str, Any]:
+def calculate_comprehensive_ats_score(
+    resume_data: Dict[str, Any],
+    target_role: str = "General / Universal CV",
+    target_company: Optional[str] = None
+) -> Dict[str, Any]:
     """
-    Deterministic 6-Dimension MNC ATS Scoring Engine.
+    Deterministic 6-Dimension General & MNC ATS Scoring Engine.
     Evaluates:
-      1. Quantified Impact (25%)
+      1. Quantified Impact & Metrics (25%)
       2. Strong Tier-1 Action Verbs (20%)
-      3. Role & Tech Keyword Density (20%)
+      3. Core Technical & Professional Keyword Density (20%)
       4. Section Completeness (15%)
       5. ATS Format Safety (10%)
       6. Brevity & Bullet Quality (10%)
@@ -666,35 +676,38 @@ def calculate_comprehensive_ats_score(resume_data: Dict[str, Any], target_role: 
     if verb_lead_ratio >= 0.5 or len(strong_verb_matches) >= 3:
         action_verb_score = max(94.0, action_verb_score)
 
-    # ─── Dimension 3: Keyword Match & Role/Company Alignment (20%) ───
-    matched_role_key = "Full Stack Software Engineer"
-    for role_name in ROLE_KEYWORD_TAXONOMY:
-        if role_name.lower() in target_role.lower() or target_role.lower() in role_name.lower():
-            matched_role_key = role_name
-            break
-
-    role_keywords = ROLE_KEYWORD_TAXONOMY.get(matched_role_key, ROLE_KEYWORD_TAXONOMY["Full Stack Software Engineer"])
-
-    # Lookup Target Company Profile
-    comp_profile = COMPANY_PROFILES.get(target_company)
-    if not comp_profile:
-        for cname, cdata in COMPANY_PROFILES.items():
-            if cname.lower() in target_company.lower() or target_company.lower() in cname.lower():
-                comp_profile = cdata
+    # ─── Dimension 3: Keyword Match & General Competency Alignment (20%) ───
+    # If no specific role or "General", use Universal Competency Taxonomy
+    if not target_role or target_role.lower() in ["general", "general cv", "general / universal cv", "universal", "all", "none"]:
+        matched_role_key = "General / Universal CV"
+    else:
+        matched_role_key = "Full Stack Software Engineer"
+        for role_name in ROLE_KEYWORD_TAXONOMY:
+            if role_name.lower() in target_role.lower() or target_role.lower() in role_name.lower():
+                matched_role_key = role_name
                 break
-    if not comp_profile:
-        comp_profile = COMPANY_PROFILES["Google"]
 
-    company_keywords = comp_profile.get("keywords", [])
+    role_keywords = ROLE_KEYWORD_TAXONOMY.get(matched_role_key, ROLE_KEYWORD_TAXONOMY["General / Universal CV"])
+
+    company_keywords = []
+    if target_company and target_company.strip() and target_company.lower() not in ["none", "general"]:
+        comp_profile = COMPANY_PROFILES.get(target_company)
+        if not comp_profile:
+            for cname, cdata in COMPANY_PROFILES.items():
+                if cname.lower() in target_company.lower() or target_company.lower() in cname.lower():
+                    comp_profile = cdata
+                    break
+        if comp_profile:
+            company_keywords = comp_profile.get("keywords", [])
+
     combined_target_kws = list(dict.fromkeys(role_keywords + company_keywords))
 
     matched_kws = [kw for kw in combined_target_kws if kw.lower() in full_text]
     missing_kws = [kw for kw in combined_target_kws if kw.lower() not in full_text]
-    missing_company_kws = [kw for kw in company_keywords if kw.lower() not in full_text]
 
-    # In technical resumes, matching 3-6 core domain & company competencies denotes high proficiency
+    # For general CVs, matching standard engineering & professional keywords denotes high competency
     kw_score = min(100.0, max(85.0, 78.0 + (len(matched_kws) * 3.5)))
-    if len(matched_kws) >= 4:
+    if len(matched_kws) >= 3:
         kw_score = max(94.0, kw_score)
 
     # ─── Dimension 4: Section Completeness (15%) ───

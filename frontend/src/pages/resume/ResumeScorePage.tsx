@@ -30,7 +30,7 @@ interface ResumeScan {
 
 export const ResumeScorePage = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [targetRole, setTargetRole] = useState("Software Engineer");
+  const [targetRole, setTargetRole] = useState("General / Universal CV");
   const [isLoading, setIsLoading] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [history, setHistory] = useState<ResumeScan[]>([]);
@@ -104,15 +104,11 @@ export const ResumeScorePage = () => {
       toast.error("Please select a file first.");
       return;
     }
-    if (!targetRole.trim()) {
-      toast.error("Please specify a target role.");
-      return;
-    }
 
     setIsLoading(true);
     const formData = new FormData();
     formData.append("file", selectedFile);
-    formData.append("target_role", targetRole);
+    formData.append("target_role", targetRole.trim() || "General / Universal CV");
 
     try {
       const res = await client.post("/resume/upload", formData, {
@@ -152,8 +148,8 @@ export const ResumeScorePage = () => {
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <header className="flex justify-between items-center">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-primary to-success bg-clip-text text-transparent">Resume Intelligence</h2>
-          <p className="text-[#9CA3AF] mt-2">Analyze your resume against ATS algorithms and target roles.</p>
+          <h2 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-primary to-success bg-clip-text text-transparent">General ATS Resume Intelligence</h2>
+          <p className="text-[#9CA3AF] mt-2">Comprehensive ATS evaluation for any professional CV — scoring structure, quantified achievements, and keyword clarity.</p>
         </div>
         {activeScan && (
           <Button 
@@ -329,16 +325,17 @@ export const ResumeScorePage = () => {
           <div className="lg:col-span-2 space-y-6">
             <form onSubmit={handleUpload}>
               <div className="glass-panel rounded-3xl p-8 space-y-6">
-                <div>
-                  <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2">Target Job Role</label>
-                  <input
-                    type="text"
-                    value={targetRole}
-                    onChange={(e) => setTargetRole(e.target.value)}
-                    className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary/40"
-                    placeholder="e.g. Senior Software Engineer"
-                    required
-                  />
+                <div className="flex items-center justify-between p-4 rounded-2xl bg-white/[0.03] border border-white/5">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-9 h-9 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-bold">
+                      <Sparkles className="w-5 h-5 text-primary" />
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-bold text-slate-200">Universal Professional CV Audit</h4>
+                      <p className="text-xs text-slate-400">Evaluates general ATS formatting, quantified results, action verbs, and section completeness without role lock-in.</p>
+                    </div>
+                  </div>
+                  <span className="text-xs font-semibold px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">General Mode</span>
                 </div>
 
                 <div 
@@ -370,9 +367,9 @@ export const ResumeScorePage = () => {
                     </>
                   ) : (
                     <>
-                      <h3 className="text-lg font-bold mb-1 text-slate-200">Drag and drop your resume</h3>
+                      <h3 className="text-lg font-bold mb-1 text-slate-200">Drag and drop your resume / CV</h3>
                       <p className="text-sm text-slate-400 mb-6 max-w-sm">
-                        Supports PDF or Word documents. We'll score against your target role.
+                        Upload your PDF or Word document for an instant, comprehensive ATS compliance audit.
                       </p>
                       <Button type="button" size="sm" className="px-6 glow-button">Select File</Button>
                     </>

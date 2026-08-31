@@ -19,38 +19,38 @@ router = APIRouter()
 
 class ParseTextRequest(BaseModel):
     raw_text: str
-    target_role: str = "Software Engineer"
+    target_role: Optional[str] = "General / Universal CV"
 
 
 class GenerateResumeRequest(BaseModel):
     profile_data: Dict[str, Any]
-    target_role: str
+    target_role: Optional[str] = "General / Universal CV"
     style: str = "professional"  # professional | creative | minimal
 
 
 class OptimizeMNCRequest(BaseModel):
     resume_data: Dict[str, Any]
-    target_role: str = "Software Engineer"
-    target_company: Optional[str] = "Google"
+    target_role: Optional[str] = "General / Universal CV"
+    target_company: Optional[str] = None
 
 
 class CalculateATSRequest(BaseModel):
     resume_data: Dict[str, Any]
-    target_role: str = "Full Stack Software Engineer"
-    target_company: Optional[str] = "Google"
+    target_role: Optional[str] = "General / Universal CV"
+    target_company: Optional[str] = None
 
 
 class ImproveSectionRequest(BaseModel):
     section_name: str
     section_content: str
-    target_role: str
-    target_company: Optional[str] = "Google"
+    target_role: Optional[str] = "General / Universal CV"
+    target_company: Optional[str] = None
     improvement_type: str = "rewrite"  # rewrite | expand | condense | ats_optimize
 
 
 class ResumeFeedbackRequest(BaseModel):
     resume_data: Dict[str, Any]
-    target_role: str
+    target_role: Optional[str] = "General / Universal CV"
 
 
 # ──────────────────────────────────────────────
