@@ -1,0 +1,204 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: #060813;
+  --color-card: #0C1024;
+  --color-card-elevated: #131A38;
+  --color-card-hover: #19224A;
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-border-hover: rgba(99, 102, 241, 0.35);
+  
+  --color-primary: #6366F1;
+  --color-primary-hover: #4F46E5;
+  --color-primary-light: #818CF8;
+  
+  --color-secondary: #0C1024;
+  
+  --color-accent: #00F2FE;
+  --color-accent-hover: #0891B2;
+  --color-accent-purple: #A855F7;
+  
+  --color-hover-accent: #8B5CF6;
+  --color-success: #10B981;
+  --color-success-light: #34D399;
+  --color-warning: #F59E0B;
+  --color-error: #F43F5E;
+  
+  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-heading: 'Outfit', 'Inter', system-ui, sans-serif;
+  
+  --radius-2xl: 1.5rem;
+  --radius-xl: 1.25rem;
+  --radius-lg: 1rem;
+  --radius-md: 0.75rem;
+  --radius-sm: 0.5rem;
+}
+
+@layer base {
+  * {
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+
+  body {
+    @apply bg-background text-[#F3F4F6] font-sans antialiased selection:bg-indigo-500/30 selection:text-white;
+    background-color: #060813;
+    background-image: 
+      radial-gradient(ellipse 90% 60% at 50% -20%, rgba(99, 102, 241, 0.18), transparent 70%),
+      radial-gradient(ellipse 70% 50% at 95% 95%, rgba(0, 242, 254, 0.10), transparent 60%),
+      radial-gradient(ellipse 60% 40% at 5% 50%, rgba(168, 85, 247, 0.10), transparent 60%),
+      #060813;
+    background-attachment: fixed;
+    min-height: 100vh;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading tracking-tight;
+  }
+}
+
+@layer utilities {
+  /* Ultra-Premium Glassmorphism Panels */
+  .glass-panel {
+    @apply bg-slate-900/60 backdrop-blur-2xl border border-white/[0.08] rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-all duration-300;
+  }
+  .glass-panel:hover {
+    @apply shadow-[0_12px_40px_rgba(0,0,0,0.6)] border-white/[0.16];
+  }
+
+  .glass-card {
+    @apply bg-gradient-to-b from-white/[0.08] to-white/[0.02] backdrop-blur-2xl border border-white/[0.08] rounded-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.45)] transition-all duration-300 hover:border-indigo-500/40 hover:shadow-[0_12px_40px_0_rgba(99,102,241,0.22)] hover:-translate-y-0.5;
+  }
+
+  .glass-card-elevated {
+    @apply bg-[#0C1024]/90 backdrop-blur-2xl border border-slate-700/60 rounded-2xl shadow-2xl transition-all duration-300 hover:border-indigo-500/60 hover:shadow-[0_12px_45px_rgba(99,102,241,0.2)] hover:-translate-y-0.5;
+  }
+
+  .glass-card-interactive {
+    @apply relative overflow-hidden bg-gradient-to-b from-slate-900/80 to-slate-950/90 backdrop-blur-2xl border border-white/[0.08] rounded-2xl p-6 shadow-xl transition-all duration-300 hover:border-indigo-400/40 hover:shadow-[0_16px_48px_rgba(99,102,241,0.25)] hover:-translate-y-1 cursor-pointer;
+  }
+
+  /* Vibrant Glowing CTA Buttons */
+  .glow-button {
+    @apply relative inline-flex items-center justify-center font-bold text-white rounded-xl transition-all duration-300 bg-gradient-to-r from-indigo-500 via-purple-600 to-cyan-500 shadow-[0_0_24px_rgba(99,102,241,0.35)] hover:shadow-[0_0_36px_rgba(99,102,241,0.7)] hover:scale-[1.02] active:scale-[0.98];
+  }
+
+  .glow-button-emerald {
+    @apply relative inline-flex items-center justify-center font-bold text-white rounded-xl transition-all duration-300 bg-gradient-to-r from-emerald-500 via-teal-600 to-cyan-500 shadow-[0_0_24px_rgba(16,185,129,0.35)] hover:shadow-[0_0_36px_rgba(16,185,129,0.7)] hover:scale-[1.02] active:scale-[0.98];
+  }
+
+  .glow-emerald {
+    @apply shadow-[0_0_24px_rgba(16,185,129,0.3)] hover:shadow-[0_0_36px_rgba(16,185,129,0.6)];
+  }
+
+  .glow-indigo {
+    @apply shadow-[0_0_24px_rgba(99,102,241,0.3)] hover:shadow-[0_0_36px_rgba(99,102,241,0.6)];
+  }
+
+  .glow-cyan {
+    @apply shadow-[0_0_24px_rgba(0,242,254,0.3)] hover:shadow-[0_0_36px_rgba(0,242,254,0.6)];
+  }
+
+  .glow-amber {
+    @apply shadow-[0_0_24px_rgba(245,158,11,0.3)] hover:shadow-[0_0_36px_rgba(245,158,11,0.6)];
+  }
+
+  /* Curated Multi-Stop Gradient Typography */
+  .gradient-text {
+    @apply bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent;
+  }
+
+  .gradient-text-primary {
+    @apply bg-gradient-to-r from-indigo-400 via-purple-300 to-cyan-400 bg-clip-text text-transparent;
+  }
+
+  .gradient-text-cyber {
+    @apply bg-gradient-to-r from-cyan-400 via-indigo-300 to-fuchsia-400 bg-clip-text text-transparent;
+  }
+
+  .gradient-text-emerald {
+    @apply bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-300 bg-clip-text text-transparent;
+  }
+
+  .gradient-text-amber {
+    @apply bg-gradient-to-r from-amber-300 via-orange-400 to-rose-400 bg-clip-text text-transparent;
+  }
+
+  /* Futuristic Neon Pills & Badges */
+  .badge-neon {
+    @apply px-3 py-1 text-xs font-semibold rounded-full border shadow-sm transition-all duration-200 backdrop-blur-md;
+  }
+
+  .badge-neon-indigo {
+    @apply bg-indigo-500/15 border-indigo-500/40 text-indigo-300 shadow-[0_0_16px_rgba(99,102,241,0.25)];
+  }
+
+  .badge-neon-cyan {
+    @apply bg-cyan-500/15 border-cyan-500/40 text-cyan-300 shadow-[0_0_16px_rgba(0,242,254,0.25)];
+  }
+
+  .badge-neon-emerald {
+    @apply bg-emerald-500/15 border-emerald-500/40 text-emerald-300 shadow-[0_0_16px_rgba(16,185,129,0.25)];
+  }
+
+  .badge-neon-amber {
+    @apply bg-amber-500/15 border-amber-500/40 text-amber-300 shadow-[0_0_16px_rgba(245,158,11,0.25)];
+  }
+
+  .badge-neon-rose {
+    @apply bg-rose-500/15 border-rose-500/40 text-rose-300 shadow-[0_0_16px_rgba(244,63,94,0.25)];
+  }
+
+  .badge-neon-purple {
+    @apply bg-purple-500/15 border-purple-500/40 text-purple-300 shadow-[0_0_16px_rgba(168,85,247,0.25)];
+  }
+}
+
+/* Custom Smooth Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(12, 16, 36, 0.5);
+  border-radius: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(99, 102, 241, 0.5);
+}
+
+/* Pulse animation helper */
+@keyframes pulse-glow {
+  0%, 100% {
+    opacity: 0.45;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.06);
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 5s ease-in-out infinite;
+}
+
+@keyframes float-gentle {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.animate-float {
+  animation: float-gentle 4s ease-in-out infinite;
+}

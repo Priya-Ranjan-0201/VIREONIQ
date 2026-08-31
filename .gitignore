@@ -1,0 +1,68 @@
+# Virtual Environments
+.venv/
+venv/
+env/
+.env/
+
+# Environment Variables & Secrets
+.env
+.env.local
+.env.*.local
+.env.development
+.env.test
+.env.production
+.secrets/
+**/.secrets/
+**/.env
+keys/
+**/keys/
+*.pem
+*.key
+scratch/
+**/scratch/
+
+# Python Cache & Artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Node dependencies and build files
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+dist-ssr/
+.eslintcache
+
+# Databases & Local SQLite
+*.db
+*.sqlite
+*.sqlite3
+vireoniq.db
+**/vireoniq.db
+placeiq.db
+**/placeiq.db
+*.log
+
+# User Uploads
+uploads/
+**/uploads/
+
+# IDE & Editor files
+.vscode/
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# System Files
+.DS_Store
+Thumbs.db

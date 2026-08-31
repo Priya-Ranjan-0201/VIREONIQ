@@ -1,0 +1,190 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+      POSTGRES_DB: ${POSTGRES_DB:-placeiq}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5435:5432"
+
+  mongodb:
+    image: mongo:7
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER:-admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-password}
+    volumes:
+      - mongodb_data:/data/db
+    ports:
+      - "27017:27017"
+
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--maxmemory", "256mb", "--maxmemory-policy", "allkeys-lru"]
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    volumes:
+      - qdrant_data:/qdrant/storage
+    ports:
+      - "6333:6333"
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    command: >
+      bash -c "alembic upgrade head && uvicorn main:app --host 0.0.0.0 --port 8000"
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - MONGO_URL=${MONGO_URL}
+      - REDIS_URL=${REDIS_URL}
+      - QDRANT_URL=${QDRANT_URL}
+      - JWT_PRIVATE_KEY_PATH=${JWT_PRIVATE_KEY_PATH}
+      - JWT_PUBLIC_KEY_PATH=${JWT_PUBLIC_KEY_PATH}
+      - DEFAULT_LLM_PROVIDER=${DEFAULT_LLM_PROVIDER:-gemini}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - NVIDIA_NIM_API_KEY=${NVIDIA_NIM_API_KEY}
+      - S3_BUCKET=${S3_BUCKET}
+      - S3_ACCESS_KEY=${S3_ACCESS_KEY}
+      - S3_SECRET_KEY=${S3_SECRET_KEY}
+      - S3_REGION=${S3_REGION}
+      - S3_ENDPOINT_URL=${S3_ENDPOINT_URL}
+      - TWILIO_ACCOUNT_SID=${TWILIO_ACCOUNT_SID}
+      - TWILIO_AUTH_TOKEN=${TWILIO_AUTH_TOKEN}
+      - SENDGRID_API_KEY=${SENDGRID_API_KEY}
+      - SENTRY_DSN=${SENTRY_DSN}
+      - FRONTEND_URL=${FRONTEND_URL}
+      - BACKEND_URL=${BACKEND_URL}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - JUDGE0_API_URL=${JUDGE0_API_URL}
+      - JUDGE0_API_KEY=${JUDGE0_API_KEY}
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+      - SECRET_KEY=${SECRET_KEY}
+      - ENVIRONMENT=${ENVIRONMENT}
+    depends_on:
+      - postgres
+      - mongodb
+      - redis
+      - qdrant
+    volumes:
+      - ./backend:/app
+      - jwt_keys:/app/keys
+
+  celery-worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    command: celery -A workers.celery_app worker --loglevel=info
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - MONGO_URL=${MONGO_URL}
+      - REDIS_URL=${REDIS_URL}
+      - QDRANT_URL=${QDRANT_URL}
+      - JWT_PRIVATE_KEY_PATH=${JWT_PRIVATE_KEY_PATH}
+      - JWT_PUBLIC_KEY_PATH=${JWT_PUBLIC_KEY_PATH}
+      - DEFAULT_LLM_PROVIDER=${DEFAULT_LLM_PROVIDER:-gemini}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - NVIDIA_NIM_API_KEY=${NVIDIA_NIM_API_KEY}
+      - S3_BUCKET=${S3_BUCKET}
+      - S3_ACCESS_KEY=${S3_ACCESS_KEY}
+      - S3_SECRET_KEY=${S3_SECRET_KEY}
+      - S3_REGION=${S3_REGION}
+      - S3_ENDPOINT_URL=${S3_ENDPOINT_URL}
+      - TWILIO_ACCOUNT_SID=${TWILIO_ACCOUNT_SID}
+      - TWILIO_AUTH_TOKEN=${TWILIO_AUTH_TOKEN}
+      - SENDGRID_API_KEY=${SENDGRID_API_KEY}
+      - SENTRY_DSN=${SENTRY_DSN}
+      - FRONTEND_URL=${FRONTEND_URL}
+      - BACKEND_URL=${BACKEND_URL}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - JUDGE0_API_URL=${JUDGE0_API_URL}
+      - JUDGE0_API_KEY=${JUDGE0_API_KEY}
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+      - SECRET_KEY=${SECRET_KEY}
+      - ENVIRONMENT=${ENVIRONMENT}
+    depends_on:
+      - redis
+      - postgres
+    volumes:
+      - ./backend:/app
+      - jwt_keys:/app/keys
+
+  celery-beat:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    command: celery -A workers.celery_app beat --loglevel=info
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - MONGO_URL=${MONGO_URL}
+      - REDIS_URL=${REDIS_URL}
+      - QDRANT_URL=${QDRANT_URL}
+      - JWT_PRIVATE_KEY_PATH=${JWT_PRIVATE_KEY_PATH}
+      - JWT_PUBLIC_KEY_PATH=${JWT_PUBLIC_KEY_PATH}
+      - DEFAULT_LLM_PROVIDER=${DEFAULT_LLM_PROVIDER:-gemini}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - NVIDIA_NIM_API_KEY=${NVIDIA_NIM_API_KEY}
+      - S3_BUCKET=${S3_BUCKET}
+      - S3_ACCESS_KEY=${S3_ACCESS_KEY}
+      - S3_SECRET_KEY=${S3_SECRET_KEY}
+      - S3_REGION=${S3_REGION}
+      - S3_ENDPOINT_URL=${S3_ENDPOINT_URL}
+      - TWILIO_ACCOUNT_SID=${TWILIO_ACCOUNT_SID}
+      - TWILIO_AUTH_TOKEN=${TWILIO_AUTH_TOKEN}
+      - SENDGRID_API_KEY=${SENDGRID_API_KEY}
+      - SENTRY_DSN=${SENTRY_DSN}
+      - FRONTEND_URL=${FRONTEND_URL}
+      - BACKEND_URL=${BACKEND_URL}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - JUDGE0_API_URL=${JUDGE0_API_URL}
+      - JUDGE0_API_KEY=${JUDGE0_API_KEY}
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+      - SECRET_KEY=${SECRET_KEY}
+      - ENVIRONMENT=${ENVIRONMENT}
+    depends_on:
+      - redis
+      - postgres
+    volumes:
+      - ./backend:/app
+      - jwt_keys:/app/keys
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    depends_on:
+      - backend
+
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - frontend
+      - backend
+
+volumes:
+  postgres_data:
+  mongodb_data:
+  redis_data:
+  qdrant_data:
+  jwt_keys:
