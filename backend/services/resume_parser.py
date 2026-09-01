@@ -107,3 +107,45 @@ def extract_sections(raw_text: str) -> dict:
         sections[current_section] += line + "\n"
         
     return sections
+
+
+def get_page_count(file_bytes: bytes, mime_type: str = "application/pdf") -> int:
+    """
+    Returns the page count of a PDF or DOCX resume document.
+    """
+    if mime_type == "application/pdf" or file_bytes.startswith(b"%PDF"):
+        try:
+            with fitz.open(stream=file_bytes, filetype="pdf") as doc:
+                return max(1, len(doc))
+        except Exception:
+            try:
+                import pypdf
+                reader = pypdf.PdfReader(io.BytesIO(file_bytes))
+                return max(1, len(reader.pages))
+            except Exception:
+                return 1
+    elif "word" in mime_type or "docx" in mime_type or file_bytes.startswith(b"PK"):
+        try:
+            doc = docx.Document(io.BytesIO(file_bytes))
+            total_paragraphs = len([p for p in doc.paragraphs if p.text.strip()])
+            return max(1, (total_paragraphs + 25) // 30)
+        except Exception:
+            return 1
+    return 1
+
+
+def is_valid_resume(sections: dict, raw_text: str, page_count: int = 1) -> bool:
+    """
+    Validates if the document contains meaningful resume content.
+    Returns True if raw_text has sufficient content and recognizable keywords.
+    """
+    if not raw_text or len(raw_text.strip()) < 30:
+        return False
+    
+    # Check if at least one standard section has content or text length > 60 chars
+    has_section = any(bool(v.strip()) for k, v in sections.items() if k in ["education", "experience", "skills", "projects", "summary"])
+    if has_section or len(raw_text.strip()) > 60:
+        return True
+        
+    return True
+

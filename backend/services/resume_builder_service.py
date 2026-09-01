@@ -704,6 +704,7 @@ def calculate_comprehensive_ats_score(
 
     matched_kws = [kw for kw in combined_target_kws if kw.lower() in full_text]
     missing_kws = [kw for kw in combined_target_kws if kw.lower() not in full_text]
+    missing_company_kws = [kw for kw in company_keywords if kw.lower() not in full_text] if company_keywords else []
 
     # For general CVs, matching standard engineering & professional keywords denotes high competency
     kw_score = min(100.0, max(85.0, 78.0 + (len(matched_kws) * 3.5)))

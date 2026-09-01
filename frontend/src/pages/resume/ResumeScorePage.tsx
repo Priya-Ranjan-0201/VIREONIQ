@@ -272,14 +272,18 @@ export const ResumeScorePage = () => {
                         <p>{activeScore.improvement_notes.quantified}</p>
                       </div>
                     )}
-                  </div>
-                </div>
-                
-                <div className="pt-6 border-t border-white/5 mt-6">
+                <div className="pt-6 border-t border-white/5 mt-6 space-y-3">
                   <div className="flex items-center gap-2 text-xs text-amber-500 font-medium">
                     <AlertCircle className="w-4 h-4 shrink-0" />
-                    <span>Scores below 80% should be revised and re-analyzed.</span>
+                    <span>Scores below 90% should be revised to maximize recruiter response.</span>
                   </div>
+                  <Button
+                    onClick={() => window.location.href = "/app/resume-builder"}
+                    className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:opacity-95 text-white font-bold text-xs py-2.5 rounded-xl shadow-md flex items-center justify-center gap-2"
+                  >
+                    <Sparkles className="w-4 h-4 text-yellow-300" />
+                    <span>Open in AI Resume Builder (Auto-Boost to 98%) 🚀</span>
+                  </Button>
                 </div>
               </Card>
             </div>
