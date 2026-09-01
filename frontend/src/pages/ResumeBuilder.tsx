@@ -4,7 +4,7 @@ import {
   Sparkles, Target, Lightbulb, ArrowRight,
   Upload, Plus, Trash2, Edit3, Printer, Copy, Check, ShieldCheck,
   Building2, Briefcase, GraduationCap, Award, Cpu, Code2,
-  Flame, Star, Percent, Download, ExternalLink, RefreshCw
+  Flame, Star, Percent, Download, ExternalLink, RefreshCw, X
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import client from "@/api/client";
