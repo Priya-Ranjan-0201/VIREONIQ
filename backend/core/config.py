@@ -87,12 +87,13 @@ class Settings(BaseSettings):
     NVIDIA_NIM_API_KEY: Optional[str] = None
     DEEPSEEK_API_KEY: Optional[str] = None
     OLLAMA_BASE_URL: str = "http://localhost:11434"
-    OLLAMA_MODEL: str = "llama3"
+    OLLAMA_MODEL: str = "llama3.3"
     DEEPSEEK_MODEL: str = "deepseek-chat"
     NVIDIA_MODEL: str = "meta/llama-3.3-70b-instruct"
     DEFAULT_LLM_PROVIDER: str = "gemini"  # claude | openai | gemini | nvidia_nim | deepseek | ollama
+    GEMINI_MODEL: str = "gemini-2.5-flash"
     INTERVIEW_MAX_TURNS: int = 10
-    CLAUDE_MODEL: str = "claude-3-5-sonnet-20241022"
+    CLAUDE_MODEL: str = "claude-3-7-sonnet-20250219"
 
     # Judge0 (code execution sandbox)
     JUDGE0_API_URL: Optional[str] = None

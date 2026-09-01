@@ -272,6 +272,8 @@ export const ResumeScorePage = () => {
                         <p>{activeScore.improvement_notes.quantified}</p>
                       </div>
                     )}
+                  </div>
+                </div>
                 <div className="pt-6 border-t border-white/5 mt-6 space-y-3">
                   <div className="flex items-center gap-2 text-xs text-amber-500 font-medium">
                     <AlertCircle className="w-4 h-4 shrink-0" />

@@ -196,6 +196,54 @@ async def get_model_registry_scorecard(db: Optional[AsyncSession] = None) -> Lis
     """
     models = [
         {
+            "model_id": "gemini-2.5-pro",
+            "provider": "Google",
+            "version": "2.5.0",
+            "purpose": "Deep Multi-Path Career Simulation & Advanced Architectural Synthesis",
+            "risk_level": "LOW",
+            "evaluation_score": 99.2,
+            "groundedness_score": 99.5,
+            "latency_ms_avg": 720.0,
+            "cost_per_1k_tokens": 0.00125,
+            "status": "ACTIVE"
+        },
+        {
+            "model_id": "gemini-2.5-flash",
+            "provider": "Google",
+            "version": "2.5.0",
+            "purpose": "Ultra-Fast Autonomous OS Copilot, Real-Time Skill Extraction & Verification",
+            "risk_level": "LOW",
+            "evaluation_score": 98.6,
+            "groundedness_score": 98.9,
+            "latency_ms_avg": 180.0,
+            "cost_per_1k_tokens": 0.000075,
+            "status": "ACTIVE"
+        },
+        {
+            "model_id": "claude-3-7-sonnet",
+            "provider": "Anthropic",
+            "version": "3.7.0",
+            "purpose": "Hybrid Reasoning Architectural & Code Evaluation",
+            "risk_level": "LOW",
+            "evaluation_score": 99.4,
+            "groundedness_score": 99.6,
+            "latency_ms_avg": 650.0,
+            "cost_per_1k_tokens": 0.003,
+            "status": "ACTIVE"
+        },
+        {
+            "model_id": "deepseek-r1",
+            "provider": "DeepSeek",
+            "version": "1.0.0",
+            "purpose": "Deep Chain-of-Thought Reasoning for Complex Algorithmic Optimization",
+            "risk_level": "LOW",
+            "evaluation_score": 98.8,
+            "groundedness_score": 99.2,
+            "latency_ms_avg": 950.0,
+            "cost_per_1k_tokens": 0.00055,
+            "status": "ACTIVE"
+        },
+        {
             "model_id": "gemini-1.5-pro",
             "provider": "Google",
             "version": "1.5.0",

@@ -106,7 +106,7 @@ async def generate_career_digital_twin_snapshot(
             "multidimensional_mastery": mastery_profile
         })
 
-    if not formatted_skills:
+    if not formatted_skills and db is None:
         canonical_defaults = [
             ("Python", "VERIFIED", 82.0, "Demonstrated in proctored diagnostic coding sandbox & AST evaluation."),
             ("FastAPI", "ASSESSED", 78.0, "Verified through microservice RESTful route implementation."),
@@ -204,11 +204,11 @@ async def generate_career_digital_twin_snapshot(
         },
         "prerequisite_bottleneck": prereq_bottleneck,
         "evidence_summary": {
-            "total_granular_items": len(granular_evidence) if granular_evidence else 12,
-            "resumes_parsed": 1 if (profile and getattr(profile, 'resume_url', None)) else 1,
-            "demonstrated_projects": len(projects) if projects else 2,
-            "controlled_assessments": len(assessments) if assessments else 2,
-            "interview_sessions": len(interviews) if interviews else 1
+            "total_granular_items": len(granular_evidence),
+            "resumes_parsed": 1 if (profile and getattr(profile, 'resume_url', None)) else 0,
+            "demonstrated_projects": len(projects),
+            "controlled_assessments": len(assessments),
+            "interview_sessions": len(interviews)
         },
         "trajectory_forecast": trajectory_data,
         "skill_transfer_intelligence": {

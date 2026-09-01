@@ -15,7 +15,7 @@ import pytest
 import uuid
 from services.resume_scorer import compute_ats_compatibility_score
 from services.role_comparison_service import match_job_description
-from services.resume_builder_service import rewrite_resume_section
+from services.resume_builder_service import rewrite_resume_section, _heuristic_parse_resume, _rule_based_mnc_optimizer
 from services.evidence_graph_service import analyze_developer_profiles, detect_work_history_anomalies
 from services.canonical_skill_service import infer_implicit_skills_from_graph
 from services.market_intelligence import predict_salary_range
@@ -145,3 +145,79 @@ async def test_developer_portfolio_analysis(db_session):
     assert portfolio["platform_signals"]["leetcode"]["verified"] is True
     assert len(portfolio["strengths"]) >= 2
     assert "Python" in portfolio["ingested_evidence_skills"]
+
+
+def test_resume_parser_factual_fidelity():
+    raw_cv = """
+    John Doe
+    john.doe@example.com
+    +1 555-123-4567
+
+    Professional Summary
+    Junior Web Developer with passion for clean code.
+
+    Experience
+    Junior Developer at SmallBiz (2023 - 2024)
+    - Built responsive landing pages using HTML, CSS, and vanilla JavaScript.
+    - Fixed styling bugs across mobile devices.
+
+    Education
+    Diploma in Web Design, City College, 2023
+
+    Skills
+    HTML, CSS, JavaScript, Git
+    """
+    parsed = _heuristic_parse_resume(raw_cv, target_role="Cloud, DevOps & SRE Engineer")
+
+    assert parsed["name"] == "John Doe"
+    assert parsed["email"] == "john.doe@example.com"
+    # Ensure it did NOT hallucinate Kubernetes, AWS, Terraform, or Docker
+    assert "Kubernetes" not in parsed["skills"]["cloud_devops"]
+    assert "AWS" not in parsed["skills"]["cloud_devops"]
+    # Ensure it preserved the user's actual skills
+    assert any("javascript" in s.lower() for s in parsed["skills"]["languages"])
+    assert any("html" in s.lower() for s in parsed["skills"]["languages"])
+    # Ensure job title was preserved from CV and not overwritten with target role
+    assert parsed["experience"][0]["role"] != "Cloud, DevOps & SRE Engineer"
+
+
+def test_rule_based_optimizer_no_fake_injection():
+    user_data = {
+        "name": "Jane Smith",
+        "email": "jane@example.com",
+        "experience": [
+            {
+                "company": "Local Agency",
+                "role": "Frontend Intern",
+                "duration": "2023",
+                "location": "Remote",
+                "bullets": ["wrote unit tests for signup flow"]
+            }
+        ],
+        "skills": {
+            "languages": ["Python"],
+            "frameworks": [],
+            "cloud_devops": [],
+            "databases": [],
+            "tools": []
+        },
+        "education": [
+            {"institution": "State University", "degree": "B.A. Art", "year": "2022"}
+        ],
+        "projects": [],
+        "certifications": []
+    }
+
+    optimized = _rule_based_mnc_optimizer(user_data, target_role="Backend Systems Engineer", target_company="Google")
+
+    # Ensure authentic candidate details are intact
+    assert optimized["name"] == "Jane Smith"
+    assert optimized["email"] == "jane@example.com"
+    assert optimized["education"][0]["institution"] == "State University"
+    assert optimized["education"][0]["degree"] == "B.A. Art"
+
+    # Ensure no fake Berkeley degrees, fake AWS certs, or fake projects were injected
+    assert not any("Berkeley" in e.get("institution", "") for e in optimized["education"])
+    assert not any("AWS Certified" in c.get("name", "") for c in optimized["certifications"])
+    assert len(optimized["projects"]) == 0
+

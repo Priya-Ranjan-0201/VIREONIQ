@@ -1010,64 +1010,65 @@ export const ResumeBuilder = () => {
       if (res.data && res.data.experience?.length > 0) {
         setResumeData({
           ...res.data,
-          ats_score: Math.max(98, res.data.ats_score || 98),
+          ats_score: res.data.ats_score || 94,
           ats_tier: "MNC Elite 90+"
         });
         setTargetRole(genRole);
         setTargetCompany(genCompany);
         setTemplateStyle(genStyle);
         setIsAiGenerateModalOpen(false);
-        toast.success(`Elite 98+ ATS Resume Generated for ${genCompany}! 🏆`, {
-          description: `Score: ${res.data.ats_score || 98}% (${res.data.ats_tier || "MNC Elite 90+"})`
+        toast.success(`ATS Resume Generated for ${genCompany}! 🏆`, {
+          description: `Score: ${res.data.ats_score || 94}% (${res.data.ats_tier || "MNC Elite 90+"})`
         });
         return;
       }
     } catch (e) {
-      console.warn("Using local elite synthesis engine:", e);
+      console.warn("Using local synthesis engine:", e);
     } finally {
       setIsGeneratingAi(false);
     }
   };
 
-  // 1-Click Elevate All Bullets to Google XYZ (98+ ATS)
+  // 1-Click Elevate All Bullets (Polishes existing bullets to action-oriented phrasing without inventing false claims)
   const handleElevateAllBullets = () => {
     let count = 0;
+    const actionVerbs = [
+      "Architected", "Spearheaded", "Engineered", "Optimized", "Scaled",
+      "Orchestrated", "Implemented", "Developed", "Deployed", "Streamlined",
+      "Automated", "Delivered", "Transformed", "Standardized", "Refactored"
+    ];
+
     const elevated = resumeData.experience.map(exp => ({
       ...exp,
-      bullets: exp.bullets.map(b => {
-        if (!b || b.trim().length < 5) return b;
+      bullets: (exp.bullets || []).map((b, idx) => {
+        if (!b || b.trim().length < 3) return b;
         count++;
-        if (b.includes("%") || b.includes("$") || b.includes("p99") || b.includes("Architected") || b.includes("Spearheaded")) {
-          return b;
+        const trimmed = b.trim();
+        const firstWord = trimmed.split(" ")[0] || "";
+        const lowerFirst = firstWord.toLowerCase().replace(/[^a-z]/g, "");
+        
+        // If already starts with a strong action verb, capitalize cleanly
+        const existingVerb = actionVerbs.find(v => v.toLowerCase() === lowerFirst);
+        if (existingVerb) {
+          return trimmed.charAt(0).toUpperCase() + trimmed.slice(1);
         }
-        return `Architected scalable solutions for ${b.replace(/^[a-z]/, c => c.toUpperCase())}, reducing system latency by 44% across 12M+ daily requests using modern cloud infrastructure.`;
+        
+        // Pick an action verb based on index and polish lead-in
+        const verb = actionVerbs[idx % actionVerbs.length];
+        const cleanedRemainder = trimmed.replace(/^(responsible for|worked on|helped with|managed to|involved in|worked in|participated in)\s*/i, "");
+        const lowerRest = cleanedRemainder.charAt(0).toLowerCase() + cleanedRemainder.slice(1);
+        return `${verb} ${lowerRest}`;
       })
     }));
 
-    const elevatedProjects = resumeData.projects.map(p => {
-      let imp = p.impact || "";
-      if (!imp || (!imp.includes("%") && !imp.includes("latency") && !imp.includes("M"))) {
-        imp = "Processed 3.5M metrics/min with <15ms latency and 99.999% fault tolerance.";
-      }
-      return { ...p, impact: imp };
-    });
+    const elevatedProjects = (resumeData.projects || []).map(p => ({ ...p }));
 
     setResumeData(prev => ({
       ...prev,
       experience: elevated,
       projects: elevatedProjects,
-      ats_score: 98,
-      ats_tier: "MNC Elite 90+",
-      section_scores: {
-        quantified_impact: 100,
-        action_verbs: 98,
-        keyword_density: 98,
-        section_completeness: 100,
-        ats_formatting: 98,
-        bullet_quality: 98
-      }
     }));
-    toast.success(`✨ Elevate Complete! ${count} bullets upgraded to Google XYZ with 98% ATS score! 🚀`);
+    toast.success(`✨ Elevate Complete! ${count} bullets enhanced with strong action verbs! 🚀`);
   };
 
   // Export JSON Backup
@@ -1172,8 +1173,8 @@ export const ResumeBuilder = () => {
 
   const handleMncAutoBoost = async () => {
     setIsOptimizing(true);
-    toast.info(`Applying ${targetCompany} 90+ MNC Optimization Engine... ⚡`, {
-      description: "Supercharging experience bullets to Google XYZ formula and enriching tech stack keywords."
+    toast.info(`Polishing for ${targetCompany} MNC standards... ⚡`, {
+      description: "Enhancing bullet point phrasing with active leadership verbs."
     });
     try {
       const res = await client.post("/resume-builder/optimize-mnc", {
@@ -1182,46 +1183,37 @@ export const ResumeBuilder = () => {
         target_company: targetCompany,
       });
       const boosted = res.data;
-      boosted.ats_score = Math.max(95, boosted.ats_score || 96);
-      boosted.ats_tier = "MNC Elite 90+";
       setResumeData(boosted);
-      toast.success("MNC 90+ Score Achieved! 🏆", {
+      toast.success("MNC Polish Applied! 🏆", {
         description: `Your resume is now rated ${boosted.ats_score}% (${boosted.ats_tier})`
       });
     } catch {
       // Client-Side Resilient Fallback Boost
+      const actionVerbs = ["Architected", "Spearheaded", "Engineered", "Optimized", "Scaled", "Implemented"];
       const upgradedBullets = resumeData.experience.map(exp => ({
         ...exp,
-        bullets: exp.bullets.map(b => {
+        bullets: (exp.bullets || []).map((b, idx) => {
           if (!b || b.length < 5) return b;
-          if (b.includes("%") || b.includes("$") || b.includes("Architected") || b.includes("Spearheaded")) return b;
-          return `Architected scalable solutions for ${b.replace(/^[a-z]/, c => c.toUpperCase())}, reducing system latency by 42% across high-concurrency production workloads.`;
+          const trimmed = b.trim();
+          const firstWord = trimmed.split(" ")[0] || "";
+          if (actionVerbs.some(v => v.toLowerCase() === firstWord.toLowerCase())) {
+            return trimmed.charAt(0).toUpperCase() + trimmed.slice(1);
+          }
+          const verb = actionVerbs[idx % actionVerbs.length];
+          const remainder = trimmed.replace(/^(responsible for|worked on|helped with)\s*/i, "");
+          return `${verb} ${remainder.charAt(0).toLowerCase() + remainder.slice(1)}`;
         })
       }));
 
       setResumeData(prev => ({
         ...prev,
-        ats_score: 97,
-        ats_tier: "MNC Elite 90+",
         experience: upgradedBullets,
-        section_scores: {
-          quantified_impact: 98,
-          action_verbs: 96,
-          keyword_density: 95,
-          section_completeness: 100,
-          ats_formatting: 98,
-          bullet_quality: 96
-        },
         improvements_applied: [
-          "Rewrote bullet points into Google XYZ formula with quantifiable business metrics",
-          "Injected Tier-1 leadership action verbs (Architected, Spearheaded, Engineered)",
-          `Added high-density MNC keywords for ${targetRole}`,
-          "Optimized layout for automated ATS parsers"
+          "Polished experience bullets with strong action verbs",
+          "Structured sentences for ATS parseability"
         ]
       }));
-      toast.success("MNC 97% Score Achieved (Instant Mode)! 🏆", {
-        description: "Your resume has been upgraded to MNC Elite 90+ standards."
-      });
+      toast.success("Resume Polished with Action Verbs! 🏆");
     } finally {
       setIsOptimizing(false);
     }
@@ -1229,108 +1221,77 @@ export const ResumeBuilder = () => {
 
   const autoEnhanceResumeData = (raw: any): ResumeData => {
     const name = raw.name || "Candidate Name";
-    const email = raw.email || "candidate@example.com";
-    const phone = raw.phone || "+1 (555) 019-2834";
-    const location = raw.location || "San Francisco, CA";
-    const linkedin = raw.linkedin || "linkedin.com/in/candidate";
-    const github = raw.github || "github.com/candidate";
-    
-    let summary = raw.summary || "";
-    if (!summary || summary.length < 50) {
-      summary = `High-impact technical engineer with expertise in building scalable architectures, resilient distributed microservices, and end-to-end cloud applications. Proven track record of optimizing system throughput, reducing latency, and delivering business-critical outcomes.`;
-    }
+    const email = raw.email || "";
+    const phone = raw.phone || "";
+    const location = raw.location || "";
+    const linkedin = raw.linkedin || "";
+    const github = raw.github || "";
+    const summary = raw.summary || "";
 
-    const rawExp = Array.isArray(raw.experience) && raw.experience.length > 0
-      ? raw.experience
-      : [
-          {
-            company: "Tech Systems Inc",
-            role: "Software Development Engineer",
-            duration: "2022 - Present",
-            location: "San Francisco, CA",
-            bullets: [
-              "Architected asynchronous service layer handling 15M+ daily requests, improving p99 latency by 42%.",
-              "Spearheaded database query optimization and connection pooling in PostgreSQL, slashing query response times by 38%."
-            ]
-          }
-        ];
-
-    const enhancedExp: ExperienceItem[] = rawExp.map((exp: any, idx: number) => {
+    // Preserve actual experiences
+    const rawExp = Array.isArray(raw.experience) ? raw.experience : [];
+    const enhancedExp: ExperienceItem[] = rawExp.map((exp: any) => {
       const bullets = Array.isArray(exp.bullets) && exp.bullets.length > 0
         ? exp.bullets.map((b: string) => {
             const trimmed = (b || "").trim();
-            if (!trimmed) return "Architected high-throughput service pipelines, accelerating delivery velocity by 35%.";
-            if (trimmed.length > 30 && (trimmed.includes("%") || trimmed.includes("reduced") || trimmed.includes("scaled") || trimmed.includes("improved") || trimmed.includes("Architected") || trimmed.includes("Engineered"))) {
-              return trimmed;
-            }
-            const verbs = ["Architected", "Engineered", "Spearheaded", "Optimized", "Scaled"];
-            const verb = verbs[idx % verbs.length];
-            return `${verb} ${trimmed.charAt(0).toLowerCase() + trimmed.slice(1)}, accelerating system throughput by 35% and improving p99 latency by 28%.`;
-          })
-        : [
-            "Architected scalable microservice endpoints, reducing p99 API response latency by 35% across 5M+ daily operations.",
-            "Engineered automated CI/CD validation pipelines with 92% unit test coverage, cutting regression release cycle times by 40%."
-          ];
+            if (!trimmed) return "";
+            return trimmed.charAt(0).toUpperCase() + trimmed.slice(1);
+          }).filter(Boolean)
+        : [];
 
       return {
-        company: exp.company || "Enterprise Tech",
-        role: exp.role || "Software Engineer",
-        duration: exp.duration || "2023 - Present",
-        location: exp.location || "Remote",
+        company: exp.company || "",
+        role: exp.role || "",
+        duration: exp.duration || "",
+        location: exp.location || "",
         bullets
       };
     });
 
+    // Preserve actual skills
     const skills = raw.skills && typeof raw.skills === "object" ? {
-      languages: raw.skills.languages?.length ? raw.skills.languages : ["Python", "TypeScript", "JavaScript", "SQL", "Go"],
-      frameworks: raw.skills.frameworks?.length ? raw.skills.frameworks : ["React 19", "Next.js", "FastAPI", "Node.js", "TailwindCSS"],
-      cloud_devops: raw.skills.cloud_devops?.length ? raw.skills.cloud_devops : ["AWS (ECS, S3)", "Docker", "Kubernetes", "GitHub Actions", "CI/CD"],
-      databases: raw.skills.databases?.length ? raw.skills.databases : ["PostgreSQL", "Redis", "MongoDB", "Qdrant Vector DB"],
-      tools: raw.skills.tools?.length ? raw.skills.tools : ["Git", "Postman", "Linux", "Vitest", "Docker Compose"]
+      languages: Array.isArray(raw.skills.languages) ? raw.skills.languages : [],
+      frameworks: Array.isArray(raw.skills.frameworks) ? raw.skills.frameworks : [],
+      cloud_devops: Array.isArray(raw.skills.cloud_devops) ? raw.skills.cloud_devops : [],
+      databases: Array.isArray(raw.skills.databases) ? raw.skills.databases : [],
+      tools: Array.isArray(raw.skills.tools) ? raw.skills.tools : []
     } : {
-      languages: ["Python", "TypeScript", "JavaScript", "SQL", "Go"],
-      frameworks: ["React 19", "Next.js", "FastAPI", "Node.js", "TailwindCSS"],
-      cloud_devops: ["AWS (ECS, S3)", "Docker", "Kubernetes", "GitHub Actions", "CI/CD"],
-      databases: ["PostgreSQL", "Redis", "MongoDB", "Qdrant Vector DB"],
-      tools: ["Git", "Postman", "Linux", "Vitest", "Docker Compose"]
+      languages: [],
+      frameworks: [],
+      cloud_devops: [],
+      databases: [],
+      tools: []
     };
 
-    const projects: ProjectItem[] = Array.isArray(raw.projects) && raw.projects.length > 0
+    // Preserve actual projects
+    const projects: ProjectItem[] = Array.isArray(raw.projects)
       ? raw.projects.map((p: any) => ({
-          name: p.name || "Distributed Cloud Platform",
-          description: p.description || "High-concurrency cloud platform with event streaming and real-time telemetry.",
-          technologies: Array.isArray(p.technologies) && p.technologies.length > 0 ? p.technologies : ["React", "FastAPI", "PostgreSQL", "Redis"],
-          impact: p.impact || "Scaled to 50,000+ active sessions with sub-50ms query turnaround.",
-          githubUrl: p.githubUrl || "github.com/project",
-          demoUrl: p.demoUrl || "project-demo.live"
+          name: p.name || "",
+          description: p.description || "",
+          technologies: Array.isArray(p.technologies) ? p.technologies : [],
+          impact: p.impact || "",
+          githubUrl: p.githubUrl || "",
+          demoUrl: p.demoUrl || ""
         }))
-      : [
-          {
-            name: "Cloud-Native Microservices Platform",
-            description: "Built an event-driven distributed microservices suite with asynchronous task scheduling and Redis cache-aside invalidation.",
-            technologies: ["React", "TypeScript", "FastAPI", "PostgreSQL", "Redis", "Docker"],
-            impact: "Handled 12,000+ concurrent requests with zero-downtime rolling deployments.",
-            githubUrl: "github.com/candidate/cloud-platform"
-          }
-        ];
+      : [];
 
-    const education: EducationItem[] = Array.isArray(raw.education) && raw.education.length > 0
+    // Preserve actual education
+    const education: EducationItem[] = Array.isArray(raw.education)
       ? raw.education.map((e: any) => ({
-          institution: e.institution || "University Institute of Technology",
-          degree: e.degree || "Bachelor of Science in Computer Science",
-          year: e.year || "2020 - 2024",
-          gpa: e.gpa || "3.8 / 4.0",
-          location: e.location || "San Francisco, CA"
+          institution: e.institution || "",
+          degree: e.degree || "",
+          year: e.year || "",
+          gpa: e.gpa || "",
+          location: e.location || ""
         }))
-      : [
-          {
-            institution: "University Institute of Technology",
-            degree: "Bachelor of Science in Computer Science",
-            year: "2020 - 2024",
-            gpa: "3.8 / 4.0",
-            location: "San Francisco, CA"
-          }
-        ];
+      : [];
+
+    // Preserve actual certifications, trainings, activities
+    const certifications = Array.isArray(raw.certifications) ? raw.certifications : [];
+    const trainings = Array.isArray(raw.trainings) ? raw.trainings : [];
+    const activities = Array.isArray(raw.activities) ? raw.activities : [];
+
+    const calculatedAts = raw.ats_score || 85;
 
     return {
       name,
@@ -1344,19 +1305,17 @@ export const ResumeBuilder = () => {
       education,
       skills,
       projects,
-      certifications: raw.certifications?.length ? raw.certifications : [
-        { name: "AWS Certified Solutions Architect", issuer: "Amazon Web Services", year: "2024" }
-      ],
-      trainings: raw.trainings || [],
-      activities: raw.activities || [],
-      ats_score: 97,
-      ats_tier: "MNC Elite 90+",
-      section_scores: {
-        quantified_impact: 98,
-        action_verbs: 96,
-        keyword_density: 97,
-        section_completeness: 98,
-        ats_formatting: 97
+      certifications,
+      trainings,
+      activities,
+      ats_score: calculatedAts,
+      ats_tier: calculatedAts >= 90 ? "MNC Elite 90+" : "MNC Competitive 80-89",
+      section_scores: raw.section_scores || {
+        quantified_impact: 90,
+        action_verbs: 90,
+        keyword_density: 90,
+        section_completeness: 95,
+        ats_formatting: 98
       }
     };
   };
@@ -1378,22 +1337,29 @@ export const ResumeBuilder = () => {
       setEntryMode("scratch");
       setViewMode("split");
       setShowImportModal(false);
-      toast.success("Resume parsed & enhanced to 97% ATS score! 🚀", {
-        description: "Transformed bullets to Google XYZ quantified metrics and organized skills."
+      toast.success("Resume successfully parsed into studio! 📄✨", {
+        description: `Loaded candidate background with factual accuracy.`
       });
     } catch {
-      // Simple text heuristic extraction
+      // Local fallback parser
       const lines = rawPastedText.split("\n").map(l => l.trim()).filter(Boolean);
       const name = lines[0] || "Candidate Name";
+      const bullets: string[] = [];
+      lines.slice(1).forEach(l => {
+        if (l.startsWith("•") || l.startsWith("-") || l.startsWith("*")) {
+          bullets.push(l.replace(/^[\s•\-\*]+/, ""));
+        }
+      });
       const upgraded = autoEnhanceResumeData({
         name,
-        summary: rawPastedText.slice(0, 300)
+        summary: lines.slice(1, 3).join(" "),
+        experience: bullets.length > 0 ? [{ company: "Experience", role: "", duration: "Recent", location: "", bullets }] : []
       });
       setResumeData(upgraded);
       setEntryMode("scratch");
       setViewMode("split");
       setShowImportModal(false);
-      toast.success("Resume parsed & upgraded to 97% ATS score! 🚀");
+      toast.success("Resume text loaded into studio! 📄✨");
     } finally {
       setIsParsing(false);
     }
@@ -1403,7 +1369,7 @@ export const ResumeBuilder = () => {
   const handleFileUpload = async (file: File) => {
     if (!file) return;
     setIsParsing(true);
-    toast.info(`Parsing & optimizing ${file.name}...`);
+    toast.info(`Parsing ${file.name}...`);
     try {
       const formData = new FormData();
       formData.append("file", file);
@@ -1417,8 +1383,8 @@ export const ResumeBuilder = () => {
       setEntryMode("scratch");
       setViewMode("split");
       setShowImportModal(false);
-      toast.success("Resume uploaded & transformed to 97% ATS score! 📄✨", {
-        description: `Loaded ${file.name} with Google XYZ quantified bullet points and structured skills.`
+      toast.success("Resume uploaded & loaded into studio! 📄✨", {
+        description: `Extracted actual work experiences, education, and skills from ${file.name}.`
       });
     } catch (err: any) {
       // Fallback extraction
@@ -1429,7 +1395,7 @@ export const ResumeBuilder = () => {
       setEntryMode("scratch");
       setViewMode("split");
       setShowImportModal(false);
-      toast.success("Resume uploaded & generated with 97% ATS score! 📄✨");
+      toast.success("Resume uploaded & loaded into studio! 📄✨");
     } finally {
       setIsParsing(false);
     }

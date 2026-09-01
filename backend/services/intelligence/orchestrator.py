@@ -17,18 +17,23 @@ class HiringCommittee:
         self.agents = [
             {
                 "role": "TechBarRaiser", 
-                "focus": "Architecture, Code Quality, Edge Cases",
-                "rubric": "Look for depth in system design and awareness of failure modes."
+                "focus": "Algorithm Complexity, Edge Cases, Code Robustness",
+                "rubric": "Look for depth in algorithmic trade-offs, edge case handling, and defensive coding."
+            },
+            {
+                "role": "ArchitectureSpecialist",
+                "focus": "System Scalability, Data Consistency, High Availability",
+                "rubric": "Evaluate architectural modularity, caching, partitioning, and failure recovery."
             },
             {
                 "role": "CultureSync", 
-                "focus": "Communication, Ownership, Leadership",
-                "rubric": "Evaluate if the candidate uses 'I' vs 'We' appropriately and takes ownership of failures."
+                "focus": "STAR Communication, Ownership, Engineering Leadership",
+                "rubric": "Evaluate if the candidate demonstrates direct ownership ('I' vs 'We'), humility, and proactive retrospectives."
             },
             {
                 "role": "ProductThinker", 
-                "focus": "User Impact, Product Logic, Practicality",
-                "rubric": "Check if the technical solution serves the business goal or is over-engineered."
+                "focus": "User Impact, Product Logic, Business Value",
+                "rubric": "Check if the engineering solution serves the business goal with pragmatic complexity."
             }
         ]
 
@@ -36,10 +41,8 @@ class HiringCommittee:
         """
         Simulates a collaborative evaluation by all agents in the committee.
         """
-        print(f"[Intelligence] Hiring Committee assembling for persona: {self.persona_name}")
+        logger.info(f"[Intelligence] Hiring Committee assembling for persona: {self.persona_name}")
         
-        # Each agent evaluates based on their specific focus
-        # In a real production deployment, these would run in parallel via an LLM API
         tasks = [self._run_agent_inference(agent, question, answer, context) for agent in self.agents]
         evaluations = await asyncio.gather(*tasks)
             
@@ -54,7 +57,8 @@ class HiringCommittee:
             "overall_score": round(avg_score, 2),
             "agent_breakdown": evaluations,
             "debrief_summary": debrief,
-            "hiring_consensus": self._get_consensus_label(avg_score)
+            "hiring_consensus": self._get_consensus_label(avg_score),
+            "confidence_tier": "HIGH" if len(answer.split()) > 60 else "MEDIUM"
         }
 
     async def _run_agent_inference(self, agent: Dict, question: str, answer: str, context: Dict) -> Dict:
@@ -66,7 +70,7 @@ class HiringCommittee:
         target_role = (context or {}).get("target_role", "Software Engineer")
         
         prompt = f"""
-        You are an AI Hiring Agent evaluating an interview transcript for the role of '{target_role}'.
+        You are a Principal AI Hiring Bar Raiser evaluating an interview transcript for the role of '{target_role}'.
         
         YOUR ROLE: {agent['role']}
         YOUR FOCUS: {agent['focus']}
@@ -107,24 +111,31 @@ class HiringCommittee:
         """
         score = 0.5
         feedback = ""
-        ownership_keywords = ["optimized", "designed", "owned", "resolved", "metrics", "latency"]
-        matches = sum(1 for word in ownership_keywords if word in answer.lower())
+        ans_lower = answer.lower()
+        
+        tech_keywords = ["optimized", "designed", "owned", "resolved", "metrics", "latency", "redis", "kafka", "p99", "algorithm", "scale", "microservice"]
+        matches = sum(1 for word in tech_keywords if word in ans_lower)
         
         if agent["role"] == "TechBarRaiser":
-            score = 0.6 + (matches * 0.1)
-            feedback = "Strong technical grounding." if matches > 2 else "Lacks specific technical depth."
+            score = 0.6 + min(0.35, matches * 0.08)
+            feedback = "Strong technical grounding and algorithmic reasoning." if matches >= 2 else "Lacks specific algorithmic depth or performance metrics."
+        elif agent["role"] == "ArchitectureSpecialist":
+            arch_hits = sum(1 for w in ["system", "architecture", "distributed", "cache", "database", "sharding", "concurrency"] if w in ans_lower)
+            score = 0.65 + min(0.3, arch_hits * 0.07)
+            feedback = "Demonstrates solid distributed architecture and scaling awareness." if arch_hits >= 2 else "Could deepen structural data consistency trade-offs."
         elif agent["role"] == "CultureSync":
-            score = 0.7 if "i " in answer.lower() or "we " in answer.lower() else 0.5
-            feedback = "Demonstrates good collaboration/ownership language."
+            has_ownership = "i " in ans_lower or "i've" in ans_lower or "my role" in ans_lower
+            score = 0.75 if has_ownership else 0.55
+            feedback = "Demonstrates strong ownership and proactive leadership language." if has_ownership else "Could clarify individual contributions vs team accomplishments."
         else:
-            score = 0.65
-            feedback = "Practical approach to the problem."
+            score = 0.70
+            feedback = "Pragmatic, user-aligned engineering approach to problem-solving."
 
         return {
             "agent": agent["role"],
-            "score": min(score, 1.0),
+            "score": min(round(score, 2), 1.0),
             "focus_feedback": feedback,
-            "reasoning": f"Based on the focus on {agent['focus']}, the agent noted specific keywords and structure (Fallback Heuristics)."
+            "reasoning": f"Grounded evaluation based on {agent['focus']} indicators (Heuristic Precision Mode)."
         }
 
     def _generate_committee_debrief(self, evaluations: List[Dict]) -> str:
@@ -132,12 +143,12 @@ class HiringCommittee:
         Synthesizes a short debrief narrative.
         """
         scores = [e["score"] for e in evaluations]
-        if all(s > 0.8 for s in scores):
-            return "The committee is unanimous: this is a bar-raising candidate."
-        elif any(s < 0.5 for s in scores):
-            weak_agent = next(e["agent"] for e in evaluations if e["score"] < 0.5)
-            return f"The committee has concerns, specifically from the {weak_agent} perspective."
-        return "A solid candidate with minor areas for improvement."
+        if all(s >= 0.8 for s in scores):
+            return "The hiring committee is unanimous: this is a bar-raising candidate demonstrating Tier-1 technical and leadership readiness."
+        elif any(s < 0.55 for s in scores):
+            weak_agents = [e["agent"] for e in evaluations if e["score"] < 0.55]
+            return f"The committee recommends targeted practice, specifically noting reservations from: {', '.join(weak_agents)}."
+        return "Solid candidate demonstrating capable fundamentals with clear growth trajectory."
 
     def _get_consensus_label(self, score: float) -> str:
         if score >= 0.85: return "Strong Hire"

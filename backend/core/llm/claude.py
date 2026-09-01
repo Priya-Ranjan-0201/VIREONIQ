@@ -8,35 +8,49 @@ from core.config import settings
 logger = logging.getLogger(__name__)
 
 class ClaudeProvider(BaseLLMProvider):
-    def __init__(self, api_key: str):
+    def __init__(self, api_key: str, model: Optional[str] = None):
         self.api_key = api_key
         self.client = AsyncAnthropic(api_key=api_key)
-        self.model = settings.CLAUDE_MODEL
+        self.model = model or getattr(settings, "CLAUDE_MODEL", "claude-3-7-sonnet-20250219")
 
     async def chat(self, messages: List[Dict[str, str]], system_prompt: Optional[str] = None) -> str:
         try:
-            # Convert messages to Anthropic format if necessary
-            # Anthropic messages are usually {"role": "user", "content": "..."}
+            # Filter and format messages for Anthropic
+            anthropic_messages = []
+            for msg in messages:
+                role = "assistant" if msg.get("role") == "assistant" else "user"
+                anthropic_messages.append({"role": role, "content": msg.get("content", "")})
+
             response = await self.client.messages.create(
                 model=self.model,
-                max_tokens=1024,
+                max_tokens=4096,
                 system=system_prompt if system_prompt else "",
-                messages=messages
+                messages=anthropic_messages
             )
-            return response.content[0].text
+            return response.content[0].text if response.content else ""
         except Exception as e:
             logger.error(f"Claude API Error: {str(e)}")
             raise
 
     async def generate_json(self, messages: List[Dict[str, str]], system_prompt: Optional[str] = None) -> Dict[str, Any]:
-        # Append instruction for JSON
-        json_system_prompt = (system_prompt or "") + "\nRespond ONLY with a valid JSON object."
-        
+        json_system_prompt = (system_prompt or "") + "\n\nIMPORTANT: You must respond ONLY with a valid JSON object. No other text."
         raw_response = await self.chat(messages, system_prompt=json_system_prompt)
         try:
-            # Simple cleanup for potential markdown blocks
-            clean_response = raw_response.strip().replace("```json", "").replace("```", "").strip()
-            return json.loads(clean_response)
+            clean_response = raw_response.strip()
+            if clean_response.startswith("```json"):
+                clean_response = clean_response[7:]
+            if clean_response.startswith("```"):
+                clean_response = clean_response[3:]
+            if clean_response.endswith("```"):
+                clean_response = clean_response[:-3]
+            return json.loads(clean_response.strip())
         except json.JSONDecodeError as e:
+            import re
+            json_match = re.search(r'(\{[\s\S]*\}|\[[\s\S]*\])', raw_response)
+            if json_match:
+                try:
+                    return json.loads(json_match.group(1).strip())
+                except Exception:
+                    pass
             logger.error(f"Failed to parse JSON from Claude: {raw_response}")
-            raise ValueError("LLM returned invalid JSON")
+            raise ValueError(f"LLM returned invalid JSON: {e}") from e

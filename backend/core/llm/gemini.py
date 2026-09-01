@@ -25,14 +25,15 @@ logger = logging.getLogger(__name__)
 class GeminiProvider(BaseLLMProvider):
     """LLM provider implementation for Google Gemini models."""
 
-    def __init__(self, api_key: str) -> None:
+    def __init__(self, api_key: str, model_name: Optional[str] = None) -> None:
         """Initialise the Gemini provider.
 
         Args:
             api_key: Google AI Studio API key.
+            model_name: Optional Gemini model name override (defaulting to config).
         """
         self.api_key = api_key
-        self.model_name = "gemini-3.6-flash"
+        self.model_name = model_name or getattr(settings, "GEMINI_MODEL", "gemini-2.5-flash")
 
         if self.api_key and self.api_key not in ("", "AIzaSy-REPLACE_ME"):
             if _NEW_SDK:
@@ -132,5 +133,12 @@ class GeminiProvider(BaseLLMProvider):
                 cleaned = cleaned[:-3]
             return json.loads(cleaned.strip())
         except json.JSONDecodeError as exc:
+            import re
+            json_match = re.search(r'(\{[\s\S]*\}|\[[\s\S]*\])', response_text)
+            if json_match:
+                try:
+                    return json.loads(json_match.group(1).strip())
+                except Exception:
+                    pass
             logger.error("Failed to parse JSON from Gemini: %s", response_text)
             raise ValueError(f"Invalid JSON returned from LLM: {exc}") from exc

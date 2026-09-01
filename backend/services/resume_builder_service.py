@@ -28,6 +28,122 @@ TIER1_ACTION_VERBS = {
     "led", "directed", "authored", "standardized", "migrated", "benchmarked"
 }
 
+# ─── Smart Keyword Aliases & Acronym Mapping ──────────────────────────────────
+KEYWORD_ALIASES: Dict[str, List[str]] = {
+    "kubernetes": ["k8s", "kubernetes", "kube", "kubectl"],
+    "aws": ["aws", "amazon web services", "ec2", "s3", "lambda", "ecs", "eks", "fargate", "cloudformation", "iam"],
+    "gcp": ["gcp", "google cloud", "google cloud platform", "bigquery", "cloud run", "gke", "cloud storage"],
+    "azure": ["azure", "microsoft azure", "blob storage", "azure devops", "aks"],
+    "docker": ["docker", "container", "containers", "containerization", "dockerfile", "docker-compose"],
+    "ci/cd": ["ci/cd", "cicd", "ci / cd", "continuous integration", "continuous delivery", "continuous deployment", "github actions", "gitlab ci", "jenkins", "circleci", "argo cd", "argocd"],
+    "postgresql": ["postgres", "postgresql", "psql", "pgadmin"],
+    "mongodb": ["mongodb", "mongo", "nosql"],
+    "redis": ["redis", "in-memory cache", "redis cluster"],
+    "kafka": ["kafka", "apache kafka", "event streaming", "message broker"],
+    "graphql": ["graphql", "gql", "apollo", "relay"],
+    "rest apis": ["rest", "restful", "rest api", "rest apis", "restful api", "restful apis", "http api", "json api"],
+    "typescript": ["typescript", "ts"],
+    "javascript": ["javascript", "js", "es6", "es2020", "esnext"],
+    "react": ["react", "react.js", "reactjs"],
+    "next.js": ["next.js", "nextjs", "next"],
+    "node.js": ["node.js", "nodejs", "node"],
+    "vue": ["vue", "vue.js", "vuejs"],
+    "angular": ["angular", "angular.js", "angularjs"],
+    "fastapi": ["fastapi", "fast api"],
+    "spring boot": ["spring boot", "spring framework", "spring"],
+    "django": ["django", "django rest framework", "drf"],
+    "flask": ["flask"],
+    "tailwindcss": ["tailwindcss", "tailwind", "tailwind css"],
+    "redux toolkit": ["redux", "redux toolkit", "rtk", "redux-thunk"],
+    "accessibility (a11y)": ["accessibility", "a11y", "wcag", "aria", "screen readers"],
+    "microservices": ["microservices", "microservice", "micro-services", "service-oriented"],
+    "system design": ["system design", "systems design", "distributed systems", "high availability", "scalability", "load balancing"],
+    "machine learning": ["machine learning", "ml", "statistical learning"],
+    "deep learning": ["deep learning", "dl", "neural networks", "cnn", "rnn", "lstm"],
+    "nlp": ["nlp", "natural language processing", "llm", "llms", "large language models", "transformers", "bert", "gpt"],
+    "scikit-learn": ["scikit-learn", "scikit learn", "sklearn"],
+    "agile/scrum": ["agile", "scrum", "sprints", "kanban", "jira"],
+    "a/b testing": ["a/b testing", "ab testing", "split testing", "experimentation"],
+    "linux": ["linux", "unix", "bash", "shell scripting", "posix"],
+    "terraform": ["terraform", "iac", "infrastructure as code"],
+    "git": ["git", "github", "gitlab", "version control"],
+}
+
+
+def match_keyword_in_text(keyword: str, text: str) -> bool:
+    """Intelligently match a technical keyword in candidate text with alias, token, and acronym support."""
+    if not keyword or not text:
+        return False
+    
+    text_lower = text.lower()
+    kw_lower = keyword.strip().lower()
+    
+    # 1. Exact or direct substring match
+    if kw_lower in text_lower:
+        return True
+    
+    # 2. Match known aliases
+    for canonical, aliases in KEYWORD_ALIASES.items():
+        if canonical == kw_lower or any(a == kw_lower for a in aliases):
+            for alias in aliases:
+                if len(alias) <= 3:
+                    pattern = r'\b' + re.escape(alias) + r'\b'
+                    if re.search(pattern, text_lower):
+                        return True
+                else:
+                    if alias in text_lower:
+                        return True
+            return False
+            
+    # 3. Extract sub-tokens from compound phrases e.g. "Accessibility (a11y)", "AWS (ECS, EKS, Lambda, S3)"
+    clean_kw = re.sub(r'\(.*?\)', '', kw_lower).strip()
+    if clean_kw and (clean_kw in text_lower or (len(clean_kw) <= 3 and re.search(r'\b' + re.escape(clean_kw) + r'\b', text_lower))):
+        return True
+        
+    paren_matches = re.findall(r'\((.*?)\)', kw_lower)
+    for p in paren_matches:
+        sub_tokens = [t.strip() for t in re.split(r'[,/]', p) if t.strip()]
+        for st in sub_tokens:
+            if st and (st in text_lower or (len(st) <= 3 and re.search(r'\b' + re.escape(st) + r'\b', text_lower))):
+                return True
+
+    # 4. Slashed items e.g. "CI/CD", "iOS / Android"
+    if "/" in kw_lower:
+        slash_tokens = [t.strip() for t in kw_lower.split("/") if t.strip()]
+        if any(st in text_lower for st in slash_tokens):
+            return True
+
+    # 5. Regex word boundary match for standalone keyword
+    if len(kw_lower) <= 4:
+        return bool(re.search(r'\b' + re.escape(kw_lower) + r'\b', text_lower))
+        
+    return False
+
+
+def categorize_keyword(keyword: str) -> str:
+    """Classify a skill keyword into one of 5 standard resume domains."""
+    kw = keyword.lower()
+    languages = {"python", "javascript", "typescript", "java", "c++", "c", "c#", "go", "golang", "rust", "ruby", "php", "swift", "kotlin", "dart", "scala", "r", "sql", "html", "css", "solidity"}
+    frameworks = {"react", "next.js", "nextjs", "vue", "angular", "fastapi", "django", "flask", "spring boot", "express", "node.js", "nodejs", "pytorch", "tensorflow", "keras", "transformers", "langchain", "graphql", "tailwind", "tailwindcss", "redux", "scikit-learn", "sklearn", "spark", "apache spark", "dbt", "pandas", "numpy"}
+    cloud_devops = {"aws", "gcp", "azure", "docker", "kubernetes", "k8s", "terraform", "ci/cd", "github actions", "linux", "bash", "prometheus", "grafana", "helm", "argocd", "microservices", "system design", "distributed systems", "serverless", "cloud"}
+    databases = {"postgresql", "postgres", "mysql", "mongodb", "redis", "cassandra", "dynamodb", "elasticsearch", "sqlite", "oracle", "snowflake", "bigquery", "delta lake", "vector databases", "qdrant", "pinecone", "chroma"}
+    
+    for l in languages:
+        if l in kw or kw in l:
+            return "languages"
+    for f in frameworks:
+        if f in kw or kw in f:
+            return "frameworks"
+    for c in cloud_devops:
+        if c in kw or kw in c:
+            return "cloud_devops"
+    for d in databases:
+        if d in kw or kw in d:
+            return "databases"
+            
+    return "tools"
+
+
 # ─── Core Technical Roles & General CV Taxonomy ──────────────────────────────────────────
 ROLE_KEYWORD_TAXONOMY = {
     "General / Universal CV": [
@@ -368,6 +484,7 @@ async def parse_and_extract_resume(
 ) -> Dict[str, Any]:
     """
     Extract structured resume fields from raw text or uploaded PDF/DOCX file.
+    Preserves 100% factual accuracy of the candidate's actual background.
     """
     text = raw_text
     if file_bytes:
@@ -377,78 +494,88 @@ async def parse_and_extract_resume(
             text = resume_parser.parse_docx(file_bytes)
 
     if not text.strip():
-        logger.warning("Could not extract text layer from file, synthesizing calibrated baseline for target role.")
+        logger.warning("Could not extract text layer from file, returning empty structured template.")
         baseline = _rule_based_mnc_optimizer({"name": "Candidate"}, target_role=target_role)
         baseline["improvements_applied"] = [
-            "Document contains scanned images without a readable text layer.",
-            "Synthesized elite MNC-grade structure calibrated to target role specifications."
+            "Document contains scanned images or unreadable text layer.",
+            "Please paste resume text or upload a clear text PDF/DOCX."
         ]
         return baseline
 
-    prompt = f"""You are an elite MNC Technical Recruiter and ATS Parser. Parse this raw resume into clean, structured JSON.
+    prompt = f"""You are a precise, factual Resume Parser. Extract all structured sections from this raw resume text into JSON.
+
+STRICT FACTUAL INTEGRITY INSTRUCTIONS:
+- Extract ONLY information that is explicitly stated in the raw resume text.
+- DO NOT invent, fabricate, hallucinate, assume, or add new companies, roles, dates, degrees, projects, skills, certifications, or metrics.
+- Preserve the candidate's exact experience, jobs, schools, projects, and skills.
+- If a field or section is not mentioned in the resume, return an empty string "" or empty list [].
+- Organize skills ONLY from what is mentioned in the text into languages, frameworks, cloud_devops, databases, tools. Do not add unmentioned skills.
 
 Raw Resume Text:
-{text[:6000]}
+{text[:8000]}
 
 Target Role: {target_role}
 
-Return strict JSON with these exact keys:
+Return strict JSON with these keys:
 {{
-  "name": "Full Name",
-  "email": "email@example.com",
-  "phone": "+1 ...",
-  "location": "City, Country",
-  "linkedin": "linkedin.com/in/...",
-  "github": "github.com/...",
-  "summary": "Professional summary",
+  "name": "Candidate full name as written in resume",
+  "email": "Email address or empty string",
+  "phone": "Phone number or empty string",
+  "location": "Location or empty string",
+  "linkedin": "LinkedIn profile URL or empty string",
+  "github": "GitHub profile URL or empty string",
+  "summary": "Candidate professional summary from resume, or empty string",
   "experience": [
     {{
       "company": "Company Name",
       "role": "Job Title",
-      "duration": "Dates (e.g. 2022 - Present)",
-      "location": "City/Remote",
+      "duration": "Dates worked",
+      "location": "Location",
       "bullets": ["Bullet 1", "Bullet 2"]
     }}
   ],
   "education": [
     {{
-      "institution": "University / College",
-      "degree": "Degree and Major",
-      "year": "Graduation Year",
-      "gpa": "GPA (optional)"
+      "institution": "University / College / School Name",
+      "degree": "Degree / Qualification and Field of Study",
+      "year": "Graduation Year or date range",
+      "gpa": "GPA if mentioned, else empty string",
+      "location": "Location or empty string"
     }}
   ],
   "skills": {{
-    "languages": ["Python", "TypeScript", ...],
-    "frameworks": ["FastAPI", "React", ...],
-    "cloud_devops": ["AWS", "Docker", ...],
-    "databases": ["PostgreSQL", "Redis", ...],
-    "tools": ["Git", "Postman", ...]
+    "languages": [],
+    "frameworks": [],
+    "cloud_devops": [],
+    "databases": [],
+    "tools": []
   }},
   "projects": [
     {{
       "name": "Project Name",
-      "description": "Project brief",
-      "technologies": ["Tech 1", "Tech 2"],
-      "impact": "Quantified result / metric"
+      "description": "Project description from resume",
+      "technologies": [],
+      "impact": "Quantified result if mentioned in resume, else empty string",
+      "githubUrl": "",
+      "demoUrl": ""
     }}
   ],
   "certifications": [
     {{
       "name": "Certification Name",
-      "issuer": "Issuing Org",
-      "year": "Year"
+      "issuer": "Issuing Organization if mentioned",
+      "year": "Year if mentioned"
     }}
   ]
 }}"""
 
-    system = "You are a specialized JSON parser. Output only valid JSON conforming strictly to the requested schema."
+    system = "You are a specialized JSON parser. Output only valid JSON conforming strictly to the requested schema based solely on the provided text."
     try:
         import asyncio
         data = await asyncio.wait_for(acall_llm_json(prompt=prompt, system_prompt=system), timeout=12.0)
-        # Calculate ATS score on parsed data
+        # Calculate genuine ATS score on parsed data
         ats_audit = calculate_comprehensive_ats_score(data, target_role)
-        data["ats_score"] = max(90, ats_audit["overall_score"])
+        data["ats_score"] = ats_audit["overall_score"]
         data["ats_tier"] = ats_audit["ats_tier"]
         data["section_scores"] = ats_audit["section_scores"]
         data["improvement_tips"] = ats_audit["action_items"]
@@ -465,114 +592,90 @@ async def optimize_for_mnc_ats(
 ) -> Dict[str, Any]:
     """
     Transform and upgrade the candidate's resume into a Tier-1 MNC quality resume
-    guaranteeing a 90+ ATS score.
-    - Rewrites bullets to Google XYZ Formula (Accomplished [X] measured by [Y] doing [Z])
-    - Injects high-tier action verbs (Architected, Spearheaded, Engineered, Optimized)
-    - Enriches industry tech stack keywords & quantifiable metrics
+    while strictly preserving their authentic background, companies, projects, and skills.
+    - Rewrites existing bullets using strong action verbs & Google XYZ / STAR structural framing
+    - Refines clarity and flow without fabricating false metrics or unmentioned technologies
     """
-    prompt = f"""You are a Principal Technical Recruiter & Resume Writer for top MNCs (Google, Amazon, Microsoft, Meta).
-Transform this candidate's resume to achieve an ATS score of 95%+ for the role: {target_role} (Target Tier: {target_company or 'Fortune 500 / Top Tech MNC'}).
+    prompt = f"""You are a Principal Technical Recruiter & Resume Writer for top MNCs.
+Polish and elevate this candidate's resume for the role: {target_role} (Target Company/Tier: {target_company or 'Fortune 500 / Top Tech MNC'}).
 
 Input Resume Data:
 {resume_data}
 
-Transformation Rules:
-1. Rewriting Bullet Points: Every single experience bullet MUST strictly follow the Google XYZ formula:
-   'Accomplished [X] as measured by [Y], by doing [Z]'
-   Begin with powerful Tier-1 action verbs (e.g., Architected, Spearheaded, Engineered, Optimized, Scaled, Orchestrated).
-   Include tangible, realistic metrics (e.g. '% latency reduction', '$ cost saved', 'X million daily requests', '99.99% uptime', 'scale of active users').
-2. Professional Summary: 2-3 sentence powerhouse summary highlighting core architectural mastery, years of impact, and quantifiable accomplishments.
-3. Skills Categorization: Organize thoroughly into languages, frameworks, cloud_devops, databases, and tools with high-density MNC keywords for {target_role}.
-4. Projects: Elevate with clear problem description, modern tech stack, and verified high-impact metrics.
-5. Guaranteed ATS MNC Tier: Output must achieve an elite 90+ score.
+CRITICAL RULES FOR FACTUAL INTEGRITY:
+1. DO NOT invent fake companies, degrees, tools, or fictional projects that the candidate never worked on.
+2. Polish the candidate's EXISTING experience bullet points:
+   - Begin with powerful Tier-1 action verbs (e.g. Architected, Spearheaded, Engineered, Optimized, Scaled, Orchestrated, Developed, Implemented).
+   - Format bullets to clearly state the action taken and impact based on the candidate's actual responsibilities.
+   - Refine grammar, technical clarity, and active voice without making up absurd numbers.
+3. Organize the candidate's existing skills cleanly into languages, frameworks, cloud_devops, databases, and tools.
+4. Summary: 2-3 sentence executive summary tailored to the candidate's actual background and target role.
 
-Return strict JSON with this exact structure:
+Return strict JSON preserving all candidate fields with upgraded bullets and summary:
 {{
   "name": "{resume_data.get('name', 'Candidate')}",
-  "email": "{resume_data.get('email', 'email@example.com')}",
+  "email": "{resume_data.get('email', '')}",
   "phone": "{resume_data.get('phone', '')}",
   "location": "{resume_data.get('location', '')}",
   "linkedin": "{resume_data.get('linkedin', '')}",
   "github": "{resume_data.get('github', '')}",
-  "summary": "Rewritten high-impact summary",
+  "summary": "Polished high-impact professional summary",
   "experience": [
     {{
-      "company": "...",
-      "role": "...",
-      "duration": "...",
-      "location": "...",
-      "bullets": [
-        "Architected ... resulting in 40% reduction in ... by implementing ...",
-        "Spearheaded ... scaling throughput to 10M+ daily events using ..."
-      ]
+      "company": "Company Name",
+      "role": "Role Title",
+      "duration": "Duration",
+      "location": "Location",
+      "bullets": ["Enhanced bullet 1", "Enhanced bullet 2"]
     }}
   ],
   "education": [
     {{
-      "institution": "...",
-      "degree": "...",
-      "year": "...",
-      "gpa": "..."
+      "institution": "Institution",
+      "degree": "Degree",
+      "year": "Year",
+      "gpa": "GPA"
     }}
   ],
   "skills": {{
-    "languages": ["Python", "TypeScript", ...],
-    "frameworks": ["FastAPI", "React", ...],
-    "cloud_devops": ["AWS (EKS, S3)", "Docker", "Kubernetes", "CI/CD GitHub Actions", "Terraform"],
-    "databases": ["PostgreSQL", "Redis", ...],
-    "tools": ["Kafka", "Git", "Datadog", "Prometheus"]
+    "languages": [],
+    "frameworks": [],
+    "cloud_devops": [],
+    "databases": [],
+    "tools": []
   }},
   "projects": [
     {{
-      "name": "...",
-      "description": "...",
-      "technologies": ["..."],
-      "impact": "Quantified metric (e.g. Handled 3.5M metrics/min with <15ms latency)"
+      "name": "Project Name",
+      "description": "Enhanced description",
+      "technologies": [],
+      "impact": "Impact description"
     }}
   ],
   "certifications": [
     {{
-      "name": "...",
-      "issuer": "...",
-      "year": "..."
+      "name": "Cert Name",
+      "issuer": "Issuer",
+      "year": "Year"
     }}
   ],
-  "ats_score": 96,
-  "ats_tier": "MNC Elite 90+",
-  "section_scores": {{
-    "quantified_impact": 98,
-    "action_verbs": 96,
-    "keyword_density": 95,
-    "section_completeness": 98,
-    "ats_formatting": 96
-  }},
   "improvements_applied": [
-    "Rewrote all bullet points into Google XYZ formula with quantifiable business metrics",
-    "Injected Tier-1 leadership action verbs (Architected, Spearheaded, Engineered)",
-    "Added high-density MNC keywords for {target_role}",
-    "Upgraded technical skills matrix with cloud and distributed systems tooling"
+    "Polished experience bullets with strong action verbs",
+    "Enhanced sentence structure for ATS readability",
+    "Cleanly categorized technical competencies"
   ]
 }}"""
 
-    system = "You are an elite career coach and ATS scoring specialist. Generate exceptional, realistic, ATS-optimized JSON."
+    system = "You are an elite career coach and ATS scoring specialist. Generate realistic, ATS-optimized JSON preserving candidate authenticity."
 
     try:
         import asyncio
-        optimized = await asyncio.wait_for(acall_llm_json(prompt=prompt, system_prompt=system), timeout=3.5)
+        optimized = await asyncio.wait_for(acall_llm_json(prompt=prompt, system_prompt=system), timeout=4.0)
         # Verify and audit score
-        audit = calculate_comprehensive_ats_score(optimized, target_role)
-        # Ensure score reflects MNC 90+ boost
-        boosted_score = max(92, audit["overall_score"])
-        optimized["ats_score"] = boosted_score
-        optimized["ats_tier"] = "MNC Elite 90+"
-        if "section_scores" not in optimized or not optimized["section_scores"]:
-            optimized["section_scores"] = {
-                "quantified_impact": 96,
-                "action_verbs": 95,
-                "keyword_density": 94,
-                "section_completeness": 97,
-                "ats_formatting": 96
-            }
+        audit = calculate_comprehensive_ats_score(optimized, target_role, target_company)
+        optimized["ats_score"] = audit["overall_score"]
+        optimized["ats_tier"] = audit["ats_tier"]
+        optimized["section_scores"] = audit["section_scores"]
         return optimized
     except Exception as e:
         logger.warning(f"MNC optimization via LLM failed or timed out, applying rule-based MNC enhancer: {e}")
@@ -984,9 +1087,16 @@ def _heuristic_parse_resume(text: str, target_role: str) -> Dict[str, Any]:
     # Extract name from top lines
     lines = [l.strip() for l in text.split('\n') if l.strip()]
     name = "Candidate"
-    for l in lines[:5]:
-        if len(l) < 35 and "@" not in l and not any(kw in l.lower() for kw in ["resume", "curriculum", "cv", "page", "email", "phone"]):
+    location = ""
+    for l in lines[:6]:
+        if len(l) < 40 and "@" not in l and not re.search(r'\d{3,}', l) and not any(kw in l.lower() for kw in ["resume", "curriculum", "cv", "page", "email", "phone", "github", "linkedin", "http"]):
             name = l
+            break
+            
+    # Try finding location in header
+    for l in lines[:6]:
+        if any(w in l.lower() for w in ["india", "usa", "ca", "ny", "tx", "bangalore", "mumbai", "delhi", "hyderabad", "pune", "chennai", "london", "san francisco", "remote"]):
+            location = l
             break
     
     # Extract experience bullets
@@ -995,15 +1105,14 @@ def _heuristic_parse_resume(text: str, target_role: str) -> Dict[str, Any]:
     
     parsed_experiences = []
     if exp_blocks:
-        for block in exp_blocks[:4]:
+        for block in exp_blocks[:6]:
             b_lines = [l.strip() for l in block.split('\n') if l.strip()]
             if not b_lines:
                 continue
             first_line = b_lines[0]
-            # Try to extract company and role
-            role_match = target_role
-            company_match = "Tech Enterprise"
-            duration_match = "2022 - Present"
+            role_match = ""
+            company_match = ""
+            duration_match = ""
             
             date_search = re.search(r'((?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec|[0-9]{4})\s*[-–to]\s*(?:Present|Current|[0-9]{4}|[a-zA-Z]+))', block, re.IGNORECASE)
             if date_search:
@@ -1020,41 +1129,70 @@ def _heuristic_parse_resume(text: str, target_role: str) -> Dict[str, Any]:
             bullets = []
             for bline in b_lines[1:]:
                 cleaned_b = re.sub(r'^[\s•\-\*0-9\.\)]+', '', bline).strip()
-                if len(cleaned_b) > 15:
+                if len(cleaned_b) > 8:
                     bullets.append(cleaned_b)
 
-            if not bullets:
-                bullets = [
-                    f"Architected scalable {target_role} solutions reducing system bottlenecks by 40% across high-throughput production workloads.",
-                    "Collaborated with cross-functional engineering teams to implement high-reliability microservice workflows."
-                ]
-
             parsed_experiences.append({
-                "company": company_match,
-                "role": role_match,
-                "duration": duration_match,
-                "location": "San Francisco, CA",
+                "company": company_match or "Professional Experience",
+                "role": role_match or "",
+                "duration": duration_match or "Recent",
+                "location": location,
                 "bullets": bullets
             })
-    else:
-        parsed_experiences = [
-            {
-                "company": "Technology Solutions Inc.",
-                "role": target_role,
-                "duration": "2022 - Present",
-                "location": "San Francisco, CA",
-                "bullets": [
-                    "Engineered distributed web microservices handling high-throughput user requests with 99.9% uptime.",
-                    "Collaborated with cross-functional engineering teams to implement scalable RESTful APIs."
-                ]
-            }
-        ]
+
+    # Extract education
+    edu_text = sections.get("education", "")
+    parsed_education = []
+    if edu_text:
+        edu_lines = [l.strip() for l in edu_text.split('\n') if len(l.strip()) > 5]
+        curr_inst = ""
+        curr_deg = ""
+        curr_yr = ""
+        for el in edu_lines[:8]:
+            yr_match = re.search(r'(?:19|20)\d{2}(?:\s*[-–to]\s*(?:(?:19|20)\d{2}|Present|Current))?', el)
+            if yr_match:
+                curr_yr = yr_match.group(0)
+            if any(k in el.lower() for k in ["university", "college", "institute", "school", "academy", "iit", "nit", "bits"]):
+                curr_inst = el
+            elif any(k in el.lower() for k in ["bachelor", "master", "b.tech", "m.tech", "b.e", "m.e", "b.s", "m.s", "bca", "mca", "diploma", "ph.d", "degree", "science", "engineering"]):
+                curr_deg = el
+            elif not curr_deg:
+                curr_deg = el
+        if curr_inst or curr_deg:
+            parsed_education.append({
+                "institution": curr_inst or "Academic Institution",
+                "degree": curr_deg or "Degree Program",
+                "year": curr_yr or "",
+                "gpa": "",
+                "location": location
+            })
+
+    # Extract projects
+    proj_text = sections.get("projects", "")
+    parsed_projects = []
+    if proj_text:
+        proj_blocks = [p.strip() for p in proj_text.split('\n\n') if len(p.strip()) > 10]
+        if not proj_blocks:
+            proj_blocks = [l.strip() for l in proj_text.split('\n') if len(l.strip()) > 10]
+        for pb in proj_blocks[:4]:
+            p_lines = [l.strip() for l in pb.split('\n') if l.strip()]
+            if p_lines:
+                pname = p_lines[0]
+                pdesc = " ".join(p_lines[1:]) if len(p_lines) > 1 else p_lines[0]
+                parsed_projects.append({
+                    "name": pname[:60],
+                    "description": pdesc,
+                    "technologies": [],
+                    "impact": "",
+                    "githubUrl": "",
+                    "demoUrl": ""
+                })
 
     # Extract skills
     skill_text = sections.get("skills", "")
-    extracted_skills = [s.strip() for s in re.split(r'[,|•\n\/\\]', skill_text) if 2 <= len(s.strip()) <= 30]
+    extracted_skills = [s.strip() for s in re.split(r'[,|•\n\/\\]', skill_text) if 2 <= len(s.strip()) <= 35]
     
-    # Categorize skills
+    # Categorize only what user actually wrote
     categorized_skills: Dict[str, List[str]] = {
         "languages": [],
         "frameworks": [],
@@ -1063,10 +1201,10 @@ def _heuristic_parse_resume(text: str, target_role: str) -> Dict[str, Any]:
         "tools": []
     }
     
-    lang_set = {"python", "typescript", "javascript", "go", "java", "c++", "c#", "rust", "sql", "ruby", "php", "swift", "kotlin", "html", "css"}
-    fw_set = {"react", "fastapi", "next.js", "node.js", "vue", "angular", "django", "flask", "spring boot", "express", "tailwind", "graphql", "grpc"}
-    cloud_set = {"aws", "docker", "kubernetes", "ci/cd", "terraform", "helm", "gcp", "azure", "linux", "jenkins", "ansible"}
-    db_set = {"postgresql", "redis", "mongodb", "mysql", "qdrant", "dynamodb", "elasticsearch", "cassandra", "sqlite"}
+    lang_set = {"python", "typescript", "javascript", "go", "java", "c++", "c#", "rust", "sql", "ruby", "php", "swift", "kotlin", "html", "css", "r", "matlab", "scala", "dart"}
+    fw_set = {"react", "fastapi", "next.js", "node.js", "vue", "angular", "django", "flask", "spring", "express", "tailwind", "bootstrap", "flutter", "graphql", "rest"}
+    cloud_set = {"aws", "docker", "kubernetes", "ci/cd", "terraform", "gcp", "azure", "linux", "jenkins", "git", "github"}
+    db_set = {"postgresql", "redis", "mongodb", "mysql", "oracle", "sqlite", "dynamodb", "elasticsearch", "firebase"}
     
     for s in extracted_skills:
         s_low = s.lower()
@@ -1081,42 +1219,31 @@ def _heuristic_parse_resume(text: str, target_role: str) -> Dict[str, Any]:
         else:
             categorized_skills["tools"].append(s)
 
-    # Defaults if category empty
-    if not categorized_skills["languages"]: categorized_skills["languages"] = ["Python", "TypeScript", "SQL"]
-    if not categorized_skills["frameworks"]: categorized_skills["frameworks"] = ["FastAPI", "React", "Node.js"]
-    if not categorized_skills["cloud_devops"]: categorized_skills["cloud_devops"] = ["AWS", "Docker", "CI/CD"]
-    if not categorized_skills["databases"]: categorized_skills["databases"] = ["PostgreSQL", "Redis"]
-    if not categorized_skills["tools"]: categorized_skills["tools"] = ["Git", "Postman", "Linux"]
+    # Extract certifications
+    cert_text = sections.get("certifications", "")
+    parsed_certifications = []
+    if cert_text:
+        cert_lines = [l.strip() for l in cert_text.split('\n') if len(l.strip()) > 5]
+        for cl in cert_lines[:4]:
+            parsed_certifications.append({
+                "name": cl,
+                "issuer": "",
+                "year": ""
+            })
 
     data = {
         "name": name,
-        "email": email or "candidate@example.com",
-        "phone": phone or "+1 (555) 234-5678",
-        "location": "San Francisco, CA",
-        "linkedin": linkedin or "linkedin.com/in/candidate",
-        "github": github or "github.com/candidate",
-        "summary": sections.get("summary", "").strip() or f"Dedicated {target_role} with proven experience designing scalable architectures, high-throughput microservices, and modern web applications.",
+        "email": email,
+        "phone": phone,
+        "location": location,
+        "linkedin": linkedin,
+        "github": github,
+        "summary": sections.get("summary", "").strip(),
         "experience": parsed_experiences,
-        "education": [
-            {
-                "institution": "University of Technology",
-                "degree": "B.S. in Computer Science",
-                "year": "2022",
-                "gpa": "3.8 / 4.0"
-            }
-        ],
+        "education": parsed_education,
         "skills": categorized_skills,
-        "projects": [
-            {
-                "name": "Cloud Infrastructure Automation Platform",
-                "description": "Automated deployment pipeline and telemetry dashboard for distributed microservices.",
-                "technologies": ["Python", "Docker", "AWS", "FastAPI"],
-                "impact": "Reduced deployment overhead by 45% with sub-second alert triggers."
-            }
-        ],
-        "certifications": [
-            {"name": "AWS Certified Developer – Associate", "issuer": "Amazon Web Services", "year": "2023"}
-        ]
+        "projects": parsed_projects,
+        "certifications": parsed_certifications
     }
     
     audit = calculate_comprehensive_ats_score(data, target_role)
@@ -1132,70 +1259,42 @@ def _rule_based_mnc_optimizer(data: Dict[str, Any], target_role: str = "Software
     Applies deterministic MNC transformations while strictly preserving user's
     actual background (companies, role titles, projects, education, contact info).
     """
-    name = data.get("name") or "Alex Morgan"
-    email = data.get("email") or "alex.morgan@example.com"
-    phone = data.get("phone") or "+1 (555) 234-5678"
-    location = data.get("location") or "San Francisco, CA"
-    linkedin = data.get("linkedin") or "linkedin.com/in/candidate"
-    github = data.get("github") or "github.com/candidate"
+    name = data.get("name") or "Candidate Name"
+    email = data.get("email") or ""
+    phone = data.get("phone") or ""
+    location = data.get("location") or ""
+    linkedin = data.get("linkedin") or ""
+    github = data.get("github") or ""
 
-    # Lookup Target Company Profile & signature tech
-    comp_profile = COMPANY_PROFILES.get(target_company)
-    if not comp_profile:
-        for cname, cdata in COMPANY_PROFILES.items():
-            if cname.lower() in target_company.lower() or target_company.lower() in cname.lower():
-                comp_profile = cdata
-                break
-    if not comp_profile:
-        comp_profile = COMPANY_PROFILES["Google"]
-
-    sig_kws = comp_profile.get("keywords", ["Python", "FastAPI", "Docker", "AWS"])
-    sig_verb = comp_profile.get("example_verb", "Architected")
-    sig_culture = comp_profile.get("culture", "Google XYZ Formula")
-
-    # Upgraded XYZ bullets for user's existing experiences
+    # Polish user's existing experiences
     raw_exp = data.get("experience", [])
     upgraded_experience = []
 
-    if raw_exp and len(raw_exp) > 0:
-        for idx, exp in enumerate(raw_exp):
-            comp = exp.get("company") or f"Tech Enterprise {idx + 1}"
-            role = exp.get("role") or target_role
-            duration = exp.get("duration") or "2022 - Present"
+    if raw_exp and isinstance(raw_exp, list):
+        for exp in raw_exp:
+            if not isinstance(exp, dict):
+                continue
+            comp = exp.get("company") or ""
+            role = exp.get("role") or ""
+            duration = exp.get("duration") or ""
             loc = exp.get("location") or location
             raw_bullets = exp.get("bullets", [])
 
             enhanced_bullets = []
-            for b in raw_bullets:
-                if not b or not isinstance(b, str) or len(b.strip()) < 5:
-                    continue
-                b_clean = b.strip()
-                b_low = b_clean.lower()
-                
-                # If already starts with Tier 1 verb and has metrics, polish
-                if any(b_low.startswith(tv) for tv in TIER1_ACTION_VERBS) and ("%" in b_clean or "$" in b_clean or "reduced" in b_low or "scaled" in b_low):
-                    enhanced_bullets.append(b_clean)
-                elif "api" in b_low or "backend" in b_low or "server" in b_low or "microservice" in b_low:
-                    enhanced_bullets.append(f"Architected and deployed high-throughput backend microservices and REST/gRPC endpoints in Python FastAPI and Redis, reducing API p99 response latency by 44% across 10M+ daily requests.")
-                elif "frontend" in b_low or "react" in b_low or "ui" in b_low or "component" in b_low or "web" in b_low:
-                    enhanced_bullets.append(f"Engineered responsive React/TypeScript state management architecture and reusable component design systems, boosting user session retention by 32% and accelerating page render speeds by 45%.")
-                elif "database" in b_low or "sql" in b_low or "postgres" in b_low or "mongo" in b_low or "query" in b_low:
-                    enhanced_bullets.append(f"Optimized mission-critical PostgreSQL query execution plans and Redis caching clusters, boosting read throughput by 65% for 450,000 active concurrent users.")
-                elif "cloud" in b_low or "aws" in b_low or "docker" in b_low or "kubernetes" in b_low or "ci/cd" in b_low or "deploy" in b_low:
-                    enhanced_bullets.append(f"Spearheaded cloud infrastructure migration to AWS Kubernetes (EKS) with automated GitHub Actions CI/CD pipelines, slashing release deployment cycles from 4 days to 25 minutes.")
-                elif "test" in b_low or "bug" in b_low or "security" in b_low or "auth" in b_low:
-                    enhanced_bullets.append(f"Engineered end-to-end OAuth2/OIDC authentication workflows and comprehensive automated test coverage, reducing production defect regression rates by 88%.")
-                else:
-                    enhanced_bullets.append(f"Orchestrated scalable {target_role} architecture for {b_clean[:40]}, resulting in a 42% boost in processing efficiency across distributed cloud environments.")
-
-            # If no bullets existed, give tailored company bullets
-            if not enhanced_bullets:
-                kw_str = ", ".join(sig_kws[:3])
-                enhanced_bullets = [
-                    f"{sig_verb} and deployed distributed high-throughput microservices using {kw_str}, reducing p99 latency by 44% across 12M+ daily requests in compliance with {target_company} standards.",
-                    f"Spearheaded cloud infrastructure migration utilizing {sig_kws[3] if len(sig_kws) > 3 else 'Kubernetes'} and automated CI/CD pipelines, slashing release cycles by 70% and optimizing cloud efficiency.",
-                    f"Engineered responsive, fault-tolerant workflows handling 10,000+ events/sec with zero data loss, elevating platform availability to 99.99%."
-                ]
+            if isinstance(raw_bullets, list):
+                for b in raw_bullets:
+                    if not b or not isinstance(b, str) or len(b.strip()) < 3:
+                        continue
+                    b_clean = b.strip()
+                    b_low = b_clean.lower()
+                    
+                    # If bullet already has strong verbs and structure, keep clean
+                    if any(b_low.startswith(tv) for tv in TIER1_ACTION_VERBS):
+                        enhanced_bullets.append(b_clean)
+                    else:
+                        # Polish by prefixing strong verb while keeping candidate's exact wording
+                        verb = "Spearheaded" if "lead" in b_low or "team" in b_low else ("Engineered" if "develop" in b_low or "built" in b_low else "Optimized")
+                        enhanced_bullets.append(f"{verb} {b_clean[0].lower() + b_clean[1:]}")
 
             upgraded_experience.append({
                 "company": comp,
@@ -1204,99 +1303,43 @@ def _rule_based_mnc_optimizer(data: Dict[str, Any], target_role: str = "Software
                 "location": loc,
                 "bullets": enhanced_bullets
             })
-    else:
-        upgraded_experience = [
-            {
-                "company": "Apex Global Systems",
-                "role": f"Senior {target_role}",
-                "duration": "2022 - Present",
-                "location": "San Francisco, CA",
-                "bullets": [
-                    "Architected and deployed distributed event-driven microservices using Python FastAPI, Redis, and Apache Kafka, reducing API p99 response latency by 44% across 12M+ daily requests.",
-                    "Spearheaded multi-tenant cloud infrastructure migration to AWS Kubernetes (EKS), slashing deployment overhead by 70% and saving $130K in annual cloud infrastructure spend.",
-                    "Engineered resilient real-time processing pipelines handling 10,000+ events/sec with zero packet loss, elevating platform availability to 99.99%."
-                ]
-            },
-            {
-                "company": "Nexus Software Labs",
-                "role": f"{target_role}",
-                "duration": "2020 - 2022",
-                "location": "Seattle, WA",
-                "bullets": [
-                    "Optimized mission-critical PostgreSQL query execution plans and connection pooling, boosting database read throughput by 65% for 500,000 active users.",
-                    "Engineered end-to-end OAuth2/OIDC authentication microservices with automated rate-limiting, achieving 100% compliance with SOC2 Type II security audits."
-                ]
-            }
-        ]
 
-    # Skills: Preserve user's existing skills + add top MNC keywords
+    # Skills: Preserve user's existing skills
     user_skills = data.get("skills", {})
     upgraded_skills: Dict[str, List[str]] = {
-        "languages": ["Python", "TypeScript", "Go", "SQL", "JavaScript"],
-        "frameworks": ["FastAPI", "React", "Next.js", "Node.js", "TailwindCSS"],
-        "cloud_devops": ["AWS (EKS, S3, RDS)", "Docker", "Kubernetes", "CI/CD GitHub Actions", "Terraform"],
-        "databases": ["PostgreSQL", "Redis", "MongoDB", "Qdrant Vector DB"],
-        "tools": ["Kafka", "Datadog", "Prometheus", "Git", "Postman"]
+        "languages": [],
+        "frameworks": [],
+        "cloud_devops": [],
+        "databases": [],
+        "tools": []
     }
-
-    # Add target company signature keywords
-    for kw in sig_kws[:4]:
-        if kw not in upgraded_skills["tools"] and kw not in upgraded_skills["cloud_devops"] and kw not in upgraded_skills["languages"] and kw not in upgraded_skills["frameworks"]:
-            upgraded_skills["cloud_devops"].append(kw)
 
     if isinstance(user_skills, dict):
         for k, v in user_skills.items():
-            if isinstance(v, list) and v:
-                existing_set = set(upgraded_skills.get(k, []))
-                for item in v:
-                    if str(item).strip() and str(item).strip() not in existing_set:
-                        upgraded_skills.setdefault(k, []).append(str(item).strip())
+            if isinstance(v, list):
+                upgraded_skills[k] = [str(item).strip() for item in v if str(item).strip()]
+            elif isinstance(v, str) and v.strip():
+                upgraded_skills[k] = [s.strip() for s in v.split(",") if s.strip()]
 
-    # Projects: Preserve user's projects + enhance impact
+    # Projects: Preserve user's projects
     raw_projects = data.get("projects", [])
     upgraded_projects = []
-    if raw_projects and len(raw_projects) > 0:
+    if raw_projects and isinstance(raw_projects, list):
         for p in raw_projects:
-            p_name = p.get("name") or "High-Throughput Distributed Telemetry Engine"
-            p_desc = p.get("description") or "Engineered real-time telemetry processing platform aggregating 50,000+ distributed microservice metrics with automated anomaly alerts."
-            p_tech = p.get("technologies") or ["Python", "FastAPI", "Redis", "Docker", "AWS"]
-            p_impact = p.get("impact") or "Processed 3.5M metrics/min with <15ms latency and 99.999% fault tolerance."
-            if not any(m in p_impact for m in ["%", "$", "ms", "latency", "scale", "uptime", "users", "M"]):
-                p_impact = f"{p_impact.rstrip('.')} — processed 3.5M events/min with 99.99% uptime and <20ms latency."
+            if not isinstance(p, dict):
+                continue
             upgraded_projects.append({
-                "name": p_name,
-                "description": p_desc,
-                "technologies": p_tech,
-                "impact": p_impact
+                "name": p.get("name", ""),
+                "description": p.get("description", ""),
+                "technologies": p.get("technologies", []) if isinstance(p.get("technologies"), list) else [],
+                "impact": p.get("impact", ""),
+                "githubUrl": p.get("githubUrl", ""),
+                "demoUrl": p.get("demoUrl", "")
             })
-    else:
-        upgraded_projects = [
-            {
-                "name": "High-Throughput Distributed Telemetry Engine",
-                "description": "Engineered real-time telemetry processing platform aggregating 50,000+ distributed microservice metrics with automated anomaly alerts.",
-                "technologies": ["Python", "FastAPI", "Apache Kafka", "Redis", "Docker", "AWS"],
-                "impact": "Processed 3.5M metrics/min with <15ms ingestion latency and 99.999% fault tolerance."
-            },
-            {
-                "name": "AI Career Intelligence & Semantic Search Engine",
-                "description": "Architected intelligent vector search pipeline performing semantic candidate-job matching across 250,000+ job descriptions.",
-                "technologies": ["TypeScript", "React", "Qdrant Vector DB", "FastAPI", "PostgreSQL"],
-                "impact": "Improved candidate shortlisting accuracy by 4.2x and accelerated recruiter evaluation turnaround by 60%."
-            }
-        ]
 
-    # Education
-    education = data.get("education") or [
-        {"institution": "University of California, Berkeley", "degree": "B.S. in Computer Science", "year": "2020", "gpa": "3.85 / 4.0"}
-    ]
-
-    # Certifications
-    certifications = data.get("certifications") or [
-        {"name": "AWS Certified Solutions Architect – Associate", "issuer": "Amazon Web Services", "year": "2023"},
-        {"name": "Certified Kubernetes Administrator (CKA)", "issuer": "Cloud Native Computing Foundation", "year": "2024"}
-    ]
-
-    upgraded_summary = f"Impact-driven {target_role} targeting {target_company} with 4+ years of expertise architecting high-scale distributed systems, low-latency microservices, and high-reliability platforms ({comp_profile.get('tagline', 'Tier-1 scale')}) handling millions of daily operations."
+    # Preserve education and certifications
+    education = data.get("education", []) if isinstance(data.get("education"), list) else []
+    certifications = data.get("certifications", []) if isinstance(data.get("certifications"), list) else []
 
     result = {
         "name": name,
@@ -1305,28 +1348,25 @@ def _rule_based_mnc_optimizer(data: Dict[str, Any], target_role: str = "Software
         "location": location,
         "linkedin": linkedin,
         "github": github,
-        "summary": upgraded_summary,
+        "summary": data.get("summary", ""),
         "experience": upgraded_experience,
         "education": education,
         "skills": upgraded_skills,
         "projects": upgraded_projects,
         "certifications": certifications,
-        "ats_score": 96,
-        "ats_tier": "MNC Elite 90+",
-        "section_scores": {
-            "quantified_impact": 98,
-            "action_verbs": 96,
-            "keyword_density": 95,
-            "section_completeness": 98,
-            "ats_formatting": 96
-        },
-        "improvements_applied": [
-            f"Calibrated 100% of bullet points to {target_company} standards ({sig_culture})",
-            f"Injected signature {target_company} action verbs ({sig_verb}, Spearheaded, Engineered)",
-            f"Enriched domain keywords for {target_role} and {target_company} ({', '.join(sig_kws[:4])})",
-            "Upgraded technical skills matrix with cloud and distributed systems tooling"
-        ]
+        "trainings": data.get("trainings", []),
+        "activities": data.get("activities", []),
     }
+
+    audit = calculate_comprehensive_ats_score(result, target_role, target_company)
+    result["ats_score"] = audit["overall_score"]
+    result["ats_tier"] = audit["ats_tier"]
+    result["section_scores"] = audit["section_scores"]
+    result["improvements_applied"] = [
+        "Preserved 100% authentic candidate history and credentials",
+        "Polished bullet point phrasing with active verbs",
+        "Cleanly formatted technical competencies and sections"
+    ]
     return result
 
 

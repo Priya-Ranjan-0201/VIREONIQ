@@ -116,6 +116,47 @@ class MockLLMProvider(BaseLLMProvider):
                 "ats_keywords_added": ["Distributed Microservices", "FastAPI", "Redis Caching", "High-Throughput", "p99 Latency"]
             }
 
+        # ─── System Design Architecture Mock Handler ─────────────────────────
+        if "system design" in combined_text or "architecture" in combined_text and "criteria" in combined_text:
+            from services.system_design_evaluator import evaluate_system_design_response
+            content = " ".join([m.get("content", "") for m in messages])
+            return evaluate_system_design_response("Design a scalable distributed system", content)
+
+        # ─── Behavioral STAR Evaluation Mock Handler ──────────────────────────
+        if "behavioral" in combined_text or "star" in combined_text and "situation" in combined_text:
+            from services.behavioral_star_evaluator import evaluate_behavioral_response
+            content = " ".join([m.get("content", "") for m in messages])
+            return evaluate_behavioral_response("Describe a challenging technical situation", content)
+
+        # ─── Hiring Committee Agent Mock Handler ─────────────────────────────
+        if "hiring agent" in combined_text or "techbarraiser" in combined_text or "culturesync" in combined_text:
+            return {
+                "score": 0.88,
+                "focus_feedback": "Candidate articulated clear architectural trade-offs, defensive error boundaries, and quantitative impact.",
+                "reasoning": "Demonstrated high technical ownership and awareness of failure modes in distributed environments."
+            }
+
+        # ─── Gap Analysis Mock Handler ────────────────────────────────────────
+        if "5-dimensional gap analysis" in combined_text or "gap_analysis" in combined_text:
+            return {
+                "technical_gap_score": 82.0,
+                "communication_gap_score": 88.0,
+                "project_gap_score": 78.0,
+                "confidence_gap_score": 85.0,
+                "consistency_gap_score": 90.0,
+                "overall_readiness_score": 84.6,
+                "missing_skills": ["Distributed Caching", "Idempotency"],
+                "placement_probability": 86.5,
+                "recommendations": [
+                    {
+                        "time_horizon_days": 30,
+                        "dimension": "technical",
+                        "task_description": "Implement an end-to-end Redis cache-aside microservice with exponential backoff retries.",
+                        "resources": ["https://redis.io/docs/manual/patterns/distributed-locks/"]
+                    }
+                ]
+            }
+
         if "feedback" in combined_text:
             return {
                 "overall_score": 94,
