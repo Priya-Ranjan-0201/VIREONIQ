@@ -106,8 +106,8 @@ All verification runs offline against in-memory SQLite (`aiosqlite`) and resilie
 ```powershell
 cd backend
 .\.venv\Scripts\python.exe -m ruff check .          # Lint (0 errors)
-.\.venv\Scripts\python.exe -m mypy .                # Typecheck (300 source files, 0 errors)
-.\.venv\Scripts\python.exe -m pytest tests/ -q      # 165 unit/integration/WS tests
+.\.venv\Scripts\python.exe -m mypy .                # Typecheck (318 source files, 0 errors)
+.\.venv\Scripts\python.exe -m pytest tests/ -q      # 188 unit/integration/WS tests (59% statement coverage)
 .\.venv\Scripts\python.exe -m pytest -m benchmark -v # 2 benchmark tests
 ```
 
@@ -116,8 +116,8 @@ cd backend
 cd frontend
 npm run lint        # ESLint (0 errors, 28 hook/fast-refresh warnings)
 npm run typecheck   # tsc -p tsconfig.app.json --noEmit with strict: true (0 errors)
-npm test            # Vitest unit/component suite (6 files, 14 tests)
-npm run build       # Typecheck + Vite production bundle
+npm test            # Vitest unit/component suite (7 files, 18 tests)
+npm run build       # Typecheck + Vite production bundle (dist/)
 ```
 
 ---
