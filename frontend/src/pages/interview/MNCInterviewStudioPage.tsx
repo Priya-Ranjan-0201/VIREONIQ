@@ -1,4 +1,5 @@
 import { careerIntelligenceApi } from '@/api/careerIntelligenceApi';
+import { UiverseAudioVisualizer } from '@/components/uiverse/UiverseAudioVisualizer';
 import {
     BadgeCheck,
     CheckCircle2,
@@ -590,7 +591,7 @@ export const MNCInterviewStudioPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 p-6 md:p-8 space-y-8">
+    <div className="min-h-screen bg-transparent text-slate-800 dark:text-slate-100 p-6 md:p-8 space-y-8">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-6">
         <div>
@@ -614,6 +615,7 @@ export const MNCInterviewStudioPage: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-3">
+          <UiverseAudioVisualizer isActive={sessionActive} barCount={14} className="hidden sm:flex" />
           {!sessionActive ? (
             <button
               onClick={handleStartSession}
@@ -637,102 +639,110 @@ export const MNCInterviewStudioPage: React.FC = () => {
 
       {/* Target MNC & Round Configurator */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 glass-panel p-5 rounded-2xl">
-        <div>
-          <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-2">Target MNC Archetype</label>
+        <div className="min-w-0">
+          <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider block mb-2 truncate">
+            Target Company
+          </label>
           <select
             value={selectedCompany}
             onChange={(e) => setSelectedCompany(e.target.value)}
             disabled={sessionActive}
-            className="w-full h-11 bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500 font-medium leading-normal truncate"
+            className="w-full h-11 bg-white/90 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-[#add8e6] dark:focus:border-indigo-500 font-medium shadow-xs cursor-pointer truncate"
           >
-            <optgroup label="🌟 General & Universal Standards (All-Rounder)">
-              <option value="Generic Tier-1 MNC">Generic Tier-1 MNC (Universal High-Bar Standard)</option>
-              <option value="General All-Rounder">General All-Rounder (Full-Stack, DSA & System Scale)</option>
-              <option value="General High-Growth Startup">General High-Growth Startup (Velocity & Pragmatic Systems)</option>
-              <option value="General FinTech Core">General FinTech & Trading (Sub-ms Precision & Reliability)</option>
-              <option value="General Cloud Infrastructure">General Cloud & DevOps (Kubernetes, SRE & Observability)</option>
-              <option value="General AI / ML Systems">General AI / ML & LLM Engineering (Inference & Vectors)</option>
-              <option value="General Embedded & Systems">General Embedded & Systems (C/C++, Memory & Kernels)</option>
+            <optgroup label="🌟 Universal Standards">
+              <option value="Generic Tier-1 MNC">Generic Tier-1 MNC</option>
+              <option value="General All-Rounder">General All-Rounder</option>
+              <option value="General High-Growth Startup">High-Growth Startup</option>
+              <option value="General FinTech Core">FinTech & Trading</option>
+              <option value="General Cloud Infrastructure">Cloud & DevOps</option>
+              <option value="General AI / ML Systems">AI / ML Systems</option>
+              <option value="General Embedded & Systems">Embedded & Systems</option>
             </optgroup>
-            <optgroup label="🚀 Big Tech & FAANG+ Titans">
-              <option value="Google">Google (System Scale, Deep DSA & MapReduce)</option>
-              <option value="Amazon">Amazon (16 Leadership Principles & Cloud Scale)</option>
-              <option value="Microsoft">Microsoft (Enterprise Cloud, High Availability & OOP)</option>
-              <option value="Meta">Meta (Fast Execution & Product Concurrency)</option>
-              <option value="Apple">Apple (Low-Latency, Hardware-Software Integration & OS)</option>
-              <option value="Netflix">Netflix (Chaos Engineering & High-Throughput Streaming)</option>
+            <optgroup label="🚀 Big Tech & FAANG+">
+              <option value="Google">Google</option>
+              <option value="Amazon">Amazon</option>
+              <option value="Microsoft">Microsoft</option>
+              <option value="Meta">Meta</option>
+              <option value="Apple">Apple</option>
+              <option value="Netflix">Netflix</option>
             </optgroup>
-            <optgroup label="⚡ AI, GPU & Data Platforms">
-              <option value="Nvidia">Nvidia (CUDA, GPU High-Performance & AI Compute)</option>
-              <option value="Snowflake">Snowflake (Data Warehousing & Vectorized Query Execution)</option>
-              <option value="Databricks">Databricks (Distributed Spark & Lakehouse Pipelines)</option>
-              <option value="Palantir">Palantir (Foundry Big Data Architecture & Graph Defense)</option>
-              <option value="ByteDance">ByteDance / TikTok (Extreme Concurrency & Recommendation Graph)</option>
+            <optgroup label="⚡ AI, GPU & Data">
+              <option value="Nvidia">Nvidia</option>
+              <option value="Snowflake">Snowflake</option>
+              <option value="Databricks">Databricks</option>
+              <option value="Palantir">Palantir</option>
+              <option value="ByteDance">ByteDance / TikTok</option>
             </optgroup>
-            <optgroup label="🏢 Enterprise Cloud, SaaS & Collaboration">
-              <option value="Salesforce">Salesforce (Multi-Tenant Enterprise Cloud & CRM Scale)</option>
-              <option value="Atlassian">Atlassian (Distributed Collaboration & Micro-Frontends)</option>
-              <option value="Adobe">Adobe (Creative Cloud Scale & Graphics WebAssembly)</option>
-              <option value="Oracle">Oracle (Database Engines & Cloud Infrastructure)</option>
-              <option value="Spotify">Spotify (Decentralized Squads & Audio Event Streaming)</option>
-              <option value="Airbnb">Airbnb (Hyper-Reliable Search & GraphQL Microservices)</option>
+            <optgroup label="🏢 Enterprise SaaS">
+              <option value="Salesforce">Salesforce</option>
+              <option value="Atlassian">Atlassian</option>
+              <option value="Adobe">Adobe</option>
+              <option value="Oracle">Oracle</option>
+              <option value="Spotify">Spotify</option>
+              <option value="Airbnb">Airbnb</option>
             </optgroup>
-            <optgroup label="💳 FinTech, Banking & High-Frequency Scale">
-              <option value="Stripe">Stripe (Financial API Rigor & Idempotent Architecture)</option>
-              <option value="Goldman Sachs">Goldman Sachs (Low-Latency Trading & Risk Engines)</option>
-              <option value="JP Morgan Chase">JP Morgan Chase (Global Financial Core & Resilient Messaging)</option>
-              <option value="Bloomberg">Bloomberg (Real-Time Terminal Streaming & Market Feed C++)</option>
-              <option value="Uber">Uber (Distributed Concurrency & Real-Time Geo Dispatch)</option>
+            <optgroup label="💳 FinTech & Banking">
+              <option value="Stripe">Stripe</option>
+              <option value="Goldman Sachs">Goldman Sachs</option>
+              <option value="JP Morgan Chase">JP Morgan Chase</option>
+              <option value="Bloomberg">Bloomberg</option>
+              <option value="Uber">Uber</option>
             </optgroup>
           </select>
         </div>
 
-        <div>
-          <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-2">Target Role</label>
+        <div className="min-w-0">
+          <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider block mb-2 truncate">
+            Target Role
+          </label>
           <select
             value={selectedRole}
             onChange={(e) => setSelectedRole(e.target.value)}
             disabled={sessionActive}
-            className="w-full h-11 bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500 leading-normal truncate"
+            className="w-full h-11 bg-white/90 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-[#add8e6] dark:focus:border-indigo-500 font-medium shadow-xs cursor-pointer truncate"
           >
-            <option value="Senior Backend Engineer">Senior Backend Engineer</option>
+            <option value="Senior Backend Engineer">Backend Engineer</option>
             <option value="Full Stack Engineer">Full Stack Engineer</option>
             <option value="Frontend Engineer">Frontend Engineer</option>
-            <option value="Distributed Systems Engineer">Distributed Systems Engineer</option>
-            <option value="Machine Learning Engineer">Machine Learning Engineer</option>
+            <option value="Distributed Systems Engineer">Distributed Systems</option>
+            <option value="Machine Learning Engineer">ML / AI Engineer</option>
           </select>
         </div>
 
-        <div>
-          <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-2">Seniority Level</label>
+        <div className="min-w-0">
+          <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider block mb-2 truncate">
+            Seniority Level
+          </label>
           <select
             value={selectedLevel}
             onChange={(e) => setSelectedLevel(e.target.value)}
             disabled={sessionActive}
-            className="w-full h-11 bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500 leading-normal truncate"
+            className="w-full h-11 bg-white/90 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-[#add8e6] dark:focus:border-indigo-500 font-medium shadow-xs cursor-pointer truncate"
           >
             <option value="Intern">Intern (0 yrs)</option>
             <option value="SDE-1">SDE-1 (1-2 yrs)</option>
             <option value="SDE-2">SDE-2 (2-5 yrs)</option>
-            <option value="Senior">Senior / Tech Lead (5-8 yrs)</option>
+            <option value="Senior">Senior / Lead (5-8 yrs)</option>
             <option value="Staff">Staff / Principal (8+ yrs)</option>
           </select>
         </div>
 
-        <div>
-          <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-2">Evaluation Round</label>
+        <div className="min-w-0">
+          <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider block mb-2 truncate">
+            Evaluation Round
+          </label>
           <select
             value={selectedRound}
             onChange={(e) => setSelectedRound(Number(e.target.value))}
             disabled={sessionActive}
-            className="w-full h-11 bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500 leading-normal truncate"
+            className="w-full h-11 bg-white/90 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-[#add8e6] dark:focus:border-indigo-500 font-medium shadow-xs cursor-pointer truncate"
           >
             <option value={1}>Round 1: Online Assessment (OA)</option>
-            <option value={2}>Round 2: DSA / Algorithmic Coding</option>
-            <option value={3}>Round 3: Core Tech Fundamentals</option>
+            <option value={2}>Round 2: DSA Coding</option>
+            <option value={3}>Round 3: Core Fundamentals</option>
             <option value={4}>Round 4: System Design (HLD/LLD)</option>
-            <option value={5}>Round 5: Project Architecture Deep-Dive</option>
-            <option value={6}>Round 6: Behavioral STAR & Leadership</option>
+            <option value={5}>Round 5: Architecture Deep-Dive</option>
+            <option value={6}>Round 6: Behavioral STAR</option>
           </select>
         </div>
       </div>
@@ -824,6 +834,7 @@ export const MNCInterviewStudioPage: React.FC = () => {
             <div className="bg-slate-900/90 rounded-2xl border border-slate-800 overflow-hidden shadow-2xl">
               <div className="bg-slate-900 px-4 py-3 border-b border-slate-800 flex items-center justify-between">
                 <div className="flex items-center gap-3">
+          <UiverseAudioVisualizer isActive={sessionActive} barCount={14} className="hidden sm:flex" />
                   <div className="flex items-center gap-2 text-xs font-mono text-slate-300">
                     <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
                     solution.{selectedCodingLang.extension} ({selectedCodingLang.badge})

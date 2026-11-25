@@ -1,13 +1,16 @@
 import React from 'react';
+import { UiverseMotionCanvas } from './UiverseMotionCanvas';
 
 interface UiverseBackgroundProps {
   className?: string;
   showGrid?: boolean;
+  showParticles?: boolean;
 }
 
 export const UiverseBackground: React.FC<UiverseBackgroundProps> = ({
   className = '',
   showGrid = true,
+  showParticles = true,
 }) => {
   return (
     <div className={`pointer-events-none fixed inset-0 z-0 overflow-hidden ${className}`}>
@@ -36,6 +39,11 @@ export const UiverseBackground: React.FC<UiverseBackgroundProps> = ({
             backgroundSize: '54px 54px',
           }}
         />
+      )}
+
+      {/* 60fps Floating Constellation Motion Graphic Canvas */}
+      {showParticles && (
+        <UiverseMotionCanvas particleCount={36} speed={0.45} interactive={true} />
       )}
     </div>
   );

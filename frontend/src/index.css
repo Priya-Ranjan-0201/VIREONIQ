@@ -211,6 +211,20 @@
     color: inherit;
   }
 
+  /* Clean Custom Select styling to strip native OS chrome and handle text overflow cleanly */
+  .custom-select {
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+    box-sizing: border-box !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+  }
+  .custom-select::-ms-expand {
+    display: none !important;
+  }
+
   /* Uiverse Signature Glowing CTA Buttons */
   .glow-button {
     @apply relative inline-flex items-center justify-center font-bold rounded-xl transition-all duration-300 bg-gradient-to-r from-[#fdbcb4] via-[#add8e6] to-[#22c55e] text-slate-950 shadow-[0_0_24px_rgba(253,188,180,0.4)] hover:shadow-[0_0_40px_rgba(173,216,230,0.8)] hover:scale-[1.02] active:scale-[0.98];
@@ -396,4 +410,63 @@ html.light .custom-scrollbar::-webkit-scrollbar-track {
 
 .animate-float {
   animation: float-gentle 4s ease-in-out infinite;
+}
+
+/* Uiverse Advanced Micro-Interaction Animations */
+@keyframes scanner-beam {
+  0% {
+    top: 0%;
+    opacity: 0.2;
+  }
+  50% {
+    top: 96%;
+    opacity: 0.95;
+  }
+  100% {
+    top: 0%;
+    opacity: 0.2;
+  }
+}
+
+.animate-scanner-beam {
+  animation: scanner-beam 3.5s ease-in-out infinite;
+}
+
+@keyframes sound-wave {
+  0%, 100% {
+    transform: scaleY(0.25);
+  }
+  50% {
+    transform: scaleY(1.2);
+  }
+}
+
+.animate-sound-wave {
+  animation: sound-wave 1.2s ease-in-out infinite;
+}
+
+@keyframes liquid-stripes {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 48px 0;
+  }
+}
+
+.animate-liquid-stripes {
+  animation: liquid-stripes 2s linear infinite;
+}
+
+@keyframes shimmer-slide {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer-slide 2.5s infinite;
 }

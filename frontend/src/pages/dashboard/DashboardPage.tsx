@@ -6,6 +6,9 @@ import type {
 } from "@/api/careerIntelligenceApi";
 import { careerIntelligenceApi } from "@/api/careerIntelligenceApi";
 import { Button } from "@/components/ui/button";
+import { UiverseBadge } from "@/components/uiverse/UiverseBadge";
+import { UiverseProgressBar } from "@/components/uiverse/UiverseProgressBar";
+import { UiverseScanner } from "@/components/uiverse/UiverseScanner";
 import { cn } from "@/lib/utils";
 import {
     ArrowRight,
@@ -216,14 +219,13 @@ export const DashboardPage: React.FC = () => {
         <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
           <div className="space-y-2">
             <div className="flex items-center gap-2.5">
-              <span className="badge-neon badge-neon-peach flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#fdbcb4] shadow-[0_0_8px_#fdbcb4] animate-ping" />
+              <UiverseBadge variant="peach" pulseDot={true}>
                 Career OS v16.0 Live
-              </span>
-              <span className="badge-neon badge-neon-emerald flex items-center gap-1.5">
+              </UiverseBadge>
+              <UiverseBadge variant="emerald">
                 <ShieldCheck className="w-3 h-3 text-[#22c55e]" />
                 Evidence Grounded
-              </span>
+              </UiverseBadge>
             </div>
             <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-slate-900 via-slate-800 to-slate-700 dark:from-[#fdbcb4] dark:via-[#add8e6] dark:to-[#22c55e] bg-clip-text text-transparent font-heading">
               Autonomous Career Intelligence
@@ -276,10 +278,13 @@ export const DashboardPage: React.FC = () => {
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">
             Target: <span className="text-[#0284c7] dark:text-[#add8e6] font-semibold">{readiness?.target_role || "Senior Backend Engineer"}</span>
           </p>
-          <div className="mt-4 w-full bg-slate-200 dark:bg-white/5 h-1.5 rounded-full overflow-hidden">
-            <div 
-              className="h-full bg-gradient-to-r from-[#22c55e] via-[#add8e6] to-[#fdbcb4] rounded-full transition-all duration-500 shadow-[0_0_8px_#22c55e]" 
-              style={{ width: `${readiness?.overall_readiness_score || 82.5}%` }}
+          <div className="mt-4">
+            <UiverseProgressBar
+              value={readiness?.overall_readiness_score || 82.5}
+              height={7}
+              variant="cosmic"
+              showStripes={true}
+              animatedStripes={true}
             />
           </div>
         </div>
@@ -296,9 +301,9 @@ export const DashboardPage: React.FC = () => {
             <span className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white font-heading">
               88<span className="text-lg text-slate-400">/100</span>
             </span>
-            <span className="text-xs font-semibold text-sky-700 dark:text-[#add8e6] bg-[#add8e6]/20 px-2 py-0.5 rounded-full border border-[#add8e6]/40">
+            <UiverseBadge variant="sky">
               MNC Tier 1
-            </span>
+            </UiverseBadge>
           </div>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">
             STAR & Google XYZ formulas active
@@ -323,9 +328,9 @@ export const DashboardPage: React.FC = () => {
             <span className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white font-heading">
               {skills.length > 0 ? skills.length : "14"} Nodes
             </span>
-            <span className="text-xs font-semibold text-rose-700 dark:text-[#fdbcb4] bg-[#fdbcb4]/20 px-2 py-0.5 rounded-full border border-[#fdbcb4]/40">
+            <UiverseBadge variant="peach">
               Zero-Trust
-            </span>
+            </UiverseBadge>
           </div>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">
             Cross-linked GitHub, Codeforces & Assessments
@@ -348,9 +353,9 @@ export const DashboardPage: React.FC = () => {
             <span className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white font-heading">
               $145k - $180k
             </span>
-            <span className="text-xs font-semibold text-emerald-700 dark:text-[#4ade80] bg-[#22c55e]/15 px-2 py-0.5 rounded-full border border-[#22c55e]/30">
+            <UiverseBadge variant="emerald">
               P75 Band
-            </span>
+            </UiverseBadge>
           </div>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">
             Regional PPP & YOE Non-Linear Calibrated
@@ -363,6 +368,12 @@ export const DashboardPage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* ─── AI Neural Diagnostics Scanner Bar ─── */}
+      <UiverseScanner
+        label="Autonomous Telemetry & Evidence Verification Active"
+        score={Math.round(readiness?.overall_readiness_score || 88)}
+      />
 
       {/* ─── 1-Click Native Intelligence Launchpad ─── */}
       <div className="space-y-4">

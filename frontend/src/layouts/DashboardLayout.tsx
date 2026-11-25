@@ -118,7 +118,7 @@ export const DashboardLayout = () => {
         </header>
 
         {/* Dynamic Page Content */}
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 custom-scrollbar">
+        <main className="flex-1 overflow-y-auto overflow-x-hidden min-w-0 max-w-full p-4 sm:p-6 lg:p-8 custom-scrollbar">
           <div className="max-w-[1600px] mx-auto min-h-full pb-20">
             <Outlet />
           </div>
