@@ -70,3 +70,17 @@ This log records significant architectural, security, stack, and methodology dec
 - **Decision**: Execute phases autonomously, creating local git branches, running verification commands (`ruff`, `mypy`, `pytest`, `npm lint`, `npm test`, `npm run build`), committing atomic conventional commits, and advancing sequentially through Phase 18.
 - **Consequences**:
   - Rapid, robust progress through all prompt requirements with rigorous verification at every step.
+
+---
+
+## Decision 006: Product Naming Standardization (VIREONIQ)
+- **Status**: Accepted
+- **Date**: 2026-11-25
+- **Context**: The repository had historical naming drift (PLACEIQ, VIREONIQ, VIREONIQ X, HRCV) across documentation, UI titles, and configuration files.
+- **Options Considered**:
+  1. *Aggressive blanket renaming of all internal variables and table names*: High risk of breaking migration history, local storage keys, or external integrations.
+  2. *Standardize all user-facing, documentation, package metadata, and UI titles to VIREONIQ while retaining internal compatibility aliases*: Safe, zero regression risk, consistent user experience.
+- **Decision**: Canonical brand and documentation name is standardized to **VIREONIQ**. Internal legacy keys remain backward-compatible.
+- **Consequences**:
+  - Consistent external presentation without breaking runtime backwards compatibility.
+
