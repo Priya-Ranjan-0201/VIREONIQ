@@ -10,11 +10,14 @@ import sentry_sdk
 from sentry_sdk.integrations.fastapi import FastApiIntegration
 from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
 from sqlalchemy import text
+import structlog
 
 from core.config import settings
 from api.api_v1.router import api_router
 from core.logging import LoggingMiddleware
 from db.session import engine
+
+logger = structlog.get_logger("vireoniq.main")
 
 # ─── Rate Limiter ─────────────────────────────
 limiter = Limiter(key_func=get_remote_address)
@@ -37,33 +40,34 @@ if settings.SENTRY_DSN:
 # ─── Lifespan Context Manager ─────────────────
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup: Initialize SQLite tables & seed if running in SQLite fallback mode
+    settings.validate_production_settings()
+
+    # Startup: Initialize SQLite tables & dev seed ONLY in non-production SQLite fallback mode
     from db.session import is_sqlite, engine
-    if is_sqlite:
+    if is_sqlite and not settings.is_production:
         from db.models import Base
         import db.models  # Ensure all models are loaded
         try:
-            print("Auto-initializing SQLite tables...")
+            logger.info("sqlite_auto_init_start")
             async with engine.begin() as conn:
                 await conn.run_sync(Base.metadata.create_all)
-            print("SQLite tables initialized successfully.")
-            
-            # Seed default roles and test user
-            from scripts.seed_user import seed_user
-            await seed_user()
+            logger.info("sqlite_auto_init_complete")
+
+            if (settings.ENVIRONMENT or "").strip().lower() == "development":
+                from scripts.seed_user import seed_user
+                await seed_user()
         except Exception as e:
-            print(f"Failed to auto-initialize SQLite: {e}")
+            logger.exception("sqlite_auto_init_failed", error=str(e))
 
     # Startup: Initialize Qdrant collections
     try:
         from core.qdrant import qdrant_client as client
         from qdrant_client.http.models import Distance, VectorParams
-        
-        # Check and create collections
+
         try:
             collections = client.get_collections()
             collection_names = [c.name for c in collections.collections]
-            
+
             if "resume_embeddings" not in collection_names:
                 client.recreate_collection(
                     collection_name="resume_embeddings",
@@ -79,12 +83,12 @@ async def lifespan(app: FastAPI):
                     collection_name="psychometric_dna",
                     vectors_config=VectorParams(size=128, distance=Distance.COSINE)
                 )
-            print("Successfully initialized Qdrant collections.")
+            logger.info("qdrant_collections_initialized")
         except Exception as e:
-            print(f"Failed to query Qdrant collections: {e}")
+            logger.warning("qdrant_collection_init_failed", error=str(e))
     except Exception as e:
-        print(f"Error initializing Qdrant: {e}")
-        
+        logger.warning("qdrant_startup_skipped", error=str(e))
+
     yield
     # Shutdown
     pass
@@ -107,13 +111,19 @@ app.add_middleware(SlowAPIMiddleware)
 # ─── Global Error Handling ────────────────────
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
+    logger.exception(
+        "unhandled_exception",
+        path=request.url.path,
+        method=request.method,
+        error=str(exc),
+    )
     return JSONResponse(
         status_code=500,
         content={
             "error": "InternalServerError",
-            "message": "A critical system error occurred. Our engineers have been notified.",
+            "message": "An internal error occurred.",
             "path": request.url.path,
-            "status": "critical"
+            "status": "error"
         }
     )
 
@@ -144,28 +154,38 @@ async def add_security_headers(request: Request, call_next):
     response.headers["X-Content-Type-Options"] = "nosniff"
     response.headers["X-Frame-Options"] = "DENY"
     response.headers["X-XSS-Protection"] = "1; mode=block"
-    response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains; preload"
-    response.headers["Content-Security-Policy"] = "default-src 'none'; frame-ancestors 'none'; sandbox;"
+    if request.url.scheme == "https" or settings.is_production:
+        response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains; preload"
+    # Allow Swagger/ReDoc UI assets in non-production while enforcing strict API CSP everywhere else
+    if request.url.path.startswith(("/docs", "/redoc")) and not settings.is_production:
+        response.headers["Content-Security-Policy"] = "frame-ancestors 'none';"
+    else:
+        response.headers["Content-Security-Policy"] = "default-src 'none'; frame-ancestors 'none';"
     response.headers["Referrer-Policy"] = "no-referrer"
     response.headers["Permissions-Policy"] = "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()"
     response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
     response.headers["Pragma"] = "no-cache"
     return response
 
-# 4. Trailing Slash Fix (to avoid 307 redirects)
+# 4. Trailing Slash Normalization (internal path rewrite avoids 307 redirects on POST/PUT/DELETE)
 @app.middleware("http")
-async def remove_trailing_slash(request, call_next):
-    path = request.url.path
+async def remove_trailing_slash(request: Request, call_next):
+    path = request.scope.get("path", "")
     if path != "/" and path.endswith("/"):
-        from starlette.responses import RedirectResponse
-        return RedirectResponse(url=str(request.url).rstrip("/"))
+        normalized = path.rstrip("/")
+        request.scope["path"] = normalized
+        request.scope["raw_path"] = normalized.encode("utf-8")
     return await call_next(request)
 
-# ─── Static Files ────────────────────────────
+# ─── Static Files (Public Offline Bundles Only) ──
 from fastapi.staticfiles import StaticFiles
 import os
-os.makedirs("uploads", exist_ok=True)
-app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
+os.makedirs(os.path.join("uploads", "offline-bundles"), exist_ok=True)
+app.mount(
+    "/uploads/offline-bundles",
+    StaticFiles(directory=os.path.join("uploads", "offline-bundles")),
+    name="offline_bundles",
+)
 
 # ─── Routers ─────────────────────────────────
 app.include_router(api_router, prefix=settings.API_V1_STR)
@@ -190,7 +210,7 @@ async def health_check() -> dict:
         async with engine.connect() as conn:
             await conn.execute(text("SELECT 1"))
     except Exception as e:
-        print(f"Healthcheck Database connection error: {e}")
+        logger.warning("healthcheck_db_connection_failed", error=str(e))
         db_status = "disconnected"
         
     return {

@@ -3,13 +3,6 @@ name = "vireoniq-backend"
 version = "0.9.0"
 requires-python = ">=3.11"
 
-[tool.pytest.ini_options]
-pythonpath = ["."]
-asyncio_mode = "auto"
-testpaths = ["tests"]
-markers = ["benchmark: performance and load benchmarks"]
-addopts = '-m "not benchmark"'
-
 [tool.ruff]
 target-version = "py312"
 line-length = 120

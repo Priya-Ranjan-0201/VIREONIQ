@@ -10,9 +10,12 @@ from db.models import (
     FacultyClassStudent, InterviewSession, InterviewScore,
     VernacularConcept, OfflineBundle, StudyGroupSession, PeerFeedback
 )
+from core.config import settings
 from core.security import get_password_hash
 
 async def seed_resilience_demo() -> None:
+    if settings.is_production:
+        raise RuntimeError("Refusing to run seed_resilience_demo() in production environment.")
     print("Seeding full resilience telemetry data...")
     async with async_session_maker() as session:
         # 1. Ensure Roles exist

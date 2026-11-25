@@ -2,20 +2,16 @@ import asyncio
 import uuid
 from datetime import datetime, timezone
 from sqlalchemy import select
+from core.config import settings
 from db.session import async_session_maker
 from db.models import User, Resume, ResumeScore, GapAnalysis, Application, JobListing
 
 async def seed_demo_data() -> None:
     """
-    Seed demo data for the test user (test@example.com).
-
-    Creates a sample Resume with a ResumeScore, a GapAnalysis record, and
-    up to three Application rows linked to existing JobListings.  Requires
-    seed_user.py to have been run first so the test user already exists.
-    The function is safely idempotent for the role / user lookup step but
-    will append new records on repeated runs, so it is intended for
-    development / staging environments only.
+    Seed demo data for the local dev test user (development/staging only).
     """
+    if settings.is_production:
+        raise RuntimeError("Refusing to run seed_demo_data() in production environment.")
     print("Seeding demo data for test@example.com...")
     async with async_session_maker() as session:
         # 1. Get the test user

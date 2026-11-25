@@ -8,19 +8,29 @@ import logging
 from typing import Dict, Any, List, Optional
 from dataclasses import dataclass
 
-from sentence_transformers import SentenceTransformer
 from core.qdrant import qdrant_client
 from qdrant_client.http.models import PointStruct
 
 logger = logging.getLogger(__name__)
 
-# Initialize model globally (cached)
-try:
-    model = SentenceTransformer("all-MiniLM-L6-v2")
-    logger.info("SentenceTransformer model loaded successfully.")
-except Exception as e:
-    logger.error(f"Failed to load SentenceTransformer: {e}")
-    model = None
+# Lazily load SentenceTransformer if installed (avoids heavy import-time download)
+model = None
+_model_load_attempted = False
+
+
+def get_embedding_model():
+    global model, _model_load_attempted
+    if _model_load_attempted:
+        return model
+    _model_load_attempted = True
+    try:
+        from sentence_transformers import SentenceTransformer  # type: ignore
+        model = SentenceTransformer("all-MiniLM-L6-v2")
+        logger.info("SentenceTransformer model loaded successfully.")
+    except Exception as e:
+        logger.warning(f"SentenceTransformer unavailable ({e}); embedding guard disabled.")
+        model = None
+    return model
 
 @dataclass
 class PlagiarismResult:
@@ -66,7 +76,8 @@ async def seed_known_answers(qdrant = None) -> None:
     Seeds the known_answers Qdrant collection with common textbook answers.
     """
     qc = qdrant or qdrant_client
-    if model is None:
+    emb_model = get_embedding_model()
+    if emb_model is None:
         logger.error("SentenceTransformer model is not loaded. Cannot seed known answers.")
         return
 
@@ -83,7 +94,7 @@ async def seed_known_answers(qdrant = None) -> None:
 
         points = []
         for seed in KNOWN_ANSWERS_SEEDS:
-            emb = model.encode(seed["text"]).tolist()
+            emb = emb_model.encode(seed["text"]).tolist()
             # Deterministic UUID from text hash
             h = hashlib.md5(seed["text"].encode("utf-8")).hexdigest()
             pt_id = str(uuid.UUID(h))
@@ -109,11 +120,12 @@ async def check_plagiarism(answer_text: str, qdrant = None) -> PlagiarismResult:
     Computes vector embedding of response and queries Qdrant for semantic plagiarism match.
     """
     qc = qdrant or qdrant_client
-    if model is None or not answer_text.strip():
+    emb_model = get_embedding_model()
+    if emb_model is None or not answer_text.strip():
         return PlagiarismResult(detected=False, similarity_score=0.0)
 
     try:
-        embedding = model.encode(answer_text).tolist()
+        embedding = emb_model.encode(answer_text).tolist()
         results = qc.search(
             collection_name="known_answers",
             query_vector=embedding,

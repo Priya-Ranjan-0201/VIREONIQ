@@ -1,11 +1,12 @@
 import os
-import uuid
 import re
+from functools import lru_cache
 from datetime import datetime, timedelta, timezone
-from typing import Any, Union, Dict
+from typing import Any, Union, Dict, Tuple
 
 from jose import jwt
 from passlib.context import CryptContext
+from passlib.exc import UnknownHashError
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives import serialization
 
@@ -14,42 +15,82 @@ from core.config import settings
 # Argon2id context
 pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
 
-def _ensure_keys_exist():
-    if not os.path.exists(".secrets"):
-        os.makedirs(".secrets")
-    
+
+def _ensure_dev_keys_exist() -> None:
+    """Create ephemeral RS256 development keys lazily only when not in production."""
+    if settings.is_production:
+        raise RuntimeError(
+            "Missing RSA JWT keys in production. Configure JWT_PRIVATE_KEY / JWT_PUBLIC_KEY or mount existing PEM files."
+        )
+
+    for key_path in (settings.PRIVATE_KEY_PATH, settings.PUBLIC_KEY_PATH):
+        parent = os.path.dirname(key_path)
+        if parent:
+            os.makedirs(parent, exist_ok=True)
+
     if not os.path.exists(settings.PRIVATE_KEY_PATH) or not os.path.exists(settings.PUBLIC_KEY_PATH):
         private_key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
         public_key = private_key.public_key()
-        
+
         with open(settings.PRIVATE_KEY_PATH, "wb") as f:
             f.write(private_key.private_bytes(
                 encoding=serialization.Encoding.PEM,
                 format=serialization.PrivateFormat.TraditionalOpenSSL,
                 encryption_algorithm=serialization.NoEncryption()
             ))
-            
+        try:
+            os.chmod(settings.PRIVATE_KEY_PATH, 0o600)
+        except OSError:
+            pass
+
         with open(settings.PUBLIC_KEY_PATH, "wb") as f:
             f.write(public_key.public_bytes(
                 encoding=serialization.Encoding.PEM,
                 format=serialization.PublicFormat.SubjectPublicKeyInfo
             ))
 
-_ensure_keys_exist()
 
-with open(settings.PRIVATE_KEY_PATH, "rb") as key_file:
-    PRIVATE_KEY = key_file.read()
+@lru_cache(maxsize=1)
+def _load_keypair() -> Tuple[bytes, bytes]:
+    """Load RS256 keypair lazily without import-time disk writes."""
+    if settings.JWT_PRIVATE_KEY and settings.JWT_PUBLIC_KEY:
+        return (
+            settings.JWT_PRIVATE_KEY.encode("utf-8"),
+            settings.JWT_PUBLIC_KEY.encode("utf-8"),
+        )
 
-with open(settings.PUBLIC_KEY_PATH, "rb") as key_file:
-    PUBLIC_KEY = key_file.read()
+    if not (os.path.exists(settings.PRIVATE_KEY_PATH) and os.path.exists(settings.PUBLIC_KEY_PATH)):
+        _ensure_dev_keys_exist()
+
+    with open(settings.PRIVATE_KEY_PATH, "rb") as priv_file:
+        private_bytes = priv_file.read()
+    with open(settings.PUBLIC_KEY_PATH, "rb") as pub_file:
+        public_bytes = pub_file.read()
+    return private_bytes, public_bytes
+
+
+def get_private_key() -> bytes:
+    return _load_keypair()[0]
+
+
+def get_public_key() -> bytes:
+    return _load_keypair()[1]
+
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """Verify a plain text password against its Argon2id hash."""
-    return pwd_context.verify(plain_password, hashed_password)
+    if not hashed_password or hashed_password.startswith("!"):
+        return False
+    try:
+        return pwd_context.verify(plain_password, hashed_password)
+    except (UnknownHashError, ValueError):
+        return False
+
 
 def get_password_hash(password: str) -> str:
     """Hash a password using the Argon2id hashing scheme."""
     return pwd_context.hash(password)
+
 
 def create_access_token(subject: Union[str, Any], jti: str, expires_delta: timedelta = None) -> str:
     """Create an RS256 signed JWT access token for a subject."""
@@ -57,10 +98,10 @@ def create_access_token(subject: Union[str, Any], jti: str, expires_delta: timed
         expire = datetime.now(timezone.utc) + expires_delta
     else:
         expire = datetime.now(timezone.utc) + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    
+
     to_encode = {"exp": expire, "sub": str(subject), "jti": jti, "type": "access"}
-    encoded_jwt = jwt.encode(to_encode, PRIVATE_KEY, algorithm=settings.JWT_ALGORITHM)
-    return encoded_jwt
+    return jwt.encode(to_encode, get_private_key(), algorithm=settings.JWT_ALGORITHM)
+
 
 def create_refresh_token(subject: Union[str, Any], jti: str, expires_delta: timedelta = None) -> str:
     """Create an RS256 signed JWT refresh token for a subject."""
@@ -68,14 +109,14 @@ def create_refresh_token(subject: Union[str, Any], jti: str, expires_delta: time
         expire = datetime.now(timezone.utc) + expires_delta
     else:
         expire = datetime.now(timezone.utc) + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
-        
+
     to_encode = {"exp": expire, "sub": str(subject), "jti": jti, "type": "refresh"}
-    encoded_jwt = jwt.encode(to_encode, PRIVATE_KEY, algorithm=settings.JWT_ALGORITHM)
-    return encoded_jwt
+    return jwt.encode(to_encode, get_private_key(), algorithm=settings.JWT_ALGORITHM)
+
 
 def decode_token(token: str) -> Dict[str, Any]:
     """Decode and validate an RS256 signed JWT token using the public key."""
-    return jwt.decode(token, PUBLIC_KEY, algorithms=[settings.JWT_ALGORITHM])
+    return jwt.decode(token, get_public_key(), algorithms=[settings.JWT_ALGORITHM])
 
 def check_prompt_injection(text: str) -> bool:
     """
@@ -141,7 +182,7 @@ def check_prompt_injection(text: str) -> bool:
         r"\bdrop\b\s+table\b",                                  # drop table
         r"\binsert\b\s+into\b",                                 # insert into
         r"\bdelete\b\s+from\b",                                 # delete from
-        r"--",                                                  # comment
+        r"(?:;\s*--|'\s*--|\s--\s*$|\s--\s+)",                  # SQL comment suffix without blocking CLI flags
         r"/\*.*\*/"                                             # block comment
     ]
     for pattern in sql_patterns:

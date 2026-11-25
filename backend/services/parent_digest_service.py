@@ -4,11 +4,14 @@ from typing import Dict, Any, Optional
 from sqlalchemy import select, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import HTTPException
+import structlog
 
 from db.models import (
     User, Profile, StudentProfile, ParentLink, InterviewSession,
     GamificationProfile, Notification
 )
+
+logger = structlog.get_logger("vireoniq.parent_digest")
 
 async def request_parent_consent(
     student_user_id: str,
@@ -69,14 +72,8 @@ async def confirm_parent_link(
     student_profile = (await db.execute(s_stmt)).scalars().first()
     student_name = student_profile.first_name if student_profile else "Student"
 
-    # Send Welcome WhatsApp Mock
-    # In production, this would trigger a Twilio WhatsApp message
-    print(
-        f"[MOCK WHATSAPP] To: {link.parent_phone}\n"
-        f"Hi {link.parent_name}, this is VIREONIQ. {student_name} has added you to "
-        f"receive a simple weekly update on their placement preparation progress. "
-        f"You'll get one message every Sunday. Reply STOP anytime to opt out."
-    )
+    # Record notification event without logging raw personal contact numbers
+    logger.info("parent_welcome_queued", link_id=str(link.id), student_id=str(student_uuid))
 
     await db.commit()
 
@@ -97,11 +94,7 @@ async def revoke_parent_consent(
     link.consent_status = "revoked"
     link.revoked_at = datetime.now(timezone.utc)
 
-    # Send Unsubscribe WhatsApp Mock
-    print(
-        f"[MOCK WHATSAPP] To: {link.parent_phone}\n"
-        f"Weekly updates have been turned off as requested. Thank you for supporting their preparation journey."
-    )
+    logger.info("parent_opt_out_queued", link_id=str(link.id), student_id=str(student_uuid))
 
     await db.commit()
 

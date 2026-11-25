@@ -1,12 +1,14 @@
 """
 VIREONIQ Vector Engine Client (Qdrant)
-Provides connection to Qdrant vector database with transparent in-memory fallback.
+Provides lazy connection initialization to Qdrant with transparent in-memory fallback.
+Avoids network timeouts on module import.
 """
-import logging
 from typing import Any
+import structlog
+
 from core.config import settings
 
-logger = logging.getLogger(__name__)
+logger = structlog.get_logger("vireoniq.qdrant")
 
 
 class MockCollections:
@@ -15,7 +17,8 @@ class MockCollections:
 
 
 class MockQdrantClient:
-    """High-speed in-memory vector database fallback when Qdrant server is offline."""
+    """In-memory vector database fallback when Qdrant server is offline."""
+
     def get_collections(self) -> MockCollections:
         return MockCollections()
 
@@ -36,9 +39,10 @@ class MockQdrantClient:
 
 
 def init_qdrant_client() -> Any:
-    """Initialize Qdrant client or return resilient mock vector store."""
+    """Initialize Qdrant client or return resilient in-memory mock client."""
     try:
         from qdrant_client import QdrantClient  # type: ignore
+
         if settings.QDRANT_URL:
             client = QdrantClient(
                 url=settings.QDRANT_URL,
@@ -46,14 +50,29 @@ def init_qdrant_client() -> Any:
                 timeout=1.5,
             )
             client.get_collections()
-            logger.info("Initialized Qdrant client with URL: %s", settings.QDRANT_URL)
+            logger.info("qdrant_client_initialized", url=settings.QDRANT_URL)
             return client
         client = QdrantClient(":memory:")
-        logger.info("Initialized in-memory Qdrant client")
+        logger.info("qdrant_client_in_memory_initialized")
         return client
     except Exception as exc:
-        logger.warning("Qdrant unavailable (%s); using in-memory mock client.", exc)
+        logger.warning("qdrant_unavailable_using_fallback", error=str(exc))
         return MockQdrantClient()
 
 
-qdrant_client = init_qdrant_client()
+class LazyQdrantProxy:
+    """Defers Qdrant connection until first attribute access."""
+
+    def __init__(self) -> None:
+        self._instance: Any = None
+
+    def _get(self) -> Any:
+        if self._instance is None:
+            self._instance = init_qdrant_client()
+        return self._instance
+
+    def __getattr__(self, name: str) -> Any:
+        return getattr(self._get(), name)
+
+
+qdrant_client: Any = LazyQdrantProxy()

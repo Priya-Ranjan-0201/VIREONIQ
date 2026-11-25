@@ -6,16 +6,18 @@ import uuid
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from sqlalchemy import select
+from core.config import settings
 from db.session import async_session_maker
 from db.models import User, Role
 from core.security import get_password_hash
 
 async def seed_user() -> None:
     """
-    Seed the database with initial roles (User, Admin, Recruiter) and a
-    test user (test@example.com / password).  Existing records are skipped
-    so the function is safely idempotent.
+    Seed the database with initial roles (User, Admin, Recruiter) and
+    development test accounts. Refuses to run in production environments.
     """
+    if settings.is_production:
+        raise RuntimeError("Refusing to run dev seed_user() in production environment.")
     print("Seeding roles and test user...")
     async with async_session_maker() as session:
         # 1. Create Roles
