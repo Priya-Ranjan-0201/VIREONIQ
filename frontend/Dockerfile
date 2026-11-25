@@ -15,8 +15,9 @@ RUN npm run build
 # Stage 2: Serve with Nginx
 FROM nginx:alpine
 
-# Copy built assets from builder
+# Copy built assets and Nginx SPA config
 COPY --from=build /app/dist /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Expose port 80
 EXPOSE 80
