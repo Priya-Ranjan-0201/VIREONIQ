@@ -1,15 +1,14 @@
-from fastapi import APIRouter, Depends, HTTPException, Query, Body
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Dict, Any, List, Optional
-import uuid
 
 from api.deps import get_db, get_current_active_user
 from db.models import User
 from services.career_digital_twin_service import generate_career_digital_twin_snapshot
 from services.evidence_graph_service import (
-    trace_skill_lineage, detect_evidence_conflicts, record_granular_evidence
+    trace_skill_lineage, detect_evidence_conflicts
 )
-from services.canonical_skill_service import get_skill_relationships, normalize_skill_name
+from services.canonical_skill_service import get_skill_relationships
 from services.career_events_service import get_career_events_timeline
 from services.role_comparison_service import compute_candidate_role_alignment
 
@@ -72,24 +71,10 @@ async def get_career_twin_evidence(
     items = list((await db.execute(stmt)).scalars().all())
 
     if not items:
-        canonical_evidence = [
-            {"id": "ev-01", "skill_name": "Python", "evidence_type": "CODE_SUBMISSION", "source": "Coding Evaluation Engine", "source_span": "asyncio.gather(..., return_exceptions=True) with TaskGroup error boundary", "source_group": "DIAGNOSTIC_LAB", "status": "VERIFIED", "confidence": "HIGH", "freshness_state": "FRESH", "observed_at": "2026-08-28T10:15:00Z"},
-            {"id": "ev-02", "skill_name": "FastAPI", "evidence_type": "PROJECT_REPO", "source": "GitHub Repository Analysis", "source_span": "FastAPI Dependency Injection with async session generator & Pydantic V2 validation", "source_group": "CAPSTONE_PROJECT", "status": "ASSESSED", "confidence": "HIGH", "freshness_state": "FRESH", "observed_at": "2026-08-27T14:30:00Z"},
-            {"id": "ev-03", "skill_name": "PostgreSQL", "evidence_type": "CODE_SUBMISSION", "source": "Database Diagnostic Studio", "source_span": "EXPLAIN ANALYZE index scan verification on composite foreign keys", "source_group": "DIAGNOSTIC_LAB", "status": "DEMONSTRATED", "confidence": "MEDIUM", "freshness_state": "FRESH", "observed_at": "2026-08-26T09:00:00Z"},
-            {"id": "ev-04", "skill_name": "Redis", "evidence_type": "ASSESSMENT", "source": "MNC Technical Studio", "source_span": "SET key val NX EX 300 with distributed lock release Lua script", "source_group": "TECHNICAL_INTERVIEW", "status": "ASSESSED", "confidence": "HIGH", "freshness_state": "FRESH", "observed_at": "2026-08-25T16:20:00Z"},
-            {"id": "ev-05", "skill_name": "Docker", "evidence_type": "PROJECT_REPO", "source": "GitHub CI Workflow", "source_span": "Multi-stage alpine build reducing image size from 850MB to 120MB with non-root user", "source_group": "CAPSTONE_PROJECT", "status": "DEMONSTRATED", "confidence": "HIGH", "freshness_state": "FRESH", "observed_at": "2026-08-24T11:45:00Z"},
-            {"id": "ev-06", "skill_name": "Git / GitHub CI", "evidence_type": "PROJECT_REPO", "source": "Git Activity Provenance", "source_span": "GitHub Actions linting, automated pytest matrix, and semantic version tagging", "source_group": "CAPSTONE_PROJECT", "status": "VERIFIED", "confidence": "HIGH", "freshness_state": "FRESH", "observed_at": "2026-08-23T18:10:00Z"},
-            {"id": "ev-07", "skill_name": "REST APIs", "evidence_type": "ASSESSMENT", "source": "API Design Assessment", "source_span": "Idempotent POST /transactions with request hash deduplication header", "source_group": "TECHNICAL_INTERVIEW", "status": "ASSESSED", "confidence": "HIGH", "freshness_state": "FRESH", "observed_at": "2026-08-22T13:00:00Z"},
-            {"id": "ev-08", "skill_name": "Algorithms & DSA", "evidence_type": "CODE_SUBMISSION", "source": "Coding Evaluation Engine", "source_span": "Subarray Sum Equals K solved in O(N) using running prefix sum hashmap", "source_group": "DIAGNOSTIC_LAB", "status": "VERIFIED", "confidence": "HIGH", "freshness_state": "FRESH", "observed_at": "2026-08-21T15:35:00Z"},
-            {"id": "ev-09", "skill_name": "Networking & Sockets", "evidence_type": "CODE_SUBMISSION", "source": "Systems Programming Lab", "source_span": "Async socket reader loop handling TCP fragmentation and graceful shutdown", "source_group": "DIAGNOSTIC_LAB", "status": "DEMONSTRATED", "confidence": "MEDIUM", "freshness_state": "FRESH", "observed_at": "2026-08-20T10:20:00Z"},
-            {"id": "ev-10", "skill_name": "Unit & Integration Testing", "evidence_type": "PROJECT_REPO", "source": "Pytest Coverage Report", "source_span": "88% test coverage with mock database sessions and async httpx test client", "source_group": "CAPSTONE_PROJECT", "status": "ASSESSED", "confidence": "HIGH", "freshness_state": "FRESH", "observed_at": "2026-08-19T17:00:00Z"},
-            {"id": "ev-11", "skill_name": "Data Validation", "evidence_type": "PROJECT_REPO", "source": "Schema Audit Engine", "source_span": "Pydantic BaseModel with strict regex validators and ISO8601 parsing", "source_group": "CAPSTONE_PROJECT", "status": "DEMONSTRATED", "confidence": "MEDIUM", "freshness_state": "FRESH", "observed_at": "2026-08-18T12:15:00Z"},
-            {"id": "ev-12", "skill_name": "System Design", "evidence_type": "INFERENCE", "source": "Architecture Review", "source_span": "Initial microservices boundary diagram with event streaming draft", "source_group": "INITIAL_DIAGNOSTIC", "status": "INFERRED", "confidence": "LOW", "freshness_state": "STALE", "observed_at": "2026-08-15T09:00:00Z"}
-        ]
         return {
             "candidate_id": str(current_user.id),
-            "total_evidence_items": len(canonical_evidence),
-            "evidence_items": canonical_evidence
+            "total_evidence_items": 0,
+            "evidence_items": [],
         }
 
     return {
@@ -134,38 +119,7 @@ async def get_career_twin_trajectory(
     Returns the chronological progression timeline of career events for the candidate.
     """
     events = await get_career_events_timeline(current_user.id, limit, db)
-    if not events:
-        return [
-            {
-                "id": "ev-init-1",
-                "event_type": "CANONICAL_TWIN_ESTABLISHED",
-                "actor": "Career Intelligence Engine",
-                "created_at": "2026-08-30T10:00:00Z",
-                "event_data": {"twin_version": "v2.0.0", "target_role": "Backend Engineer"}
-            },
-            {
-                "id": "ev-init-2",
-                "event_type": "SKILL_EVIDENCE_VERIFIED",
-                "actor": "Coding Evaluation Engine",
-                "created_at": "2026-08-28T14:30:00Z",
-                "event_data": {"skill": "Python", "tier": "VERIFIED", "score": 82}
-            },
-            {
-                "id": "ev-init-3",
-                "event_type": "ASSESSMENT_COMPLETED",
-                "actor": "Diagnostic Assessment Sandbox",
-                "created_at": "2026-08-26T16:15:00Z",
-                "event_data": {"topic": "Async API Engineering", "score": 78}
-            },
-            {
-                "id": "ev-init-4",
-                "event_type": "ROLE_ALIGNMENT_CALIBRATED",
-                "actor": "Career GPS",
-                "created_at": "2026-08-24T11:20:00Z",
-                "event_data": {"role": "Backend Engineer", "readiness_score": 46}
-            }
-        ]
-    return events
+    return events or []
 
 @router.get("/change-feed")
 async def get_career_twin_change_feed_endpoint(

@@ -463,10 +463,11 @@ export const CareerTwinPage: React.FC = () => {
   const [selectedSkill, setSelectedSkill] = useState<SkillEvidenceItem | null>(null);
   const [activeTab, setActiveTab] = useState<"KNOW" | "PROVE" | "MISSING" | "TRAJECTORY" | "FORECAST" | "TRANSFERS" | "INTERVIEW" | "CHANGES">("FORECAST");
   const [loading, setLoading] = useState<boolean>(true);
+  const [showSamplePreview, setShowSamplePreview] = useState<boolean>(false);
 
   const currentProfile = ROLE_TWIN_PROFILES[targetRole] || ROLE_TWIN_PROFILES["Full Stack Engineer"];
-  const [evidenceList, setEvidenceList] = useState<any[]>(currentProfile.evidence);
-  const [trajectoryList, setTrajectoryList] = useState<any[]>(currentProfile.timeline);
+  const [evidenceList, setEvidenceList] = useState<any[]>([]);
+  const [trajectoryList, setTrajectoryList] = useState<any[]>([]);
 
   // Trajectory Simulation State
   const [forecastWeeklyHours, setForecastWeeklyHours] = useState<number>(10);
@@ -478,21 +479,32 @@ export const CareerTwinPage: React.FC = () => {
     const role = roleOverride || targetRole;
     try {
       const [snapshot, evidenceData, trajectoryData] = await Promise.all([
-        careerIntelligenceApi.getCareerDigitalTwin().catch(() => null),
+        careerIntelligenceApi.getCareerDigitalTwin(role).catch(() => null),
         careerIntelligenceApi.getTwinEvidence().catch(() => null),
         careerIntelligenceApi.getTwinTrajectory().catch(() => null)
       ]);
       const prof = ROLE_TWIN_PROFILES[role] || ROLE_TWIN_PROFILES["Full Stack Engineer"];
       setTwin(snapshot);
-      setEvidenceList(prof.evidence);
-      setTrajectoryList(prof.timeline);
-      
-      const skills = prof.skills;
-      if (skills.length > 0) {
-        setSelectedSkill(skills[0]);
+
+      if (snapshot) {
+        setShowSamplePreview(false);
+        setEvidenceList(Array.isArray(evidenceData) ? evidenceData : []);
+        setTrajectoryList(Array.isArray(trajectoryData) ? trajectoryData : []);
+        const apiSkills: SkillEvidenceItem[] = (snapshot as any)?.skills_inventory?.skills || [];
+        setSelectedSkill(apiSkills[0] || null);
+      } else {
+        setShowSamplePreview(true);
+        setEvidenceList(prof.evidence);
+        setTrajectoryList(prof.timeline);
+        setSelectedSkill(prof.skills[0] || null);
       }
     } catch (err) {
       console.error("Failed to load Career Digital Twin:", err);
+      const prof = ROLE_TWIN_PROFILES[role] || ROLE_TWIN_PROFILES["Full Stack Engineer"];
+      setShowSamplePreview(true);
+      setEvidenceList(prof.evidence);
+      setTrajectoryList(prof.timeline);
+      setSelectedSkill(prof.skills[0] || null);
     } finally {
       setLoading(false);
     }
@@ -504,11 +516,11 @@ export const CareerTwinPage: React.FC = () => {
 
   const handleRoleSwitch = (newRole: string) => {
     setTargetRole(newRole);
-    const prof = ROLE_TWIN_PROFILES[newRole] || ROLE_TWIN_PROFILES["Full Stack Engineer"];
-    setEvidenceList(prof.evidence);
-    setTrajectoryList(prof.timeline);
-    if (prof.skills.length > 0) {
-      setSelectedSkill(prof.skills[0]);
+    if (showSamplePreview) {
+      const prof = ROLE_TWIN_PROFILES[newRole] || ROLE_TWIN_PROFILES["Full Stack Engineer"];
+      setEvidenceList(prof.evidence);
+      setTrajectoryList(prof.timeline);
+      setSelectedSkill(prof.skills[0] || null);
     }
   };
 
@@ -520,14 +532,27 @@ export const CareerTwinPage: React.FC = () => {
     CLAIMED: "bg-slate-500/20 text-slate-400 border-slate-500/30",
   };
 
-  // Safe data accessors
-  const effectiveSkills = currentProfile.skills;
+  // Safe data accessors (live API first; sample preview only when explicitly active/offline)
+  const twinAny = twin as any;
+  const liveSkills: SkillEvidenceItem[] = twinAny?.skills_inventory?.skills || [];
+  const effectiveSkills = showSamplePreview ? currentProfile.skills : liveSkills;
   const verifiedCount = effectiveSkills.filter((s) => s.evidence_tier === "VERIFIED" || s.evidence_tier === "ASSESSED").length;
-  const effectiveEvidence = evidenceList;
-  const effectiveTimeline = trajectoryList;
+  const effectiveEvidence = showSamplePreview ? currentProfile.evidence : evidenceList;
+  const effectiveTimeline = showSamplePreview ? currentProfile.timeline : trajectoryList;
 
   // Real-time Trajectory Forecast Simulator Calculation
-  const currentReadiness = currentProfile.readinessScore;
+  const currentReadiness = showSamplePreview
+    ? currentProfile.readinessScore
+    : Math.round(twinAny?.career_readiness?.overall_score ?? 0);
+  const displayTargetRole = showSamplePreview
+    ? currentProfile.targetRole
+    : (twinAny?.candidate?.target_role || targetRole);
+  const bottleneckName = showSamplePreview
+    ? currentProfile.criticalGap
+    : (twinAny?.prerequisite_bottleneck?.skill || twinAny?.role_alignment?.gaps?.[0] || "None Identified");
+  const bottleneckDesc = showSamplePreview
+    ? currentProfile.gapDesc
+    : (twinAny?.prerequisite_bottleneck?.reason || "Complete assessments or upload evidence to compute role-specific gaps.");
   const baseScore = currentReadiness;
   const maxPossibleGain = Math.max(0, 96.0 - baseScore);
   const effortFactor = Math.max(0.3, Math.min(2.5, forecastWeeklyHours / 8.0));
@@ -645,6 +670,28 @@ export const CareerTwinPage: React.FC = () => {
         </div>
       </header>
 
+      {/* Data Source Notice Banner */}
+      {(showSamplePreview || (!loading && twin && liveSkills.length === 0)) && (
+        <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-2.5 rounded-xl border border-amber-500/30 bg-amber-950/20 text-xs text-amber-200">
+          <span>
+            {showSamplePreview
+              ? "Sample Reference Preview active (showing curated reference track data, not live recorded database evidence)."
+              : "No recorded skill evidence found in your account yet. Complete an assessment or upload a resume to populate your live twin."}
+          </span>
+          <button
+            onClick={() => {
+              const next = !showSamplePreview;
+              setShowSamplePreview(next);
+              const prof = ROLE_TWIN_PROFILES[targetRole] || ROLE_TWIN_PROFILES["Full Stack Engineer"];
+              setSelectedSkill((next ? prof.skills[0] : liveSkills[0]) || null);
+            }}
+            className="px-3 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 font-semibold text-amber-100 transition"
+          >
+            {showSamplePreview ? "Return to Live Data" : "Preview Sample Profile"}
+          </button>
+        </div>
+      )}
+
       {/* 5 Central Pillars: Interactive Quick-Action Diagnostic Hub */}
       <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
         {/* 1. WHERE AM I */}
@@ -657,13 +704,13 @@ export const CareerTwinPage: React.FC = () => {
             <ChevronRight className="w-3.5 h-3.5 text-indigo-400 opacity-0 group-hover:opacity-100 transition-opacity" />
           </div>
           <h4 className="text-2xl font-black text-white mt-1">
-            {currentProfile.readinessScore}
+            {currentReadiness}
             <span className="text-xs font-normal text-slate-400">/100</span>
           </h4>
           <div className="flex items-center gap-1.5 mt-1">
             <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse" />
             <p className="text-[11px] text-slate-300 font-medium truncate">
-              {currentProfile.targetRole}
+              {displayTargetRole}
             </p>
           </div>
           <p className="text-[10px] text-slate-400 mt-2 flex items-center gap-1">
@@ -730,7 +777,7 @@ export const CareerTwinPage: React.FC = () => {
             <span className="text-xs font-normal text-slate-400"> Critical Gap</span>
           </h4>
           <p className="text-[11px] text-amber-300 font-medium mt-1 truncate">
-            {currentProfile.criticalGap}
+            {bottleneckName}
           </p>
           <p className="text-[10px] text-slate-400 mt-2 flex items-center gap-1">
             <span>Gap Breakdown</span>
@@ -1031,7 +1078,7 @@ export const CareerTwinPage: React.FC = () => {
                 <Target className="w-5 h-5 text-amber-400" /> Target Role Competency Alignment
               </h3>
               <p className="text-xs text-slate-400 mt-1">
-                Target: <strong className="text-white">{currentProfile.targetRole}</strong> • Alignment: <strong className="text-emerald-400">{currentProfile.readinessScore}%</strong>
+                Target: <strong className="text-white">{displayTargetRole}</strong> • Alignment: <strong className="text-emerald-400">{currentReadiness}%</strong>
               </p>
             </div>
           </div>
@@ -1063,10 +1110,10 @@ export const CareerTwinPage: React.FC = () => {
               <div className="grid grid-cols-1 gap-3">
                 <div className="p-4 rounded-xl bg-amber-950/20 border border-amber-500/30">
                   <div className="flex justify-between items-center">
-                    <span className="text-sm font-bold text-white">{currentProfile.criticalGap}</span>
+                    <span className="text-sm font-bold text-white">{bottleneckName}</span>
                     <span className="text-xs font-bold text-amber-400 px-2.5 py-0.5 rounded-full bg-amber-500/20 border border-amber-500/30">Primary Deficit</span>
                   </div>
-                  <p className="text-xs text-slate-300 mt-1.5">{currentProfile.gapDesc}</p>
+                  <p className="text-xs text-slate-300 mt-1.5">{bottleneckDesc}</p>
                   <div className="mt-3 flex items-center justify-between pt-2 border-t border-white/5">
                     <span className="text-[11px] text-slate-400">Recommended Action: <strong className="text-cyan-300">{currentProfile.actionQuest}</strong></span>
                     <button onClick={() => window.location.href = '/app/career-os'} className="text-xs font-bold text-cyan-400 hover:text-cyan-300 flex items-center gap-1">

@@ -1,10 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException, Body, Query
+from fastapi import APIRouter, Depends, Body, Query
 from sqlalchemy.ext.asyncio import AsyncSession
-from typing import Dict, Any, List, Optional
-import uuid
+from sqlalchemy import select, desc
+from typing import Dict, Any, Optional
 
 from api.deps import get_db, get_current_active_user
-from db.models import User
+from db.models import User, SkillEvidence, CareerReadinessScore
 from services.outcome_intelligence_service import (
     record_analytics_event, update_candidate_milestone_progression,
     calculate_career_value_funnel, generate_grounded_executive_insights
@@ -46,13 +46,43 @@ async def get_candidate_career_progress(
     current_user: User = Depends(get_current_active_user)
 ) -> Dict[str, Any]:
     """Retrieves candidate's baseline vs current verified readiness and delta."""
+    ev_stmt = select(SkillEvidence).where(SkillEvidence.user_id == current_user.id)
+    evidences = list((await db.execute(ev_stmt)).scalars().all())
+
+    tier_counts: Dict[str, int] = {"CLAIMED": 0, "INFERRED": 0, "DEMONSTRATED": 0, "ASSESSED": 0, "VERIFIED": 0}
+    for ev in evidences:
+        tier = (ev.evidence_tier or "CLAIMED").upper()
+        tier_counts[tier] = tier_counts.get(tier, 0) + 1
+
+    cri_stmt = (
+        select(CareerReadinessScore)
+        .where(
+            CareerReadinessScore.user_id == current_user.id,
+            CareerReadinessScore.target_role == target_role,
+        )
+        .order_by(desc(CareerReadinessScore.created_at))
+        .limit(1)
+    )
+    latest_cri = (await db.execute(cri_stmt)).scalars().first()
+    if latest_cri is not None:
+        current_readiness = round(float(latest_cri.overall_readiness or 0.0), 1)
+    elif evidences:
+        current_readiness = round(
+            sum(float(ev.score or 0.0) for ev in evidences) / len(evidences), 1
+        )
+    else:
+        current_readiness = 0.0
+
+    verified_count = tier_counts["VERIFIED"] + tier_counts["ASSESSED"]
+    funnel_stage = "VERIFIED_EVIDENCE_READY" if verified_count > 0 else "TWIN_CREATED"
+
     return await update_candidate_milestone_progression(
         user_id=current_user.id,
         target_role=target_role,
-        current_readiness=78.5,
-        evidence_tier_breakdown={"CLAIMED": 2, "DEMONSTRATED": 3, "ASSESSED": 4, "VERIFIED": 2},
-        funnel_stage="VERIFIED_EVIDENCE_READY",
-        db=db
+        current_readiness=current_readiness,
+        evidence_tier_breakdown=tier_counts,
+        funnel_stage=funnel_stage,
+        db=db,
     )
 
 @router.get("/executive-insights")

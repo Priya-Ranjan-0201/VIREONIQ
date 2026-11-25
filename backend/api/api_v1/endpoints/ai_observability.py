@@ -1,8 +1,7 @@
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func
-from typing import Dict, Any, List
-import uuid
+from sqlalchemy import select
+from typing import Dict, Any
 
 from api.deps import get_db, get_current_active_user
 from db.models import User, AIObservabilityLog
@@ -24,31 +23,15 @@ async def get_ai_observability_metrics(
     total_requests = len(records)
     if total_requests == 0:
         return {
-            "total_requests": 1420,
-            "success_rate_percent": 99.4,
-            "p95_latency_sec": 1.75,
-            "fallback_rate_percent": 1.8,
-            "total_tokens_consumed": 284000,
-            "estimated_cost_usd": 0.42,
-            "active_providers": ["gemini", "claude", "deepseek", "nvidia_nim"],
-            "recent_logs": [
-                {
-                    "task_name": "resume_evidence_extraction",
-                    "provider": "gemini",
-                    "model": "gemini-1.5-pro",
-                    "latency_ms": 1250.0,
-                    "validation_passed": True,
-                    "cost_estimate_usd": 0.0004
-                },
-                {
-                    "task_name": "gap_roi_analysis",
-                    "provider": "deepseek",
-                    "model": "deepseek-chat",
-                    "latency_ms": 840.0,
-                    "validation_passed": True,
-                    "cost_estimate_usd": 0.0001
-                }
-            ]
+            "total_requests": 0,
+            "success_rate_percent": 0.0,
+            "p95_latency_sec": 0.0,
+            "fallback_rate_percent": 0.0,
+            "total_tokens_consumed": 0,
+            "estimated_cost_usd": 0.0,
+            "active_providers": [],
+            "recent_logs": [],
+            "data_status": "empty",
         }
 
     valid_count = sum(1 for r in records if r.validation_passed)

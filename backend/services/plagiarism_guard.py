@@ -5,7 +5,9 @@ Uses SentenceTransformer embeddings and Qdrant similarity searches to check for 
 
 import hashlib
 import logging
-from typing import Dict, Any, List, Optional
+import re
+import uuid
+from typing import Optional, Tuple
 from dataclasses import dataclass
 
 from core.qdrant import qdrant_client
@@ -115,13 +117,42 @@ async def seed_known_answers(qdrant = None) -> None:
     except Exception as e:
         logger.error(f"Failed to seed Qdrant collection: {e}")
 
+def _fallback_keyword_plagiarism(answer_text: str) -> Tuple[bool, float, Optional[str]]:
+    """Lightweight token-Jaccard check against canonical textbook seed sentences when Qdrant is offline."""
+    tokens = set(re.findall(r"\b[a-z0-9]{3,}\b", (answer_text or "").lower()))
+    if len(tokens) < 5:
+        return False, 0.0, None
+    best_sim = 0.0
+    best_topic: Optional[str] = None
+    for seed in KNOWN_ANSWERS_SEEDS:
+        seed_tokens = set(re.findall(r"\b[a-z0-9]{3,}\b", seed["text"].lower()))
+        if not seed_tokens:
+            continue
+        union = tokens | seed_tokens
+        sim = len(tokens & seed_tokens) / len(union)
+        if sim > best_sim:
+            best_sim = sim
+            best_topic = seed["topic"]
+    return best_sim >= 0.72, round(best_sim, 3), best_topic
+
+
 async def check_plagiarism(answer_text: str, qdrant = None) -> PlagiarismResult:
     """
     Computes vector embedding of response and queries Qdrant for semantic plagiarism match.
     """
     qc = qdrant or qdrant_client
     emb_model = get_embedding_model()
-    if emb_model is None or not answer_text.strip():
+    if not answer_text.strip():
+        return PlagiarismResult(detected=False, similarity_score=0.0)
+    if emb_model is None:
+        is_plag, sim, topic = _fallback_keyword_plagiarism(answer_text)
+        if is_plag:
+            return PlagiarismResult(
+                detected=True,
+                similarity_score=sim,
+                matched_pattern=topic,
+                coaching_note="Textbook phrasing detected. Practice describing this in your own words.",
+            )
         return PlagiarismResult(detected=False, similarity_score=0.0)
 
     try:
@@ -136,9 +167,9 @@ async def check_plagiarism(answer_text: str, qdrant = None) -> PlagiarismResult:
         if results and results[0].score > 0.92:
             matched = results[0]
             coaching_note = (
-                f"Your answer sounds like a textbook definition — a great foundation! "
-                f"Now explain it in your own words with a real example from your experience "
-                f"or a system you have seen."
+                "Your answer sounds like a textbook definition — a great foundation! "
+                "Now explain it in your own words with a real example from your experience "
+                "or a system you have seen."
             )
             return PlagiarismResult(
                 detected=True,
@@ -148,18 +179,14 @@ async def check_plagiarism(answer_text: str, qdrant = None) -> PlagiarismResult:
             )
             
     except Exception as e:
-        logger.warning(f"Qdrant plagiarism query failed: {e}. Falling back to TF-IDF matching.")
-        # Fallback keyword matching
-        from services.plagiarism_guard import check_answer_plagiarism
-        fallback = await check_answer_plagiarism(answer_text, "")
-        if fallback["is_plagiarized"]:
+        logger.warning(f"Qdrant plagiarism query failed: {e}. Falling back to token similarity.")
+        is_plag, sim, topic = _fallback_keyword_plagiarism(answer_text)
+        if is_plag:
             return PlagiarismResult(
                 detected=True,
-                similarity_score=fallback["highest_similarity"],
-                matched_pattern="fallback_match",
+                similarity_score=sim,
+                matched_pattern=topic or "fallback_match",
                 coaching_note="Textbook phrasing detected. Practice describing this in your own words."
             )
 
     return PlagiarismResult(detected=False, similarity_score=0.0)
-
-import uuid

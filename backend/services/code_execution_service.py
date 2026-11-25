@@ -11,7 +11,7 @@ import ast
 import logging
 import asyncio
 import httpx
-from typing import Dict, List, Any, Optional, Tuple
+from typing import Dict, List, Any, Optional
 from dataclasses import dataclass
 
 from core.config import settings
@@ -70,6 +70,16 @@ class ComplexityAnalysis:
     reasoning: str
     potential_bottlenecks: List[str]
     edge_cases: List[str]
+
+
+@dataclass
+class AICodeReviewResult:
+    correctness_feedback: str
+    time_complexity: str
+    space_complexity: str
+    code_quality_issues: List[str]
+    optimized_approach: str
+    code_quality_score: float
 
 
 def analyze_python_ast_complexity(code: str) -> ComplexityAnalysis:
@@ -237,15 +247,12 @@ async def submit_code_for_execution(
     code_length = len(code)
     # Integrity flags: high paste frequency with short duration is flagged as proxy signal
     paste_ratio = (code_length / max(typing_duration_seconds, 1.0))
-    integrity_score = 95.0
     integrity_signals = {
         "paste_event_count": paste_event_count,
         "chars_per_second": round(paste_ratio, 1),
         "timing_anomaly": paste_ratio > 50.0,
         "integrity_status": "NORMAL" if paste_ratio < 40.0 else "REVIEW_PROXY_FLAG"
     }
-    if paste_ratio > 50.0:
-        integrity_score = 75.0
 
     submission_payload = {
         "source_code": code,
@@ -323,4 +330,51 @@ async def submit_code_for_execution(
         passed=False,
         test_results=[],
         integrity_signals=integrity_signals
+    )
+
+
+async def ai_code_review(
+    code: str,
+    language: str,
+    code_result: CodeResult,
+    question_text: str = "",
+) -> AICodeReviewResult:
+    """Produces a deterministic static-AST and execution-grounded code review."""
+    lang = (language or "").strip().lower()
+    if lang in ("python", "python3"):
+        complexity = analyze_python_ast_complexity(code)
+        time_c = complexity.time_complexity_static
+        space_c = complexity.space_complexity_static
+        issues = list(complexity.potential_bottlenecks)
+        approach = complexity.reasoning
+    else:
+        time_c = "Not statically analyzed (non-Python)"
+        space_c = "Not statically analyzed (non-Python)"
+        issues = []
+        approach = "Static AST complexity analysis currently supports Python submissions."
+
+    if code_result.status_id == 13:
+        correctness = f"Execution skipped: {code_result.status_desc}."
+        score = 0.0
+    elif code_result.passed:
+        correctness = "Submitted code passed all provided test cases."
+        score = 88.0 if not issues else 78.0
+    elif code_result.compile_output:
+        correctness = f"Compilation failed: {code_result.compile_output[:240]}"
+        score = 25.0
+    else:
+        correctness = f"Tests did not pass ({code_result.status_desc}). Review failing assertions and edge cases."
+        score = 45.0
+
+    if not code.strip():
+        issues.append("Empty source code submission.")
+        score = 0.0
+
+    return AICodeReviewResult(
+        correctness_feedback=correctness,
+        time_complexity=time_c,
+        space_complexity=space_c,
+        code_quality_issues=issues,
+        optimized_approach=approach,
+        code_quality_score=score,
     )

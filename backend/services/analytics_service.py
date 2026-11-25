@@ -1,7 +1,15 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func, desc
-from db.models import InterviewScore, InterviewSession, Profile
-from typing import Dict, Any, List
+from sqlalchemy import select, desc
+from db.models import (
+    Application,
+    CognitiveProfile,
+    InterviewScore,
+    InterviewSession,
+    Profile,
+    Resume,
+    ResumeScore,
+)
+from typing import Dict, Any
 import uuid
 from services.intelligence.gap_analysis import GapAnalysisEngine
 from services.intelligence.career_gps import CareerGPSNavigator
@@ -19,6 +27,27 @@ async def get_user_dashboard_stats(db: AsyncSession, user_id: uuid.UUID) -> Dict
     profile_stmt = select(Profile).where(Profile.user_id == user_id)
     profile = (await db.execute(profile_stmt)).scalar_one_or_none()
     target_role = profile.target_role if profile else "Senior Backend Engineer"
+
+    # Query real latest ATS resume score instead of returning a hardcoded constant
+    ats_stmt = (
+        select(ResumeScore.overall_score)
+        .join(Resume, Resume.id == ResumeScore.resume_id)
+        .where(Resume.user_id == user_id)
+        .order_by(desc(ResumeScore.created_at))
+        .limit(1)
+    )
+    latest_ats = (await db.execute(ats_stmt)).scalar_one_or_none()
+    ats_score = round(float(latest_ats), 1) if latest_ats is not None else 0.0
+
+    # Query real application tracker counts
+    app_stmt = select(Application.status).where(Application.user_id == user_id)
+    app_statuses = list((await db.execute(app_stmt)).scalars().all())
+    app_total = len(app_statuses)
+    app_offers = sum(1 for st in app_statuses if (st or "").lower() == "offer")
+    app_active = sum(
+        1 for st in app_statuses
+        if (st or "").lower() not in {"rejected", "withdrawn", "offer"}
+    )
 
     # 2. Latest Gap Analysis & Interview History
     interview_stmt = select(InterviewScore).join(InterviewSession).where(InterviewSession.user_id == user_id).order_by(desc(InterviewSession.started_at))
@@ -45,12 +74,18 @@ async def get_user_dashboard_stats(db: AsyncSession, user_id: uuid.UUID) -> Dict
     # 4. Market Synchronicity
     market_opportunities = market_sync.get_market_opportunities(intelligence_profile)
     
-    # 5. DNA & Archetype
-    # In production, we'd fetch the dna_vector from the CognitiveProfile model
-    archetype = dna_profiler.identify_archetype(dna_profiler.generate_initial_dna())
+    # 5. DNA & Archetype (read stored CognitiveProfile when available)
+    cog_stmt = select(CognitiveProfile).where(CognitiveProfile.user_id == user_id)
+    cog_profile = (await db.execute(cog_stmt)).scalar_one_or_none()
+    if cog_profile and cog_profile.dominant_archetype:
+        archetype = cog_profile.dominant_archetype
+    elif cog_profile and cog_profile.dna_vector:
+        archetype = dna_profiler.identify_archetype(cog_profile.dna_vector)
+    else:
+        archetype = "Unassessed"
     
     return {
-        "ats_score": 85.0, # Placeholder
+        "ats_score": ats_score,
         "skill_match": profile_pct.get("Skill", 0),
         "intelligence_profile": profile_pct,
         "gps_reroute": gps_result,
@@ -62,7 +97,7 @@ async def get_user_dashboard_stats(db: AsyncSession, user_id: uuid.UUID) -> Dict
             "communication": profile_pct.get("Communication", 0),
             "confidence": profile_pct.get("Confidence", 0),
         },
-        "applications": {"total": 12, "active": 3, "offers": 1},
+        "applications": {"total": app_total, "active": app_active, "offers": app_offers},
         "top_gaps": [g["dimension"] for g in gap_engine.identify_critical_gaps(intelligence_profile)][:3],
         "ai_therapist_insight": {
             "title": f"GPS Reroute: {gps_result['status']}",
@@ -89,6 +124,7 @@ async def calculate_career_gps_navigation(
     # 1. Fetch user profile
     profile_stmt = select(Profile).where(Profile.user_id == user_id)
     profile = (await db.execute(profile_stmt)).scalar_one_or_none()
+    effective_target_role = target_role or (profile.target_role if profile and profile.target_role else "Senior Backend Engineer")
     
     # 2. Latest Gap Analysis & Interview History
     interview_stmt = select(InterviewScore).join(InterviewSession).where(InterviewSession.user_id == user_id).order_by(desc(InterviewSession.started_at))
@@ -108,7 +144,7 @@ async def calculate_career_gps_navigation(
     
     return gps_navigator.calculate_full_navigation(
         profile=intelligence_profile,
-        target_role=target_role,
+        target_role=effective_target_role,
         experience_years=experience_years,
         target_tier=target_tier,
         time_horizon_days=time_horizon_days,

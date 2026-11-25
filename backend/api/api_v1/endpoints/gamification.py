@@ -1,12 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, desc
 from api.deps import get_db, get_current_active_user
 from db.models import User, GamificationProfile
 from services import gamification_service
 from pydantic import BaseModel
-from typing import Optional, List
-import uuid
+from typing import Optional
 
 router = APIRouter()
 
@@ -35,11 +34,10 @@ async def award_xp_to_student(
     Award XP to the student for a completed task or activity event.
     """
     return await gamification_service.award_xp(
+        user_id=str(current_user.id),
+        event_type=payload.event,
         db=db,
-        user_id=current_user.id,
-        event=payload.event,
         custom_xp=payload.custom_xp,
-        context=payload.context
     )
 
 @router.get("/leaderboard")

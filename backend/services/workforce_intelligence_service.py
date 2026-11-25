@@ -16,12 +16,11 @@ import math
 import logging
 from datetime import datetime, timezone
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, and_, func
+from sqlalchemy import select
 
 from db.models import (
-    RecruiterOrganization, OrganizationUnit, OrganizationEmployee,
-    OrganizationRoleCatalog, OrganizationCapabilitySnapshot, SkillEvidence,
-    VerifiedCredential, ProjectEvidence, User
+    OrganizationUnit, OrganizationEmployee,
+    OrganizationCapabilitySnapshot, SkillEvidence
 )
 from services.canonical_skill_service import normalize_skill_name
 
@@ -331,7 +330,7 @@ async def find_internal_talent_mobility(
             verified_count = sum(1 for s in skills if s.evidence_tier in ("VERIFIED", "ASSESSED", "DEMONSTRATED"))
 
             match_score = min(50.0 + verified_count * 15.0, 92.0)
-            strengths = [s.skill_name for s in skills if s.evidence_tier in ("VERIFIED", "ASSESSED")]
+            strengths: List[str] = [str(s.skill_name) for s in skills if s.evidence_tier in ("VERIFIED", "ASSESSED")]
             gaps = ["Kubernetes" if "Kubernetes" not in [s.skill_name for s in skills] else "Distributed Systems"]
 
             mobility_candidates.append({
@@ -396,17 +395,6 @@ async def simulate_organizational_counterfactual(
     projected_overall = round(
         projected_sum / projected_eval_count, 1
     ) if projected_eval_count > 0 else 0.0
-
-    return {
-        "simulation_version": ORGANIZATION_TWIN_VERSION,
-        "target_skill": target_skill,
-        "applied_changes": hypothetical_changes,
-        "current_overall_coverage": current_cov["overall_coverage_pct"],
-        "projected_overall_coverage": projected_overall,
-        "projected_coverage_delta": round(projected_overall - current_cov["overall_coverage_pct"], 1),
-        "competency_projections": projected_competencies,
-        "assumptions": "Assumes 85% completion rate of structured intervention roadmap for upskilled engineers."
-    }
 
     return {
         "simulation_version": ORGANIZATION_TWIN_VERSION,

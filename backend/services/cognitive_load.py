@@ -6,12 +6,47 @@ Saves load events to PostgreSQL and determines adaptation actions.
 
 import uuid
 import logging
-from typing import List, Dict, Any, Tuple
+from typing import List, Dict, Any, Tuple, Optional
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from db.models import CognitiveLoadEvent, RLState
 
 logger = logging.getLogger(__name__)
+
+
+def _action_for_load(load: float) -> str:
+    if load > 0.75:
+        return "difficulty_reduced_critical"
+    if load > 0.60:
+        return "difficulty_reduced_moderate"
+    if load > 0.45:
+        return "hint_available"
+    return "none"
+
+
+def compute_cognitive_load_from_summary(
+    backspace_rate: float,
+    average_delay_ms: float,
+    long_pauses_count: int,
+    word_count: int,
+) -> Tuple[float, Dict[str, Any]]:
+    """Computes normalized cognitive load from aggregated batch telemetry."""
+    revision_ratio = max(0.0, min(1.0, float(backspace_rate)))
+    pause_signal = max(0.0, min(1.0, float(long_pauses_count) / 5.0))
+    delay_signal = max(0.0, min(1.0, float(average_delay_ms) / 3000.0))
+    fluency_penalty = 0.0 if word_count >= 15 else max(0.0, (15 - word_count) / 15.0)
+    load = max(0.0, min(1.0, (delay_signal * 0.35) + (revision_ratio * 0.30) + (pause_signal * 0.25) + (fluency_penalty * 0.10)))
+    action = _action_for_load(load)
+    return load, {
+        "speed_drop": round(delay_signal, 4),
+        "revision_ratio": round(revision_ratio, 4),
+        "max_pause_ms": int(long_pauses_count * 2500),
+        "average_delay_ms": float(average_delay_ms),
+        "long_pauses_count": int(long_pauses_count),
+        "word_count": int(word_count),
+        "load_score": round(load, 4),
+        "action": action,
+    }
 
 def calculate_cognitive_load(keystroke_events: List[Dict[str, Any]], user_id: str, baseline_wpm: float = 40.0) -> Tuple[float, Dict[str, Any]]:
     """
@@ -79,12 +114,33 @@ async def record_cognitive_load_event(
     user_id: uuid.UUID,
     session_id: uuid.UUID,
     question_number: int,
-    keystroke_events: List[Dict[str, Any]]
+    keystroke_events: Optional[List[Dict[str, Any]]] = None,
+    backspace_rate: Optional[float] = None,
+    average_delay_ms: Optional[float] = None,
+    long_pauses_count: Optional[int] = None,
+    word_count: Optional[int] = None,
 ) -> Dict[str, Any]:
     """
     Computes load, logs database event, and optionally reduces difficulty in RL state.
+    Accepts either raw keystroke events or aggregated typing telemetry summaries.
     """
-    load, signals = calculate_cognitive_load(keystroke_events, str(user_id))
+    if keystroke_events is not None:
+        load, signals = calculate_cognitive_load(keystroke_events, str(user_id))
+    elif (
+        backspace_rate is not None
+        or average_delay_ms is not None
+        or long_pauses_count is not None
+        or word_count is not None
+    ):
+        load, signals = compute_cognitive_load_from_summary(
+            backspace_rate=backspace_rate or 0.0,
+            average_delay_ms=average_delay_ms or 0.0,
+            long_pauses_count=long_pauses_count or 0,
+            word_count=word_count or 0,
+        )
+    else:
+        return {"load_score": 0.0, "action_taken": "none"}
+
     if not signals:
         return {"load_score": 0.0, "action_taken": "none"}
 

@@ -1,14 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException, Body, Query, Path
 from sqlalchemy.ext.asyncio import AsyncSession
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List
 import uuid
 
 from api.deps import get_db, get_current_active_user
 from db.models import User, CareerSignal, AutomationPreference
 from sqlalchemy import select, and_
 from services.autonomous_career_os_service import (
-    generate_daily_career_brief, detect_career_signals, compute_next_best_action,
-    detect_career_goal_drift, file_evidence_dispute_workflow, execute_autonomous_action_with_guard
+    generate_daily_career_brief, detect_career_signals, detect_career_goal_drift, file_evidence_dispute_workflow, execute_autonomous_action_with_guard
 )
 
 router = APIRouter()
@@ -93,11 +92,25 @@ async def get_automation_preferences(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_active_user)
 ) -> Dict[str, Any]:
-    """Gets user autonomy settings and emergency kill switch state."""
+    """Gets user autonomy settings and emergency kill switch state from DB."""
+    stmt = select(AutomationPreference).where(AutomationPreference.user_id == current_user.id)
+    pref = (await db.execute(stmt)).scalars().first()
+    if not pref:
+        pref = AutomationPreference(
+            user_id=current_user.id,
+            autonomy_level=3,
+            proactive_recommendations_enabled=True,
+            deadline_alerts_enabled=True,
+            opportunity_alerts_enabled=True,
+            kill_switch_active=False,
+        )
+        db.add(pref)
+        await db.commit()
+        await db.refresh(pref)
     return {
-        "autonomy_level": 3,
-        "proactive_recommendations_enabled": True,
-        "deadline_alerts_enabled": True,
-        "opportunity_alerts_enabled": True,
-        "kill_switch_active": False
+        "autonomy_level": int(pref.autonomy_level or 0),
+        "proactive_recommendations_enabled": bool(pref.proactive_recommendations_enabled),
+        "deadline_alerts_enabled": bool(pref.deadline_alerts_enabled),
+        "opportunity_alerts_enabled": bool(pref.opportunity_alerts_enabled),
+        "kill_switch_active": bool(pref.kill_switch_active),
     }

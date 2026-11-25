@@ -1,14 +1,12 @@
-import json
 import uuid
 import secrets
-from datetime import datetime, date, timedelta, timezone
+from datetime import datetime, timedelta, timezone
 from typing import Dict, Any, List, Optional
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func, desc
+from sqlalchemy import select, desc
 
-from db.models import User, Profile, OfferLetter, MentorProfile, MentorSession, StudentProfile
+from db.models import Profile, OfferLetter, MentorProfile, MentorSession, StudentProfile
 from services import gamification_service
-from core.qdrant import qdrant_client
 from core.redis import redis_client
 
 MENTOR_COMMITMENT_PROTOCOL = {
@@ -101,7 +99,7 @@ async def match_mentee_to_mentor(
 
     # 2. Query available active mentors
     mentor_stmt = select(MentorProfile).where(
-        MentorProfile.is_active == True,
+        MentorProfile.is_active.is_(True),
         MentorProfile.sessions_completed < MentorProfile.sessions_committed
     )
     mentors = (await db.execute(mentor_stmt)).scalars().all()
@@ -239,7 +237,7 @@ async def complete_mentor_session(
         all_completed_stmt = select(MentorSession).where(
             MentorSession.mentor_id == mentor.id,
             MentorSession.status == "completed",
-            MentorSession.mentor_rating != None
+            MentorSession.mentor_rating.is_not(None)
         )
         completed_sessions = (await db.execute(all_completed_stmt)).scalars().all()
         ratings = [s.mentor_rating for s in completed_sessions]
@@ -294,7 +292,7 @@ async def get_mentor_leaderboard(db: AsyncSession) -> List[Dict[str, Any]]:
     """
     Returns top 50 mentors ordered by completed sessions count.
     """
-    stmt = select(MentorProfile).where(MentorProfile.is_active == True).order_index = desc(MentorProfile.sessions_completed)
+    stmt = select(MentorProfile).where(MentorProfile.is_active.is_(True))
     stmt = stmt.order_by(desc(MentorProfile.sessions_completed)).limit(50)
     mentors = (await db.execute(stmt)).scalars().all()
 

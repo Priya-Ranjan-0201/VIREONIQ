@@ -1,8 +1,11 @@
+import uuid
 from fastapi import APIRouter, Depends, HTTPException, status
+from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 from db.session import get_db
 from schemas.interview import InterviewStartRequest, InterviewSessionResponse, AnswerSubmission, InterviewScorecard
 from services.interview import engine
+from services import cognitive_load
 from api import deps
 from db.models import User
 from crud import crud_interview
@@ -44,7 +47,7 @@ async def submit_answer(
         return result
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
-    except Exception as e:
+    except Exception:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="LLM processing failed")
 
 @router.get("/history")
@@ -84,10 +87,6 @@ async def get_scorecard(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Session not found")
     return session
 
-
-from pydantic import BaseModel
-import uuid
-from services import cognitive_load
 
 class CognitiveLoadSubmit(BaseModel):
     session_id: uuid.UUID

@@ -5,12 +5,12 @@ Gamification service managing XP, levels, streaks, badges, and leaderboard integ
 import uuid
 import logging
 from datetime import datetime, timezone, date, timedelta
-from typing import Dict, List, Any, Optional
+from typing import List, Optional, Union
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqlalchemy import select, func
 
-from db.models import GamificationProfile, Notification, User, Profile
+from db.models import GamificationProfile, Notification, Profile
 from core.redis import redis_client
 
 logger = logging.getLogger(__name__)
@@ -94,15 +94,33 @@ async def get_or_create_gamification(db: AsyncSession, user_id: uuid.UUID) -> Ga
 
 async def get_gamification_profile(db: AsyncSession, user_id: uuid.UUID) -> dict:
     prof = await get_or_create_gamification(db, user_id)
+    total_xp = int(prof.total_xp or 0)
+    weekly_xp = int(prof.weekly_xp or 0)
+
+    higher_global = (
+        await db.execute(
+            select(func.count())
+            .select_from(GamificationProfile)
+            .where(GamificationProfile.total_xp > total_xp)
+        )
+    ).scalar() or 0
+    higher_weekly = (
+        await db.execute(
+            select(func.count())
+            .select_from(GamificationProfile)
+            .where(GamificationProfile.weekly_xp > weekly_xp)
+        )
+    ).scalar() or 0
+
     return {
-        "total_xp": prof.total_xp if (prof.total_xp and prof.total_xp > 0) else 2150,
-        "weekly_xp": prof.weekly_xp if (prof.weekly_xp and prof.weekly_xp > 0) else 450,
-        "current_level": prof.current_level or 8,
-        "current_streak_days": prof.current_streak_days or 14,
-        "longest_streak_days": prof.longest_streak_days or 21,
-        "rank_global": 184,
-        "rank_weekly": 42,
-        "earned_badges": prof.earned_badges if prof.earned_badges else ["first_interview", "streak_7", "micro_intern", "level_5"]
+        "total_xp": total_xp,
+        "weekly_xp": weekly_xp,
+        "current_level": int(prof.current_level or 1),
+        "current_streak_days": int(prof.current_streak_days or 0),
+        "longest_streak_days": int(prof.longest_streak_days or 0),
+        "rank_global": int(higher_global) + 1,
+        "rank_weekly": int(higher_weekly) + 1,
+        "earned_badges": list(prof.earned_badges or []),
     }
 
 async def check_badge_conditions(profile: GamificationProfile, db: AsyncSession) -> List[str]:
@@ -161,15 +179,23 @@ async def check_badge_conditions(profile: GamificationProfile, db: AsyncSession)
     profile.earned_badges = earned
     return unlocked
 
-async def award_xp(user_id: str, event_type: str, db: AsyncSession, redis = None) -> dict:
+async def award_xp(
+    user_id: Union[str, uuid.UUID],
+    event_type: str,
+    db: AsyncSession,
+    redis=None,
+    custom_xp: Optional[int] = None,
+) -> dict:
     """
     Awards XP to a user profile, updates streak, checks level-up, updates Redis leaderboard,
     and returns gamification telemetry.
     """
+    uid = user_id if isinstance(user_id, uuid.UUID) else uuid.UUID(str(user_id))
+    user_id_str = str(uid)
     r_client = redis or redis_client
-    profile = await get_or_create_gamification(db, uuid.UUID(user_id))
+    profile = await get_or_create_gamification(db, uid)
     
-    xp = XP_EVENTS.get(event_type, 0)
+    xp = int(custom_xp) if custom_xp is not None else XP_EVENTS.get(event_type, 0)
     profile.total_xp = (profile.total_xp or 0) + xp
     profile.weekly_xp = (profile.weekly_xp or 0) + xp
 
@@ -211,19 +237,19 @@ async def award_xp(user_id: str, event_type: str, db: AsyncSession, redis = None
 
     # Streak 7 milestones check
     if profile.current_streak_days == 7 and event_type != "streak_7_days":
-        await award_xp(user_id, "streak_7_days", db, r_client)
+        await award_xp(uid, "streak_7_days", db, r_client)
 
     # Fetch User target role for role leaderboard
-    prof_stmt = select(Profile).where(Profile.user_id == uuid.UUID(user_id))
+    prof_stmt = select(Profile).where(Profile.user_id == uid)
     stud_prof = (await db.execute(prof_stmt)).scalar_one_or_none()
     role_id = stud_prof.target_role if stud_prof else "general"
 
     # Update leaderboards in Redis
     iso_week = get_iso_week()
     try:
-        await r_client.zadd("leaderboard:global:xp", {user_id: float(profile.total_xp)})
-        await r_client.zadd(f"leaderboard:role:{role_id}:xp", {user_id: float(profile.total_xp)})
-        await r_client.zadd(f"leaderboard:weekly:{iso_week}:xp", {user_id: float(profile.weekly_xp)})
+        await r_client.zadd("leaderboard:global:xp", {user_id_str: float(profile.total_xp)})
+        await r_client.zadd(f"leaderboard:role:{role_id}:xp", {user_id_str: float(profile.total_xp)})
+        await r_client.zadd(f"leaderboard:weekly:{iso_week}:xp", {user_id_str: float(profile.weekly_xp)})
     except Exception as e:
         logger.warning(f"Failed to update Redis leaderboard: {e}")
 
