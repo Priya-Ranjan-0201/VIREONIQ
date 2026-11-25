@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Souq AI ✨ - Supercharge Your Store</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
+    <style>
+      body {
+        font-family: "Tajawal", sans-serif;
+        background: radial-gradient(120% 80% at 0% 0%, #312e81 0%, #1e1b4b 40%, #0b0a1a 100%);
+      }
+      .gradient-text {
+        background: linear-gradient(135deg, #f9a8d4 0%, #c084fc 50%, #818cf8 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      .glow-button {
+        background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
+        box-shadow: 0 0 26px rgba(236, 72, 153, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+      }
+      .glass {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(192, 132, 252, 0.4);
+        backdrop-filter: blur(12px);
+        box-shadow: 0 0 40px rgba(139, 92, 246, 0.15);
+      }
+      .bar {
+        background: linear-gradient(180deg, #f472b6, #8b5cf6);
+        box-shadow: 0 0 16px rgba(236, 72, 153, 0.6);
+      }
+    </style>
+  </head>
+  <body class="min-h-screen text-white">
+    <div class="relative flex min-h-screen">
+      <!-- Sidebar -->
+      <aside class="glass m-3 flex w-[248px] flex-col rounded-3xl p-5">
+        <div class="mb-7 flex items-center gap-3">
+          <div class="glow-button flex h-10 w-10 items-center justify-center rounded-2xl text-xl">🛍️</div>
+          <div class="gradient-text text-2xl font-black">سوق AI</div>
+          <span class="glow-button ml-auto rounded-full px-2 py-[3px] text-[10px] font-bold">NEW ✨</span>
+        </div>
+
+        <p class="mb-3 text-[11px] font-bold uppercase tracking-[0.3em] text-fuchsia-300/70">MENU · القائمة</p>
+        <nav class="space-y-[6px] text-left">
+          <a class="glow-button flex items-center gap-3 rounded-2xl px-4 py-[11px] font-bold">📊 لوحة التحكم</a>
+          <a class="flex items-center gap-3 rounded-2xl px-4 py-[9px] text-violet-200 transition-all hover:scale-105">📦 الطلبات <span class="glow-button ml-auto rounded-full px-2 text-[11px]">24 🔥</span></a>
+          <a class="flex items-center gap-3 rounded-2xl px-4 py-[13px] text-violet-200 transition-all hover:scale-105">🛒 المنتجات</a>
+          <a class="flex items-center gap-3 rounded-2xl px-4 py-[9px] text-violet-200 transition-all hover:scale-105">👥 العملاء</a>
+          <a class="flex items-center gap-3 rounded-2xl px-4 py-[10px] text-violet-200 transition-all hover:scale-105">💸 المدفوعات</a>
+          <a class="flex items-center gap-3 rounded-2xl px-4 py-[9px] text-violet-200 transition-all hover:scale-105">⚙️ الإعدادات</a>
+        </nav>
+
+        <div class="glass mt-auto rounded-2xl p-4 text-left">
+          <p class="text-sm font-bold">🚀 جرّب الذكاء الاصطناعي!</p>
+          <p class="mt-1 text-xs text-violet-200">ضاعف مبيعاتك 10x بضغطة زر واحدة 🤖</p>
+        </div>
+      </aside>
+
+      <!-- Main -->
+      <main class="flex-1 p-[22px] text-left">
+        <div class="mb-6 flex items-center justify-between">
+          <div>
+            <h1 class="gradient-text text-4xl font-black tracking-wide">صباح الخير يا سارة! 👋</h1>
+            <p class="mt-1 text-violet-200">متجرك يحقق أداءً مذهلاً اليوم, استمري!!</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <input class="glass w-72 rounded-full px-5 py-[10px] text-sm text-white placeholder-violet-300 outline-none" placeholder="🔍 ابحث عن أي شيء..." />
+            <button class="glow-button animate-pulse rounded-full px-5 py-[10px] text-sm font-bold">+ طلب جديد →</button>
+          </div>
+        </div>
+
+        <div class="mb-6 grid grid-cols-4 gap-4">
+          <div class="glass rounded-3xl p-5">
+            <p class="text-xs font-bold uppercase tracking-[0.25em] text-violet-300">REVENUE · الإيرادات</p>
+            <p class="gradient-text mt-2 text-3xl font-black">💰 SAR 48,210</p>
+            <p class="mt-1 text-sm text-emerald-300">+12%!! 🚀</p>
+          </div>
+          <div class="glass rounded-3xl p-5">
+            <p class="text-xs font-bold uppercase tracking-[0.25em] text-violet-300">ORDERS · الطلبات</p>
+            <p class="gradient-text mt-2 text-3xl font-black">📦 ١٢٤٦</p>
+            <p class="mt-1 text-sm text-emerald-300">+86 😍</p>
+          </div>
+          <div class="glass rounded-3xl p-5">
+            <p class="text-xs font-bold uppercase tracking-[0.25em] text-violet-300">AVG · متوسط الطلب</p>
+            <p class="gradient-text mt-2 text-3xl font-black">١٢٤٫٦٠ ر.س</p>
+            <p class="mt-1 text-sm text-rose-300">-3 less!!</p>
+          </div>
+          <div class="glass rounded-3xl p-5">
+            <p class="text-xs font-bold uppercase tracking-[0.25em] text-violet-300">GOAL · هدف الشهر</p>
+            <p class="gradient-text mt-2 text-3xl font-black">68% 🎯</p>
+            <div class="mt-3 h-2 w-full overflow-hidden rounded-full bg-white/10"><div class="glow-button h-full w-[68%] rounded-full"></div></div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-4">
+          <section class="glass col-span-2 rounded-3xl p-6">
+            <div class="mb-5 flex items-center justify-between">
+              <h2 class="gradient-text text-2xl font-black tracking-wider">📈 مبيعات الأسبوع</h2>
+              <span class="text-xs uppercase tracking-[0.25em] text-violet-300">LAST 7 DAYS</span>
+            </div>
+            <div class="flex h-48 items-end gap-4">
+              <div class="flex h-full flex-1 flex-col items-center justify-end gap-2"><div class="bar h-[45%] w-full rounded-full"></div><span class="text-xs uppercase tracking-widest text-violet-300">السبت</span></div>
+              <div class="flex h-full flex-1 flex-col items-center justify-end gap-2"><div class="bar h-[62%] w-full rounded-full"></div><span class="text-xs uppercase tracking-widest text-violet-300">الأحد</span></div>
+              <div class="flex h-full flex-1 flex-col items-center justify-end gap-2"><div class="bar h-[38%] w-full rounded-full"></div><span class="text-xs uppercase tracking-widest text-violet-300">الاثنين</span></div>
+              <div class="flex h-full flex-1 flex-col items-center justify-end gap-2"><div class="bar h-[71%] w-full rounded-full"></div><span class="text-xs uppercase tracking-widest text-violet-300">الثلاثاء</span></div>
+              <div class="flex h-full flex-1 flex-col items-center justify-end gap-2"><div class="bar h-[55%] w-full rounded-full"></div><span class="text-xs uppercase tracking-widest text-violet-300">الأربعاء</span></div>
+              <div class="flex h-full flex-1 flex-col items-center justify-end gap-2"><div class="bar h-[88%] w-full rounded-full"></div><span class="text-xs uppercase tracking-widest text-violet-300">الخميس</span></div>
+              <div class="flex h-full flex-1 flex-col items-center justify-end gap-2"><div class="bar h-[96%] w-full rounded-full"></div><span class="text-xs uppercase tracking-widest text-violet-300">الجمعة</span></div>
+            </div>
+          </section>
+
+          <section class="glass rounded-3xl p-6">
+            <h2 class="gradient-text mb-4 text-2xl font-black">🏆 الأكثر مبيعاً</h2>
+            <ul class="space-y-3 text-sm">
+              <li class="flex justify-between">☕ قهوة Ethiopia Yirgacheffe 250g <span class="font-bold">412 🔥</span></li>
+              <li class="flex justify-between">🫖 إبريق V60 Hario <span class="font-bold">298</span></li>
+              <li class="flex justify-between">⚖️ ميزان Timemore <span class="font-bold">١٨٧</span></li>
+              <li class="flex justify-between">🥛 فلاتر ورقية (100 pcs) <span class="font-bold">156</span></li>
+            </ul>
+          </section>
+        </div>
+
+        <section class="glass mt-4 rounded-3xl p-6">
+          <div class="mb-4 flex items-center justify-between">
+            <h2 class="gradient-text text-2xl font-black">🧾 آخر الطلبات</h2>
+            <a class="text-sm text-fuchsia-300">عرض الكل →</a>
+          </div>
+          <table class="w-full text-left text-sm">
+            <thead class="text-xs uppercase tracking-[0.2em] text-violet-300">
+              <tr><th class="pb-3">ORDER</th><th class="pb-3">العميل</th><th class="pb-3">البريد</th><th class="pb-3">المبلغ</th><th class="pb-3">الحالة</th></tr>
+            </thead>
+            <tbody class="text-violet-100">
+              <tr class="border-t border-white/10"><td class="py-3">#A-1042</td><td>نورة القحطاني</td><td>noura.q@gmail.com</td><td>SAR 289.00</td><td><span class="glow-button rounded-full px-3 py-1 text-xs">✅ تم التوصيل!</span></td></tr>
+              <tr class="border-t border-white/10"><td class="py-3">#A-1041</td><td>خالد العتيبي</td><td>k.otaibi@outlook.com</td><td>١٥٤ ر.س</td><td><span class="rounded-full bg-amber-500/30 px-3 py-1 text-xs">🚚 قيد الشحن...</span></td></tr>
+              <tr class="border-t border-white/10"><td class="py-3">#A-1040</td><td>Mohammed Al-Harbi</td><td>m.harbi@icloud.com</td><td>SAR 1,120.50</td><td><span class="rounded-full bg-rose-500/30 px-3 py-1 text-xs">❌ ملغي؟</span></td></tr>
+            </tbody>
+          </table>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

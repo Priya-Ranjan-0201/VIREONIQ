@@ -40,9 +40,9 @@ import { Link, useLocation } from 'react-router-dom';
 
 const navSections = [
   {
-    label: 'Core Intelligence',
+    label: 'Core intelligence',
     items: [
-      { name: 'Dashboard', href: '/app/dashboard', icon: LayoutDashboard, badge: 'Live' },
+      { name: 'Dashboard', href: '/app/dashboard', icon: LayoutDashboard },
       { name: 'Daily Career OS', href: '/app/career-os', icon: Compass },
       { name: 'Career Digital Twin', href: '/app/career-twin', icon: Brain },
       { name: 'Career GPS', href: '/app/career-gps', icon: Navigation },
@@ -50,18 +50,18 @@ const navSections = [
     ],
   },
   {
-    label: 'Resume & Documents',
+    label: 'Resume & documents',
     items: [
       { name: 'Resume Score (NLP)', href: '/app/resume', icon: FileText },
-      { name: 'ATS Compatibility', href: '/app/ats-score', icon: Sparkles, badge: 'ATS 90+' },
-      { name: 'JD Match Engine', href: '/app/jd-match', icon: Target, badge: 'Smart' },
-      { name: 'AI STAR Rewriter', href: '/app/resume-rewriter', icon: Sparkles, badge: 'STAR' },
-      { name: 'AI Resume Builder', href: '/app/resume-builder', icon: Sparkles, badge: 'MNC' },
+      { name: 'ATS Compatibility', href: '/app/ats-score', icon: Sparkles, badge: '90+' },
+      { name: 'JD Match Engine', href: '/app/jd-match', icon: Target },
+      { name: 'AI STAR Rewriter', href: '/app/resume-rewriter', icon: Sparkles },
+      { name: 'AI Resume Builder', href: '/app/resume-builder', icon: Sparkles },
       { name: 'Gap Analysis', href: '/app/gap-analysis', icon: Target },
     ],
   },
   {
-    label: 'Interview Studio',
+    label: 'Interview studio',
     items: [
       { name: 'MNC Interview Studio', href: '/app/mnc-interview', icon: Cpu, badge: 'MNC' },
       { name: 'Adaptive Assessment', href: '/app/assessment', icon: Brain },
@@ -74,10 +74,10 @@ const navSections = [
     ],
   },
   {
-    label: 'Market & Portfolio',
+    label: 'Market & portfolio',
     items: [
-      { name: 'Developer Portfolio', href: '/app/portfolio', icon: Code2, badge: 'GitHub' },
-      { name: 'Salary Predictor', href: '/app/salary-predictor', icon: DollarSign, badge: 'PPP' },
+      { name: 'Developer Portfolio', href: '/app/portfolio', icon: Code2 },
+      { name: 'Salary Predictor', href: '/app/salary-predictor', icon: DollarSign },
       { name: 'Market Intelligence', href: '/app/market-intelligence', icon: TrendingUp },
       { name: 'Psychometric DNA', href: '/app/psychometric-dna', icon: Dna },
       { name: 'Skill Credential', href: '/app/credential', icon: Award },
@@ -86,7 +86,7 @@ const navSections = [
     ],
   },
   {
-    label: 'Learning & Growth',
+    label: 'Learning & growth',
     items: [
       { name: 'Syllabus Optimizer', href: '/app/syllabus-optimizer', icon: BookOpen },
       { name: 'Micro-Internships', href: '/app/micro-internships', icon: Briefcase },
@@ -98,14 +98,14 @@ const navSections = [
     ],
   },
   {
-    label: 'Gamification & Rewards',
+    label: 'Gamification & rewards',
     items: [
       { name: 'Gamification Hub', href: '/app/gamification', icon: Trophy },
       { name: 'Global Leaderboard', href: '/app/leaderboard', icon: Crown },
     ],
   },
   {
-    label: 'Opportunities & Mentors',
+    label: 'Opportunities & mentors',
     items: [
       { name: 'Opportunities', href: '/app/opportunities', icon: Briefcase },
       { name: 'Application Tracker', href: '/app/applications', icon: ClipboardList },
@@ -118,7 +118,7 @@ const navSections = [
     ],
   },
   {
-    label: 'Admin & Portal',
+    label: 'Admin & portal',
     items: [
       { name: 'College Admin', href: '/app/college-admin', icon: Building2 },
       { name: 'Parent View', href: '/app/parent-view', icon: Eye },
@@ -126,7 +126,7 @@ const navSections = [
     ],
   },
   {
-    label: 'Settings & Account',
+    label: 'Settings & account',
     items: [
       { name: 'Billing & Plans', href: '/app/billing', icon: CreditCard },
       { name: 'Settings & Security', href: '/app/settings', icon: Settings },
@@ -139,40 +139,37 @@ export const Sidebar = ({ onClose }: { onClose?: () => void }) => {
   const { user, logout } = useAuthStore();
 
   return (
-    <aside className="w-full h-full border-r border-slate-200/80 dark:border-white/10 bg-white/95 dark:bg-slate-950/80 backdrop-blur-2xl flex flex-col overflow-hidden shadow-xl dark:shadow-[20px_0_40px_rgba(0,0,0,0.5)] transition-colors">
+    <aside className="w-full h-full border-r border-slate-200/90 dark:border-white/[0.08] bg-[#f5f7fa] dark:bg-[#07080d] flex flex-col overflow-hidden transition-colors">
       {/* Brand Header */}
-      <div className="p-6 border-b border-slate-200/80 dark:border-white/5 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#fdbcb4] via-[#add8e6] to-[#22c55e] flex items-center justify-center font-black text-slate-950 shadow-md shadow-[#add8e6]/30">
+      <div className="h-14 px-5 border-b border-slate-200/80 dark:border-white/[0.08] flex items-center justify-between shrink-0">
+        <div className="flex items-center gap-2.5">
+          <div className="w-7 h-7 rounded-lg bg-slate-900 dark:bg-white text-white dark:text-slate-900 flex items-center justify-center font-bold text-xs tracking-tight shadow-2xs">
             V
           </div>
-          <div>
-            <div className="flex items-center gap-1.5">
-              <h1 className="text-xl font-bold tracking-tight bg-gradient-to-r from-slate-900 via-slate-800 to-slate-700 dark:from-white dark:via-[#add8e6] dark:to-[#fdbcb4] bg-clip-text text-transparent font-heading">
-                VIREONIQ
-              </h1>
-              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-[#fdbcb4]/20 text-[#fca59b] dark:text-[#fdbcb4] border border-[#fdbcb4]/40">
-                X
-              </span>
-            </div>
-            <div className="flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#22c55e] shadow-[0_0_8px_#22c55e] animate-ping" />
-              <span>AI Core Online</span>
-            </div>
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-semibold tracking-tight text-slate-900 dark:text-[#eef0f5] font-heading">
+              VIREONIQ
+            </span>
+            <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-slate-200/70 dark:bg-white/[0.06] text-slate-600 dark:text-slate-400 border border-slate-300/60 dark:border-white/10">
+              v2.0
+            </span>
           </div>
         </div>
         {onClose && (
-          <button onClick={onClose} className="lg:hidden text-slate-400 hover:text-slate-700 dark:hover:text-white p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors">
-            <X className="w-5 h-5" />
+          <button
+            onClick={onClose}
+            className="lg:hidden text-slate-400 hover:text-slate-700 dark:hover:text-white p-1 rounded-md hover:bg-slate-200/50 dark:hover:bg-white/5 transition-colors"
+          >
+            <X className="w-4 h-4" />
           </button>
         )}
       </div>
 
       {/* Navigation Sections */}
-      <nav className="flex-1 px-3 py-4 overflow-y-auto custom-scrollbar space-y-4">
+      <nav className="flex-1 px-3 py-3 overflow-y-auto custom-scrollbar space-y-4">
         {navSections.map((section) => (
-          <div key={section.label} className="space-y-1">
-            <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest px-3 py-1">
+          <div key={section.label} className="space-y-0.5">
+            <p className="text-[11px] font-medium text-slate-400 dark:text-slate-500 px-2.5 py-1">
               {section.label}
             </p>
             {section.items.map((item) => {
@@ -182,25 +179,25 @@ export const Sidebar = ({ onClose }: { onClose?: () => void }) => {
                   key={item.name}
                   to={item.href}
                   className={cn(
-                    "flex items-center justify-between px-3 py-2 rounded-xl transition-all duration-200 group text-xs font-medium",
+                    "flex items-center justify-between px-2.5 py-1.5 rounded-lg transition-colors duration-150 group text-xs",
                     isActive
-                      ? "bg-gradient-to-r from-[#add8e6]/25 via-[#fdbcb4]/15 to-transparent text-slate-900 dark:text-white border-l-2 border-[#add8e6] shadow-sm font-semibold"
-                      : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100/70 dark:hover:bg-white/[0.04] border-l-2 border-transparent"
+                      ? "bg-slate-200/80 dark:bg-white/[0.08] text-slate-900 dark:text-white font-medium"
+                      : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-200/40 dark:hover:bg-white/[0.04]"
                   )}
                 >
                   <div className="flex items-center gap-2.5 min-w-0">
                     <item.icon className={cn(
                       "w-4 h-4 shrink-0 transition-colors",
-                      isActive ? "text-[#38bdf8] dark:text-[#add8e6]" : "text-slate-400 dark:text-slate-500 group-hover:text-slate-700 dark:group-hover:text-slate-300"
+                      isActive ? "text-slate-900 dark:text-white" : "text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300"
                     )} />
                     <span className="truncate">{item.name}</span>
                   </div>
                   {item.badge && (
                     <span className={cn(
-                      "text-[9px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wider shrink-0",
+                      "text-[10px] font-mono px-1.5 py-0.2 rounded shrink-0",
                       isActive
-                        ? "bg-[#fdbcb4]/30 text-[#fca59b] dark:text-[#fdbcb4] border border-[#fdbcb4]/50 shadow-[0_0_8px_rgba(253,188,180,0.3)]"
-                        : "bg-slate-200/60 dark:bg-white/5 text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-slate-300"
+                        ? "bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-semibold"
+                        : "bg-slate-200 dark:bg-white/[0.06] text-slate-500 dark:text-slate-400"
                     )}>
                       {item.badge}
                     </span>
@@ -213,21 +210,21 @@ export const Sidebar = ({ onClose }: { onClose?: () => void }) => {
       </nav>
 
       {/* User Profile Footer */}
-      <div className="p-3 border-t border-slate-200/80 dark:border-white/5 bg-slate-50/80 dark:bg-slate-950/60">
-        <div className="flex items-center justify-between p-2 rounded-xl bg-white dark:bg-white/[0.03] border border-slate-200 dark:border-white/5 shadow-xs">
+      <div className="p-3 border-t border-slate-200/80 dark:border-white/[0.08] bg-[#f5f7fa] dark:bg-[#07080d] shrink-0">
+        <div className="flex items-center justify-between p-2 rounded-lg bg-white dark:bg-[#11141c] border border-slate-200/80 dark:border-white/[0.06] shadow-2xs">
           <div className="flex items-center gap-2.5 overflow-hidden">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-[#fdbcb4] to-[#add8e6] flex items-center justify-center font-bold text-xs text-slate-950 shadow-xs shrink-0">
+            <div className="w-7 h-7 rounded-md bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-200 flex items-center justify-center font-semibold text-xs shrink-0">
               {user?.full_name?.[0] || 'U'}
             </div>
             <div className="overflow-hidden min-w-0">
-              <p className="text-xs font-semibold truncate text-slate-800 dark:text-slate-200">{user?.full_name || 'Candidate'}</p>
-              <p className="text-[10px] text-slate-500 truncate">{user?.email || 'user@vireoniq.com'}</p>
+              <p className="text-xs font-medium truncate text-slate-800 dark:text-slate-200">{user?.full_name || 'Candidate'}</p>
+              <p className="text-[10px] text-slate-500 truncate font-mono">{user?.email || 'user@vireoniq.com'}</p>
             </div>
           </div>
           <button 
             onClick={logout}
             title="Sign Out"
-            className="p-1.5 text-slate-400 hover:text-rose-500 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors shrink-0 cursor-pointer"
+            className="p-1.5 text-slate-400 hover:text-rose-500 rounded-md hover:bg-slate-100 dark:hover:bg-white/5 transition-colors shrink-0 cursor-pointer"
           >
             <LogOut className="w-4 h-4" />
           </button>

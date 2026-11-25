@@ -744,28 +744,28 @@ public class Solution {
     switch (type) {
       case 'CODING_DRILL':
         return {
-          badge: 'bg-sky-500/10 border-sky-500/30 text-sky-300',
+          badge: 'bg-sky-500/10 border-sky-500/30 text-sky-700 dark:text-sky-300',
           cardGlow: 'hover:border-sky-500/40 hover:shadow-sky-500/5',
           label: 'Coding Drill',
           icon: <Code className="w-3 h-3 text-sky-400" />
         };
       case 'SYSTEM_DESIGN':
         return {
-          badge: 'bg-purple-500/10 border-purple-500/30 text-purple-300',
+          badge: 'bg-purple-500/10 border-purple-500/30 text-purple-700 dark:text-purple-300',
           cardGlow: 'hover:border-purple-500/40 hover:shadow-purple-500/5',
           label: 'System Design',
           icon: <Layers className="w-3 h-3 text-purple-400" />
         };
       case 'BEHAVIORAL_STAR':
         return {
-          badge: 'bg-amber-500/10 border-amber-500/30 text-amber-300',
+          badge: 'bg-amber-500/10 border-amber-500/30 text-amber-700 dark:text-amber-300',
           cardGlow: 'hover:border-amber-500/40 hover:shadow-amber-500/5',
           label: 'Behavioral STAR',
           icon: <Sparkles className="w-3 h-3 text-amber-400" />
         };
       default:
         return {
-          badge: 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300',
+          badge: 'bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-300',
           cardGlow: 'hover:border-emerald-500/40 hover:shadow-emerald-500/5',
           label: type,
           icon: <Zap className="w-3 h-3 text-emerald-400" />
@@ -774,8 +774,8 @@ public class Solution {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 p-6 lg:p-10">
-      <div className="max-w-6xl mx-auto space-y-8">
+    <div className="space-y-8">
+      <div className="space-y-8">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-6">
           <div>
@@ -783,7 +783,7 @@ public class Solution {
               <Compass className="w-4 h-4" />
               Continuous Improvement Engine v5.0.0
             </div>
-            <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-slate-900 via-slate-800 to-slate-700 dark:from-[#fdbcb4] dark:via-[#add8e6] dark:to-[#22c55e] bg-clip-text text-transparent font-heading">
+            <h1 className="text-2xl lg:text-3xl font-semibold tracking-tight text-slate-900 dark:text-[#eef0f5] font-heading">
               Daily Career Operating System
             </h1>
             <p className="text-slate-400 text-sm mt-1">
@@ -791,7 +791,7 @@ public class Solution {
             </p>
           </div>
 
-          <div className="flex items-center gap-3 bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 rounded-xl p-1.5 pl-3 shadow-inner">
+          <div className="flex items-center gap-3 bg-white dark:bg-[#11141c] border border-slate-200 dark:border-white/10 rounded-xl p-1.5 pl-3 shadow-2xs">
             <label className="text-xs text-slate-400 font-medium whitespace-nowrap flex items-center gap-1.5">
               <Target className="w-3.5 h-3.5 text-indigo-400" />
               <span>Target Role:</span>
@@ -822,9 +822,7 @@ public class Solution {
 
           return (
             <div className="glass-panel rounded-2xl p-6 lg:p-8 space-y-6 shadow-xl relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/5 rounded-full blur-3xl pointer-events-none" />
-
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-5">
+                            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-5">
                 <div>
                   <div className="flex items-center gap-2 text-xs font-mono text-indigo-400 uppercase tracking-wide flex-wrap">
                     <span className="flex items-center gap-1.5">
@@ -832,16 +830,15 @@ public class Solution {
                       Today's Mission • {dailyMission.mission_date}
                     </span>
                     <span className="text-slate-600">•</span>
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium bg-indigo-500/10 border border-indigo-500/30 text-indigo-300">
-                      <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse" />
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[11px] font-mono font-medium bg-slate-100 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                       {dailyMission.target_role || targetRole} Track
                     </span>
-                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-mono bg-purple-500/10 border border-purple-500/30 text-purple-300">
-                      <Sparkles className="w-3 h-3 text-purple-400" />
+                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[11px] font-mono bg-slate-100 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300">
                       Set {missionCycle % 2 === 1 ? 'B (Advanced)' : 'A (Core)'}
                     </span>
                   </div>
-                  <h2 className="text-xl font-bold text-white tracking-tight mt-1.5">
+                  <h2 className="text-xl font-semibold text-slate-900 dark:text-white tracking-tight mt-1.5">
                     {dailyMission.active_plan_title}
                   </h2>
                   <p className="text-slate-400 text-xs mt-1 leading-relaxed max-w-2xl">
@@ -850,22 +847,22 @@ public class Solution {
                 </div>
 
                 <div className="flex flex-wrap items-center gap-3 text-xs font-mono shrink-0">
-                  <div className="bg-slate-950 border border-slate-800 px-3 py-1.5 rounded-lg flex items-center gap-2">
-                    <Clock className="w-3.5 h-3.5 text-slate-400" />
-                    <span className="text-slate-400">Time Budget</span>
-                    <strong className="text-white">{dailyMission.total_estimated_minutes} mins</strong>
+                  <div className="bg-slate-100 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 px-3 py-1.5 rounded-lg flex items-center gap-2">
+                    <Clock className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
+                    <span className="text-slate-600 dark:text-slate-400">Time Budget</span>
+                    <strong className="text-slate-900 dark:text-white">{dailyMission.total_estimated_minutes} mins</strong>
                   </div>
 
-                  <div className="bg-slate-950 border border-slate-800 px-3 py-1.5 rounded-lg flex items-center gap-2">
-                    <Flame className="w-3.5 h-3.5 text-amber-400" />
-                    <span className="text-slate-400">Plan Progress</span>
-                    <strong className="text-emerald-400">{dynamicProgressPct}%</strong>
+                  <div className="bg-slate-100 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 px-3 py-1.5 rounded-lg flex items-center gap-2">
+                    <Flame className="w-3.5 h-3.5 text-amber-500" />
+                    <span className="text-slate-600 dark:text-slate-400">Plan Progress</span>
+                    <strong className="text-emerald-600 dark:text-emerald-400 font-semibold">{dynamicProgressPct}%</strong>
                   </div>
 
                   <button
                     onClick={handleRefreshDailyMissions}
                     disabled={isRefreshingMissions}
-                    className="flex items-center gap-1.5 bg-gradient-to-r from-indigo-600/30 to-purple-600/30 hover:from-indigo-600/50 hover:to-purple-600/50 border border-indigo-500/40 text-indigo-200 hover:text-white text-xs px-3.5 py-2 rounded-xl transition shadow-md shadow-indigo-600/10 cursor-pointer disabled:opacity-50"
+                    className="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-white/[0.06] dark:hover:bg-white/[0.1] border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300 text-xs px-3.5 py-2 rounded-lg transition cursor-pointer disabled:opacity-50 font-medium"
                     title="Rotate and refresh daily quests"
                   >
                     <RefreshCw className={`w-3.5 h-3.5 text-indigo-400 ${isRefreshingMissions ? 'animate-spin text-indigo-300' : ''}`} />
@@ -884,10 +881,10 @@ public class Solution {
                   return (
                     <div
                       key={task.task_id}
-                      className={`border rounded-2xl p-5 flex flex-col justify-between transition-all duration-200 group relative ${
+                      className={`border rounded-xl p-5 flex flex-col justify-between transition-all duration-150 group relative ${
                         isCompleted
-                          ? 'bg-emerald-950/20 border-emerald-800/40 shadow-sm'
-                          : `bg-slate-950/90 border-slate-800 hover:shadow-lg ${style.cardGlow}`
+                          ? 'bg-emerald-500/5 border-emerald-500/20 shadow-2xs'
+                          : 'bg-white dark:bg-[#11141c] border-slate-200/90 dark:border-white/[0.08] hover:border-slate-300 dark:hover:border-white/20 shadow-2xs'
                       }`}
                     >
                       <div className="space-y-3">
@@ -896,18 +893,18 @@ public class Solution {
                             {style.icon}
                             <span>Task {idx + 1} • {style.label}</span>
                           </span>
-                          <span className="text-[11px] text-indigo-400 font-mono font-semibold bg-indigo-950/40 border border-indigo-800/30 px-1.5 py-0.5 rounded-md shrink-0">
+                          <span className="text-[11px] text-sky-700 dark:text-sky-300 font-mono font-semibold bg-sky-500/10 border border-sky-500/20 px-1.5 py-0.5 rounded-md shrink-0">
                             {task.projected_delta} CRI
                           </span>
                         </div>
 
                         <div>
-                          <h4 className={`text-sm font-semibold tracking-tight leading-snug line-clamp-2 min-h-[2.85rem] transition ${
-                            isCompleted ? 'text-slate-300 line-through' : 'text-white group-hover:text-indigo-300'
+                          <h4 className={`text-sm font-medium tracking-tight leading-snug transition ${
+                            isCompleted ? 'text-slate-400 line-through' : 'text-slate-900 dark:text-[#eef0f5]'
                           }`}>
                             {task.title}
                           </h4>
-                          <p className="text-xs text-slate-400 mt-1.5 line-clamp-2 min-h-[2.5rem] leading-relaxed">
+                          <p className="text-xs text-slate-600 dark:text-slate-400 mt-1.5 leading-relaxed">
                             {task.why}
                           </p>
                         </div>
@@ -920,12 +917,12 @@ public class Solution {
                               <span>Top MNCs:</span>
                             </div>
                             {mncCompanies.slice(0, 3).map((comp: string) => (
-                              <span key={comp} className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-300">
+                              <span key={comp} className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-100 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300">
                                 {comp}
                               </span>
                             ))}
                             {mncCompanies.length > 3 && (
-                              <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-indigo-950/60 border border-indigo-800/40 text-indigo-300 font-semibold">
+                              <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-100 dark:bg-white/[0.06] border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300 font-medium">
                                 +{mncCompanies.length - 3} more
                               </span>
                             )}
@@ -940,22 +937,22 @@ public class Solution {
                         </div>
 
                         {/* Action Links & Guide Button */}
-                        <div className="pt-2 grid grid-cols-5 gap-2">
+                        <div className="pt-2 flex items-center gap-2">
                           <button
                             onClick={() => handleOpenTaskModal(task, 'HOW')}
-                            className="col-span-3 flex items-center justify-center gap-1.5 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white text-xs font-semibold px-2.5 py-2 rounded-xl transition shadow-md shadow-indigo-600/20 cursor-pointer"
+                            className="flex-1 flex items-center justify-center gap-1.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-medium px-3 py-2 rounded-lg hover:bg-slate-800 dark:hover:bg-slate-100 transition cursor-pointer"
                           >
-                            <BookOpen className="w-3.5 h-3.5 text-indigo-200" />
+                            <BookOpen className="w-3.5 h-3.5 opacity-80" />
                             <span>Guide & Code</span>
                           </button>
 
                           <button
                             onClick={() => handleLaunchDirectLink(task.where?.platform || '', task.where?.url)}
-                            className="col-span-2 flex items-center justify-center gap-1 text-xs text-slate-300 hover:text-white bg-slate-900 hover:bg-slate-850 border border-slate-700/80 hover:border-slate-600 px-2 py-2 rounded-xl transition font-medium cursor-pointer"
+                            className="flex items-center justify-center gap-1 text-xs text-slate-700 dark:text-slate-300 bg-slate-100 hover:bg-slate-200 dark:bg-white/[0.06] dark:hover:bg-white/[0.1] border border-slate-200 dark:border-white/10 px-3 py-2 rounded-lg transition font-medium cursor-pointer shrink-0"
                             title={`Practice on ${task.where?.platform || 'Practice Studio'}`}
                           >
-                            <ExternalLink className="w-3.5 h-3.5 text-indigo-400" />
-                            <span className="truncate">Practice</span>
+                            <ExternalLink className="w-3.5 h-3.5 text-slate-500" />
+                            <span>Practice</span>
                           </button>
                         </div>
                       </div>
@@ -969,7 +966,7 @@ public class Solution {
                         {isCompleted ? (
                           <button
                             onClick={() => handleToggleDailyMission(task.task_id)}
-                            className="text-xs text-emerald-400 font-medium flex items-center gap-1.5 bg-emerald-950/60 hover:bg-emerald-900/40 border border-emerald-800/50 px-3 py-1.5 rounded-lg transition cursor-pointer shadow-sm"
+                            className="text-xs text-emerald-700 dark:text-emerald-400 font-medium flex items-center gap-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 px-3 py-1.5 rounded-lg transition cursor-pointer"
                             title="Click to toggle status"
                           >
                             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
@@ -979,7 +976,7 @@ public class Solution {
                           <button
                             onClick={() => handleToggleDailyMission(task.task_id)}
                             disabled={completingTaskId === task.task_id}
-                            className="text-xs bg-indigo-600 hover:bg-indigo-500 text-white font-medium px-3.5 py-1.5 rounded-lg transition shadow-md shadow-indigo-600/20 disabled:opacity-50 cursor-pointer"
+                            className="text-xs bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 font-medium px-3 py-1.5 rounded-lg transition disabled:opacity-50 cursor-pointer"
                           >
                             {completingTaskId === task.task_id ? 'Completing...' : 'Mark Done'}
                           </button>
@@ -1001,7 +998,7 @@ public class Solution {
           const normalizedTitle = activePlan.title.replace(/\d+-Day/, `${activePlan.duration_days}-Day`);
 
           return (
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 lg:p-8 space-y-6 shadow-xl">
+            <div className="glass-panel rounded-2xl p-6 lg:p-8 space-y-6 shadow-xs">
               {/* Pathway Header */}
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800/80 pb-5">
                 <div>
@@ -1009,14 +1006,14 @@ public class Solution {
                     <span className="text-xs font-mono text-indigo-400 uppercase tracking-wide">
                       Active {activePlan.duration_days}-Day Pathway • Strategy: {activePlan.strategy.replace('_', ' ')}
                     </span>
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-indigo-950/80 text-indigo-300 border border-indigo-800/50">
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/[0.04] text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-white/10">
                       Target: {activePlan.primary_gap || 'Python'}
                     </span>
                   </div>
 
-                  <h3 className="text-xl font-bold text-white mt-1 flex items-center gap-2">
+                  <h3 className="text-xl font-semibold text-slate-900 dark:text-white mt-1 flex items-center gap-2">
                     {normalizedTitle}
-                    <span className="text-[11px] font-mono font-normal px-2.5 py-0.5 rounded-full bg-emerald-950/80 text-emerald-300 border border-emerald-800/60 flex items-center gap-1">
+                    <span className="text-[11px] font-mono font-normal px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20 flex items-center gap-1">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                       Live Dynamic Vector
                     </span>
@@ -1030,7 +1027,7 @@ public class Solution {
                 <div className="flex flex-wrap items-center gap-2.5">
                   <button
                     onClick={() => setIsCustomizeOpen(true)}
-                    className="flex items-center gap-1.5 bg-indigo-600/20 hover:bg-indigo-600/30 border border-indigo-500/40 text-indigo-300 text-xs font-semibold px-3.5 py-2 rounded-lg transition"
+                    className="flex items-center gap-1.5 bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 text-xs font-medium px-3.5 py-2 rounded-lg transition cursor-pointer"
                   >
                     <SlidersHorizontal className="w-3.5 h-3.5" />
                     Customize Pathway
@@ -1038,7 +1035,7 @@ public class Solution {
 
                   <button
                     onClick={() => setIsReplanModalOpen(true)}
-                    className="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium px-3.5 py-2 rounded-lg transition border border-slate-700"
+                    className="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-white/[0.06] dark:hover:bg-white/[0.1] text-slate-700 dark:text-slate-300 text-xs font-medium px-3.5 py-2 rounded-lg transition border border-slate-200 dark:border-white/10 cursor-pointer"
                   >
                     <RotateCcw className="w-3.5 h-3.5 text-amber-400" />
                     Adaptive Replan
@@ -1046,7 +1043,7 @@ public class Solution {
 
                   <button
                     onClick={() => setIsAddMilestoneOpen(true)}
-                    className="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium px-3 py-2 rounded-lg transition border border-slate-700"
+                    className="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-white/[0.06] dark:hover:bg-white/[0.1] text-slate-700 dark:text-slate-300 text-xs font-medium px-3.5 py-2 rounded-lg transition border border-slate-200 dark:border-white/10 cursor-pointer"
                     title="Add Custom Milestone"
                   >
                     <Plus className="w-3.5 h-3.5 text-emerald-400" />
@@ -1056,15 +1053,15 @@ public class Solution {
               </div>
 
               {/* Pathway Velocity Progress Bar */}
-              <div className="bg-slate-950/80 border border-slate-800/80 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="bg-slate-100 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="space-y-1.5">
                   <div className="text-xs font-mono text-slate-400 flex items-center gap-2">
                     <Flame className="w-3.5 h-3.5 text-amber-400" />
                     <span>Pathway Velocity:</span>
-                    <strong className="text-white">{completedCount} of {totalMilestones} Milestones Cleared</strong>
+                    <strong className="text-slate-900 dark:text-white">{completedCount} of {totalMilestones} Milestones Cleared</strong>
                     <span className="text-emerald-400 font-bold">({progressPct}%)</span>
                   </div>
-                  <div className="w-64 sm:w-80 bg-slate-900 h-2 rounded-full overflow-hidden border border-slate-800">
+                  <div className="w-64 sm:w-80 bg-slate-200 dark:bg-white/[0.08] h-2 rounded-full overflow-hidden border border-slate-300/60 dark:border-white/10">
                     <div
                       className="bg-gradient-to-r from-indigo-500 via-purple-500 to-emerald-400 h-full transition-all duration-500"
                       style={{ width: `${progressPct}%` }}
@@ -1074,7 +1071,7 @@ public class Solution {
 
                 <div className="flex items-center gap-3">
                   <span className="text-xs text-slate-400 font-mono">Progress Rewards:</span>
-                  <span className="text-xs font-bold text-indigo-300 bg-indigo-950/60 border border-indigo-800/40 px-2.5 py-1 rounded-lg flex items-center gap-1">
+                  <span className="text-xs font-medium text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 px-2.5 py-1 rounded-lg flex items-center gap-1">
                     <Zap className="w-3 h-3 text-amber-400" />
                     +{completedCount * 25} XP Earned
                   </span>
@@ -1088,21 +1085,21 @@ public class Solution {
 
                   // Type styling badge
                   const typeColors: Record<string, string> = {
-                    LEARN: 'bg-indigo-950/80 text-indigo-300 border-indigo-800/50',
-                    PRACTICE: 'bg-emerald-950/80 text-emerald-300 border-emerald-800/50',
-                    BUILD: 'bg-amber-950/80 text-amber-300 border-amber-800/50',
-                    ASSESS: 'bg-purple-950/80 text-purple-300 border-purple-800/50',
-                    REASSESS: 'bg-rose-950/80 text-rose-300 border-rose-800/50'
+                    LEARN: 'bg-sky-500/10 text-sky-700 dark:text-sky-300 border-sky-500/20',
+                    PRACTICE: 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/20',
+                    BUILD: 'bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/20',
+                    ASSESS: 'bg-purple-500/10 text-purple-700 dark:text-purple-300 border-purple-500/20',
+                    REASSESS: 'bg-rose-500/10 text-rose-700 dark:text-rose-300 border-rose-500/20'
                   };
-                  const badgeColor = typeColors[t.task_type] || 'bg-slate-800 text-slate-300 border-slate-700';
+                  const badgeColor = typeColors[t.task_type] || 'bg-slate-100 dark:bg-white/[0.04] text-slate-700 dark:text-slate-300 border-slate-200 dark:border-white/10';
 
                   return (
                     <div
                       key={t.id || idx}
                       className={`border rounded-xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 transition group ${
                         isDone
-                          ? 'bg-slate-950/50 border-emerald-800/40'
-                          : 'bg-slate-950/80 border-slate-800/90 hover:border-slate-700'
+                          ? 'bg-emerald-500/5 border-emerald-500/20'
+                          : 'bg-white dark:bg-[#11141c] border-slate-200/90 dark:border-white/[0.08] hover:border-slate-300 dark:hover:border-white/20'
                       }`}
                     >
                       <div className="flex items-start gap-3.5">
@@ -1119,7 +1116,7 @@ public class Solution {
                           )}
                         </button>
 
-                        <div className="w-7 h-7 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-mono text-slate-300 shrink-0 mt-0.5">
+                        <div className="w-7 h-7 rounded-full bg-slate-100 dark:bg-white/[0.06] border border-slate-200 dark:border-white/10 flex items-center justify-center text-xs font-mono text-slate-700 dark:text-slate-300 shrink-0 mt-0.5">
                           D{t.day_number}
                         </div>
 
@@ -1129,7 +1126,7 @@ public class Solution {
                               [{t.task_type}]
                             </span>
                             <h5 className={`text-sm font-semibold transition ${
-                              isDone ? 'text-slate-400 line-through' : 'text-white group-hover:text-indigo-300'
+                              isDone ? 'text-slate-400 line-through' : 'text-slate-900 dark:text-[#eef0f5]'
                             }`}>
                               {t.title}
                             </h5>
@@ -1140,7 +1137,7 @@ public class Solution {
                             )}
                           </div>
 
-                          <p className="text-xs text-slate-400 mt-1">{t.description}</p>
+                          <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">{t.description}</p>
                           <div className="text-[11px] text-slate-500 font-mono mt-1 flex items-center gap-1.5">
                             <span className="text-slate-400 font-semibold">Criteria:</span>
                             <span>{t.completion_criteria}</span>
@@ -1150,13 +1147,13 @@ public class Solution {
 
                       {/* Right controls: Evidence Pill & Actions */}
                       <div className="flex items-center gap-3 shrink-0 self-end md:self-center">
-                        <span className="text-xs font-mono bg-slate-900 border border-slate-800 px-2.5 py-1 rounded text-slate-400 whitespace-nowrap">
+                        <span className="text-xs font-mono bg-slate-100 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 px-2.5 py-1 rounded text-slate-600 dark:text-slate-400 whitespace-nowrap">
                           {t.expected_evidence_type}
                         </span>
 
                         <button
                           onClick={() => setSelectedMilestone(t)}
-                          className="flex items-center gap-1 text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium px-3 py-1.5 rounded-lg border border-slate-700 transition"
+                          className="flex items-center gap-1 text-xs bg-slate-100 hover:bg-slate-200 dark:bg-white/[0.06] dark:hover:bg-white/[0.1] text-slate-800 dark:text-slate-200 font-medium px-3 py-1.5 rounded-lg border border-slate-200 dark:border-white/10 transition"
                         >
                           <BookOpen className="w-3.5 h-3.5 text-indigo-400" />
                           <span>Blueprint</span>
@@ -1180,8 +1177,8 @@ public class Solution {
             </div>
           );
         })() : (
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-8 space-y-6 text-center">
-            <h3 className="text-xl font-bold text-white">Generate Personalized Intervention Plan</h3>
+          <div className="glass-panel rounded-2xl p-8 space-y-6 text-center">
+            <h3 className="text-xl font-semibold text-slate-900 dark:text-white">Generate Personalized Intervention Plan</h3>
             <p className="text-slate-400 text-sm max-w-xl mx-auto">
               Configure your daily time budget and desired strategy to generate an actionable 14/30-day roadmap targeting your largest bottleneck.
             </p>
@@ -1213,7 +1210,7 @@ public class Solution {
 
         {/* 3. Weekly Review Summary */}
         {weeklyReview && (
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 lg:p-8 space-y-6 shadow-xl">
+          <div className="glass-panel rounded-2xl p-6 lg:p-8 space-y-6 shadow-xs">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-5">
               <div>
                 <div className="flex items-center gap-2 text-xs font-mono text-emerald-400 uppercase tracking-wide">
