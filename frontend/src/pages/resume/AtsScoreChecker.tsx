@@ -151,19 +151,19 @@ Cloud & DevOps: AWS, Docker, Kubernetes, Terraform, CI/CD GitHub Actions`;
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
       {/* Header Banner */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-indigo-950/80 via-slate-900/90 to-slate-950/80 border border-white/10 p-6 md:p-8 backdrop-blur-2xl shadow-2xl">
+      <div className="relative overflow-hidden rounded-3xl bg-white/85 dark:bg-slate-900/80 border border-slate-200/90 dark:border-white/10 p-6 md:p-8 backdrop-blur-2xl shadow-xl dark:shadow-2xl transition-all">
         <div className="absolute top-0 right-0 w-96 h-96 bg-primary/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
         
         <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-semibold">
-              <Gauge className="w-3.5 h-3.5" />
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#fdbcb4]/20 border border-[#fdbcb4]/40 text-[#fca59b] dark:text-[#fdbcb4] text-xs font-semibold shadow-[0_0_12px_rgba(253,188,180,0.3)]">
+              <Gauge className="w-3.5 h-3.5 text-[#fdbcb4]" />
               <span>MNC Compliance & Scoring Engine</span>
             </div>
-            <h1 className="text-3xl lg:text-4xl font-extrabold tracking-tight text-white font-heading">
+            <h1 className="text-3xl lg:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-slate-900 via-slate-800 to-slate-700 dark:from-[#fdbcb4] dark:via-[#add8e6] dark:to-[#22c55e] bg-clip-text text-transparent font-heading">
               ATS Resume Compatibility Audit
             </h1>
-            <p className="text-slate-400 text-sm max-w-2xl">
+            <p className="text-slate-500 dark:text-slate-400 text-sm max-w-2xl">
               Deterministic parsing check evaluating structural section completeness, keyword density, STAR formula phrasing, and formatting readability to maximize ATS pass-through.
             </p>
           </div>
@@ -172,7 +172,7 @@ Cloud & DevOps: AWS, Docker, Kubernetes, Terraform, CI/CD GitHub Actions`;
             onClick={handleLoadSample}
             className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.06] hover:bg-white/[0.1] border border-white/10 text-xs font-bold text-slate-200 hover:text-white transition-all hover:scale-105 active:scale-95 shadow-md shrink-0"
           >
-            <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
+            <Sparkles className="w-3.5 h-3.5 text-[#fdbcb4]" />
             <span>Load Sample 90+ Resume</span>
           </button>
         </div>

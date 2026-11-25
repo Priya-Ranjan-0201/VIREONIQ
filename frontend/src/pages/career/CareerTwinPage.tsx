@@ -760,19 +760,19 @@ export const CareerTwinPage: React.FC = () => {
           className="glass-panel p-4 rounded-2xl border border-blue-500/20 bg-blue-950/20 hover:border-blue-500/50 hover:bg-blue-950/40 transition-all duration-200 cursor-pointer group shadow-sm hover:shadow-blue-500/10"
         >
           <div className="flex items-center justify-between">
-            <p className="text-[10px] uppercase font-bold text-blue-400 tracking-wider">3. What Can I Prove?</p>
-            <ChevronRight className="w-3.5 h-3.5 text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+            <p className="text-[10px] uppercase font-bold text-[#22c55e] tracking-wider">3. What Can I Prove?</p>
+            <ChevronRight className="w-3.5 h-3.5 text-[#22c55e] opacity-0 group-hover:opacity-100 transition-opacity" />
           </div>
-          <h4 className="text-2xl font-black text-blue-400 mt-1">
+          <h4 className="text-2xl font-black text-[#22c55e] mt-1">
             {effectiveEvidence.length}
-            <span className="text-xs font-normal text-slate-400"> Proofs</span>
+            <span className="text-xs font-normal text-slate-500 dark:text-slate-400"> Proofs</span>
           </h4>
-          <p className="text-[11px] text-slate-300 font-medium mt-1">
+          <p className="text-[11px] text-slate-600 dark:text-slate-300 font-medium mt-1">
             {effectiveEvidence.length} Projects & Labs Verified
           </p>
-          <p className="text-[10px] text-slate-400 mt-2 flex items-center gap-1">
+          <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-2 flex items-center gap-1">
             <span>Audit Lineage</span>
-            <span className="text-blue-400 group-hover:translate-x-0.5 transition-transform">→</span>
+            <span className="text-[#22c55e] group-hover:translate-x-0.5 transition-transform">→</span>
           </p>
         </div>
 
@@ -782,19 +782,19 @@ export const CareerTwinPage: React.FC = () => {
           className="glass-panel p-4 rounded-2xl border border-amber-500/20 bg-amber-950/20 hover:border-amber-500/50 hover:bg-amber-950/40 transition-all duration-200 cursor-pointer group shadow-sm hover:shadow-amber-500/10"
         >
           <div className="flex items-center justify-between">
-            <p className="text-[10px] uppercase font-bold text-amber-400 tracking-wider">4. What Am I Missing?</p>
-            <ChevronRight className="w-3.5 h-3.5 text-amber-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+            <p className="text-[10px] uppercase font-bold text-[#fca59b] dark:text-[#fdbcb4] tracking-wider">4. What Am I Missing?</p>
+            <ChevronRight className="w-3.5 h-3.5 text-[#fdbcb4] opacity-0 group-hover:opacity-100 transition-opacity" />
           </div>
-          <h4 className="text-2xl font-black text-amber-400 mt-1">
+          <h4 className="text-2xl font-black text-[#fca59b] dark:text-[#fdbcb4] mt-1">
             {bottleneckName && bottleneckName !== "None Identified" ? "1" : "0"}
-            <span className="text-xs font-normal text-slate-400">{bottleneckName && bottleneckName !== "None Identified" ? " Critical Gap" : " Active Gaps"}</span>
+            <span className="text-xs font-normal text-slate-500 dark:text-slate-400">{bottleneckName && bottleneckName !== "None Identified" ? " Critical Gap" : " Active Gaps"}</span>
           </h4>
-          <p className="text-[11px] text-amber-300 font-medium mt-1 truncate">
+          <p className="text-[11px] text-[#fca59b] dark:text-[#fdbcb4] font-medium mt-1 truncate">
             {bottleneckName && bottleneckName !== "None Identified" ? bottleneckName : "Profile Aligned"}
           </p>
-          <p className="text-[10px] text-slate-400 mt-2 flex items-center gap-1">
+          <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-2 flex items-center gap-1">
             <span>Gap Breakdown</span>
-            <span className="text-amber-400 group-hover:translate-x-0.5 transition-transform">→</span>
+            <span className="text-[#fdbcb4] group-hover:translate-x-0.5 transition-transform">→</span>
           </p>
         </div>
 
@@ -804,16 +804,16 @@ export const CareerTwinPage: React.FC = () => {
           className="glass-panel p-4 rounded-2xl border border-cyan-500/20 bg-cyan-950/20 hover:border-cyan-500/50 hover:bg-cyan-950/40 transition-all duration-200 cursor-pointer group shadow-sm hover:shadow-cyan-500/10"
         >
           <div className="flex items-center justify-between">
-            <p className="text-[10px] uppercase font-bold text-cyan-400 tracking-wider">5. What Next?</p>
-            <Sparkles className="w-3.5 h-3.5 text-cyan-400 group-hover:rotate-12 transition-transform" />
+            <p className="text-[10px] uppercase font-bold text-sky-600 dark:text-[#add8e6] tracking-wider">5. What Next?</p>
+            <Sparkles className="w-3.5 h-3.5 text-[#add8e6] group-hover:rotate-12 transition-transform" />
           </div>
-          <h4 className="text-xs font-bold text-cyan-300 mt-1 line-clamp-2 leading-tight">
+          <h4 className="text-xs font-bold text-sky-700 dark:text-[#add8e6] mt-1 line-clamp-2 leading-tight">
             {currentProfile.actionQuest}
           </h4>
-          <p className="text-[11px] text-slate-300 font-medium mt-1 line-clamp-2 leading-snug">
+          <p className="text-[11px] text-slate-600 dark:text-slate-300 font-medium mt-1 line-clamp-2 leading-snug">
             {currentProfile.nextStep}
           </p>
-          <p className="text-[10px] text-cyan-400 mt-2 flex items-center gap-1 font-semibold">
+          <p className="text-[10px] text-sky-600 dark:text-[#add8e6] mt-2 flex items-center gap-1 font-semibold">
             <span>Launch Quest</span>
             <span className="group-hover:translate-x-0.5 transition-transform">⚡</span>
           </p>

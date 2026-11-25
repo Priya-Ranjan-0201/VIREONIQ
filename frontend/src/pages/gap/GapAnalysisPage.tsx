@@ -45,7 +45,7 @@ export const GapAnalysisPage = () => {
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <header className="flex justify-between items-end">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-indigo-400 via-emerald-400 to-amber-400 bg-clip-text text-transparent">5-Dimensional Gap Analysis</h2>
+          <h2 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-slate-900 via-slate-800 to-slate-700 dark:from-[#fdbcb4] dark:via-[#add8e6] dark:to-[#22c55e] bg-clip-text text-transparent font-heading">5-Dimensional Gap Analysis</h2>
           <p className="text-[#9CA3AF] mt-2">AI-driven evaluation of your readiness against market standards.</p>
         </div>
         {analysis && (
@@ -57,8 +57,8 @@ export const GapAnalysisPage = () => {
 
       {!analysis && !isLoading && (
         <Card className="glass-panel flex flex-col items-center justify-center p-12 text-center rounded-3xl shadow-[0_0_40px_rgba(0,0,0,0.5)]">
-          <Target className="w-16 h-16 text-indigo-500 mb-6 animate-bounce drop-shadow-[0_0_15px_rgba(99,102,241,0.5)]" />
-          <h3 className="text-2xl font-bold text-white mb-2">Configure Your Target</h3>
+          <Target className="w-16 h-16 text-[#fdbcb4] mb-6 animate-bounce drop-shadow-[0_0_15px_rgba(253,188,180,0.5)]" />
+          <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Configure Your Target</h3>
           <p className="text-slate-400 max-w-md mb-8">We will scan your parsed resume and run a deep multi-dimensional analysis to measure your placement probability.</p>
           
           <div className="flex gap-4 mb-8 w-full max-w-md">
@@ -66,13 +66,13 @@ export const GapAnalysisPage = () => {
                type="text" 
                value={targetRole} 
                onChange={e => setTargetRole(e.target.value)} 
-               className="flex-1 bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white" 
+               className="flex-1 bg-white dark:bg-slate-900 border border-slate-300 dark:border-white/10 rounded-xl px-4 py-2 text-slate-900 dark:text-white" 
                placeholder="Role (e.g. Backend Developer)"
              />
              <select 
                value={companyType} 
                onChange={e => setCompanyType(e.target.value)}
-               className="bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-white"
+               className="bg-white dark:bg-slate-900 border border-slate-300 dark:border-white/10 rounded-xl px-4 py-2 text-slate-900 dark:text-white"
              >
                <option value="Product">Product</option>
                <option value="Startup">Startup</option>

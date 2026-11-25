@@ -604,8 +604,8 @@ export const MNCInterviewStudioPage: React.FC = () => {
               SOURCE: {companyProfile?.source_policy || 'PUBLICLY_REPORTED'}
             </span>
           </div>
-          <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight flex items-center gap-3">
-            <Cpu className="w-8 h-8 text-indigo-400" />
+          <h1 className="text-2xl md:text-3xl font-bold tracking-tight flex items-center gap-3 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-700 dark:from-[#fdbcb4] dark:via-[#add8e6] dark:to-[#22c55e] bg-clip-text text-transparent font-heading">
+            <Cpu className="w-8 h-8 text-[#add8e6]" />
             MNC Interview & Coding Intelligence Studio
           </h1>
           <p className="text-sm text-slate-400 mt-1">
@@ -617,7 +617,7 @@ export const MNCInterviewStudioPage: React.FC = () => {
           {!sessionActive ? (
             <button
               onClick={handleStartSession}
-              className="px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-medium rounded-xl text-sm transition-all shadow-lg shadow-indigo-500/20 flex items-center gap-2 whitespace-nowrap shrink-0"
+              className="glow-button px-5 py-2.5 text-slate-950 font-bold rounded-xl text-sm transition-all shadow-lg flex items-center gap-2 whitespace-nowrap shrink-0 cursor-pointer"
             >
               <Play className="w-4 h-4" />
               Start Calibrated Assessment
@@ -636,7 +636,7 @@ export const MNCInterviewStudioPage: React.FC = () => {
       </div>
 
       {/* Target MNC & Round Configurator */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 bg-slate-900/60 p-5 rounded-2xl border border-slate-800/80">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 glass-panel p-5 rounded-2xl">
         <div>
           <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-2">Target MNC Archetype</label>
           <select

@@ -1,10 +1,12 @@
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { ThemeToggle } from '@/components/uiverse/ThemeToggle';
+import { UiverseBackground } from '@/components/uiverse/UiverseBackground';
+import { UiverseButton } from '@/components/uiverse/UiverseButton';
 import api from '@/lib/axios';
 import { extractApiErrorMessage, isNetworkError as isApiNetworkError } from '@/lib/errors';
 import { isMockAuthEnabled, mockRegister } from '@/lib/mockAuth';
-import { Sparkles } from 'lucide-react';
+import { Sparkles, UserPlus } from 'lucide-react';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -64,66 +66,72 @@ export const RegisterPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#050714] p-6 relative overflow-hidden">
-      {/* Dynamic Cosmic Aurora Background Lighting Orbs */}
-      <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-        <div className="absolute -top-[20%] left-[25%] h-[650px] w-[650px] rounded-full bg-gradient-to-tr from-indigo-600/30 to-purple-600/20 blur-[150px] animate-aurora-1" />
-        <div className="absolute top-[30%] -right-[10%] h-[600px] w-[600px] rounded-full bg-gradient-to-bl from-cyan-500/20 via-blue-600/15 to-transparent blur-[160px] animate-aurora-2" />
-        <div className="absolute -bottom-[20%] left-[20%] h-[600px] w-[600px] rounded-full bg-gradient-to-r from-fuchsia-600/15 via-purple-600/20 to-indigo-700/15 blur-[160px] animate-aurora-3" />
+    <div className="min-h-screen flex items-center justify-center bg-[#f8fafc] dark:bg-[#080b18] text-slate-800 dark:text-slate-100 p-6 relative overflow-hidden transition-colors duration-400">
+      {/* Dynamic Cosmic Aurora Background with Quad-Color Palette */}
+      <UiverseBackground showGrid={true} />
+
+      {/* Top Floating Theme Switcher */}
+      <div className="absolute top-6 right-6 z-20 flex items-center gap-2">
+        <ThemeToggle showLabel={true} />
       </div>
 
       <div className="w-full max-w-md space-y-8 relative z-10">
         <div className="text-center space-y-2">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-500/15 border border-indigo-500/30 text-indigo-300 text-xs font-semibold backdrop-blur-md mb-2 shadow-[0_0_16px_rgba(99,102,241,0.25)]">
-            <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#fdbcb4]/20 border border-[#fdbcb4]/40 text-[#fca59b] dark:text-[#fdbcb4] text-xs font-semibold backdrop-blur-md mb-2 shadow-[0_0_16px_rgba(253,188,180,0.3)]">
+            <Sparkles className="w-3.5 h-3.5 text-[#fdbcb4]" />
             <span>AI Career & Workforce Intelligence</span>
           </div>
-          <h1 className="text-4xl font-black bg-gradient-to-r from-white via-indigo-200 to-cyan-300 bg-clip-text text-transparent tracking-tight">
+          <h1 className="text-4xl font-black bg-gradient-to-r from-slate-900 via-slate-800 to-slate-700 dark:from-[#fdbcb4] dark:via-[#add8e6] dark:to-[#22c55e] bg-clip-text text-transparent tracking-tight font-heading">
             VIREONIQ
           </h1>
-          <p className="text-slate-400 text-sm font-medium">Create your career intelligence account</p>
+          <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">Create your career intelligence account</p>
         </div>
 
-        <div className="bg-[#0A0F24]/80 backdrop-blur-2xl p-8 rounded-[2rem] border border-white/[0.12] shadow-[0_16px_48px_rgba(0,0,0,0.6),inset_0_1px_1px_rgba(255,255,255,0.15)]">
+        <div className="bg-white/85 dark:bg-[#0e1428]/80 backdrop-blur-2xl p-8 rounded-[2rem] border border-slate-200/90 dark:border-white/[0.12] shadow-xl dark:shadow-[0_16px_48px_rgba(0,0,0,0.6),inset_0_1px_1px_rgba(255,255,255,0.15)] transition-all">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-slate-300 ml-1 text-xs font-semibold">Work Email</Label>
+              <Label htmlFor="email" className="text-slate-700 dark:text-slate-300 ml-1 text-xs font-semibold">Work Email</Label>
               <Input
                 id="email"
                 type="email"
                 placeholder="name@company.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="h-12 bg-white/[0.04] border-white/10 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-500/30 rounded-xl text-white placeholder:text-slate-500 transition-all"
+                className="h-12 bg-slate-50 dark:bg-white/[0.04] border-slate-200 dark:border-white/10 focus:border-[#add8e6] dark:focus:border-[#add8e6] focus:ring-2 focus:ring-[#add8e6]/30 rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 transition-all font-medium"
                 required
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-slate-300 ml-1 text-xs font-semibold">Secure Password</Label>
+              <Label htmlFor="password" className="text-slate-700 dark:text-slate-300 ml-1 text-xs font-semibold">Secure Password</Label>
               <Input
                 id="password"
                 type="password"
                 placeholder="Min 8 chars, uppercase, number, symbol"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="h-12 bg-white/[0.04] border-white/10 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-500/30 rounded-xl text-white placeholder:text-slate-500 transition-all"
+                className="h-12 bg-slate-50 dark:bg-white/[0.04] border-slate-200 dark:border-white/10 focus:border-[#add8e6] dark:focus:border-[#add8e6] focus:ring-2 focus:ring-[#add8e6]/30 rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 transition-all font-medium"
                 required
               />
             </div>
-            <Button
+            <UiverseButton
               type="submit"
-              className="w-full h-13 text-base font-bold rounded-xl glow-button"
+              variant="cosmic"
+              size="lg"
+              className="w-full h-13 shadow-[0_0_24px_rgba(253,188,180,0.4)]"
               disabled={isLoading}
+              icon={!isLoading && <UserPlus className="w-4 h-4 ml-1" />}
             >
               {isLoading ? 'Creating Account...' : 'Register Securely'}
-            </Button>
+            </UiverseButton>
           </form>
 
-          <div className="mt-8 pt-6 border-t border-white/[0.08] text-center text-sm text-slate-400">
-            Already have an account?{' '}
-            <Link to="/login" className="text-indigo-400 font-bold hover:text-cyan-300 transition-colors underline-offset-4 hover:underline">
-              Log in
-            </Link>
+          <div className="mt-8 pt-6 border-t border-slate-200/80 dark:border-white/10 text-center">
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              Already have an account?{' '}
+              <Link to="/login" className="font-bold text-sky-600 dark:text-[#add8e6] hover:text-[#fdbcb4] transition-colors">
+                Sign In
+              </Link>
+            </p>
           </div>
         </div>
       </div>

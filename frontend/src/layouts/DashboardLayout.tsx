@@ -1,6 +1,8 @@
 import { NotificationCenter } from '@/components/navigation/NotificationCenter';
 import { Sidebar } from '@/components/navigation/Sidebar';
 import { Button } from '@/components/ui/button';
+import { ThemeToggle } from '@/components/uiverse/ThemeToggle';
+import { UiverseBackground } from '@/components/uiverse/UiverseBackground';
 import { Brain, Menu, Sparkles, Zap } from 'lucide-react';
 import { useState } from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
@@ -19,30 +21,21 @@ export const DashboardLayout = () => {
       'mnc-interview': 'MNC Studio',
       'ai-copilot': 'AI Copilot',
       'p2p-mock': 'P2P Mock',
-      'jd-matcher': 'JD Matcher'
+      'jd-matcher': 'JD Matcher',
     };
     if (acronymMap[segment]) return acronymMap[segment];
     return segment.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase());
   };
 
   return (
-    <div className="relative flex h-svh overflow-hidden bg-[#050714] text-slate-100 selection:bg-indigo-500/40">
-      {/* Dynamic Cosmic Aurora Background Lighting Orbs */}
-      <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-        {/* Primary Indigo/Violet Ethereal Bloom */}
-        <div className="absolute -top-[25%] left-[20%] h-[750px] w-[750px] rounded-full bg-gradient-to-tr from-indigo-600/30 to-purple-600/20 blur-[150px] animate-aurora-1" />
-        {/* Electric Cyan Neon Accent */}
-        <div className="absolute top-[25%] -right-[10%] h-[700px] w-[700px] rounded-full bg-gradient-to-bl from-cyan-500/20 via-blue-600/15 to-transparent blur-[160px] animate-aurora-2" />
-        {/* Ethereal Violet/Fuchsia Core */}
-        <div className="absolute -bottom-[20%] left-[30%] h-[650px] w-[650px] rounded-full bg-gradient-to-r from-fuchsia-600/15 via-purple-600/20 to-indigo-700/15 blur-[160px] animate-aurora-3" />
-        {/* Subtle Emerald Mint Ambient Highlight */}
-        <div className="absolute top-[15%] -left-[10%] h-[500px] w-[500px] rounded-full bg-emerald-500/12 blur-[140px] animate-pulse-glow" />
-      </div>
+    <div className="relative flex h-svh overflow-hidden bg-[#f8fafc] dark:bg-[#080b18] text-slate-800 dark:text-slate-100 selection:bg-[#fdbcb4]/40 selection:text-slate-900 transition-colors duration-400">
+      {/* Dynamic Cosmic Aurora Background Lighting with Quad-Color Palette */}
+      <UiverseBackground showGrid={true} />
 
       {/* Mobile Sidebar Overlay */}
       {isSidebarOpen && (
         <div 
-          className="fixed inset-0 bg-black/75 backdrop-blur-md z-50 lg:hidden transition-opacity"
+          className="fixed inset-0 bg-black/60 dark:bg-black/75 backdrop-blur-md z-50 lg:hidden transition-opacity"
           onClick={() => setIsSidebarOpen(false)}
         />
       )}
@@ -57,63 +50,70 @@ export const DashboardLayout = () => {
 
       {/* Main Content Area */}
       <div className="relative z-10 flex-1 flex flex-col overflow-hidden min-w-0">
-        {/* Top Header */}
-        <header className="h-16 border-b border-white/[0.08] bg-slate-950/60 backdrop-blur-3xl flex items-center justify-between px-4 sm:px-6 lg:px-8 z-40 shadow-[0_4px_30px_rgba(0,0,0,0.35)]">
+        {/* Top Header with Uiverse Glassmorphism & Theme Switch */}
+        <header className="h-16 border-b border-slate-200/80 dark:border-white/[0.08] bg-white/75 dark:bg-slate-950/65 backdrop-blur-3xl flex items-center justify-between px-4 sm:px-6 lg:px-8 z-40 shadow-sm dark:shadow-[0_4px_30px_rgba(0,0,0,0.35)] transition-colors">
           <div className="flex items-center gap-3">
             <Button 
               variant="ghost" 
               size="icon" 
-              className="lg:hidden text-slate-400 hover:text-white hover:bg-white/5 rounded-xl" 
+              className="lg:hidden text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 rounded-xl" 
               onClick={() => setIsSidebarOpen(true)}
             >
               <Menu className="w-5 h-5" />
             </Button>
 
             <div className="hidden sm:flex items-center gap-2 text-xs">
-              <span className="text-slate-400 font-bold tracking-wider">VIREONIQ</span>
-              <span className="text-slate-600">/</span>
-              <span className="text-white font-semibold flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-indigo-400" />
+              <span className="text-slate-500 dark:text-slate-400 font-bold tracking-wider">VIREONIQ</span>
+              <span className="text-slate-400 dark:text-slate-600">/</span>
+              <span className="text-slate-900 dark:text-white font-semibold flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#fdbcb4] shadow-[0_0_8px_#fdbcb4]" />
                 {getPageTitle(location.pathname)}
               </span>
             </div>
           </div>
 
-          {/* Center/Right Quick Pills */}
-          <div className="flex items-center gap-2.5">
-            <div className="hidden md:flex items-center gap-2 bg-white/[0.04] border border-white/10 px-3 py-1.5 rounded-full text-xs text-slate-300 backdrop-blur-md shadow-sm">
-              <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="font-medium text-slate-400">Intelligence Engine:</span>
-              <span className="font-semibold text-emerald-400">Active</span>
-              <span className="text-slate-600">|</span>
-              <span className="text-indigo-300 font-medium">Calibrated v2.0</span>
+          {/* Center/Right Quick Pills & Uiverse Day/Night Switch */}
+          <div className="flex items-center gap-2 shrink-0">
+            <div className="hidden xl:flex items-center gap-2 bg-slate-100/90 dark:bg-white/[0.04] border border-slate-200/90 dark:border-white/10 px-3 py-1.5 rounded-full text-xs text-slate-700 dark:text-slate-300 backdrop-blur-md shadow-xs whitespace-nowrap shrink-0">
+              <div className="w-2 h-2 rounded-full bg-[#22c55e] shadow-[0_0_8px_#22c55e] animate-pulse shrink-0" />
+              <span className="font-medium text-slate-500 dark:text-slate-400">Engine:</span>
+              <span className="font-semibold text-[#22c55e]">Active</span>
+              <span className="text-slate-300 dark:text-slate-600">|</span>
+              <span className="text-sky-700 dark:text-[#add8e6] font-medium">Calibrated v2.0</span>
             </div>
 
             <Link
               to="/app/ats-score"
-              className="hidden lg:inline-flex items-center gap-1.5 text-xs font-semibold px-3.5 py-1.5 rounded-full bg-indigo-500/15 border border-indigo-500/30 text-indigo-200 hover:bg-indigo-500/25 transition-all hover:scale-105 shadow-[0_0_12px_rgba(99,102,241,0.2)]"
+              className="hidden lg:inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full bg-[#fdbcb4]/20 border border-[#fdbcb4]/50 text-slate-800 dark:text-[#fdbcb4] hover:bg-[#fdbcb4]/30 transition-all hover:scale-105 shadow-xs whitespace-nowrap shrink-0"
             >
-              <Sparkles className="w-3.5 h-3.5 text-indigo-300" />
+              <Sparkles className="w-3.5 h-3.5 text-[#fdbcb4] shrink-0" />
               <span>ATS Check</span>
             </Link>
 
             <Link
               to="/app/mnc-interview"
-              className="hidden lg:inline-flex items-center gap-1.5 text-xs font-semibold px-3.5 py-1.5 rounded-full bg-cyan-500/15 border border-cyan-500/30 text-cyan-200 hover:bg-cyan-500/25 transition-all hover:scale-105 shadow-[0_0_12px_rgba(0,242,254,0.2)]"
+              className="hidden lg:inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full bg-[#add8e6]/25 border border-[#add8e6]/50 text-sky-900 dark:text-[#add8e6] hover:bg-[#add8e6]/35 transition-all hover:scale-105 shadow-xs whitespace-nowrap shrink-0"
             >
-              <Brain className="w-3.5 h-3.5 text-cyan-300" />
+              <Brain className="w-3.5 h-3.5 text-[#add8e6] shrink-0" />
               <span>MNC Studio</span>
             </Link>
 
             <Link
               to="/app/career-os"
-              className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold px-3.5 py-1.5 rounded-full bg-purple-500/15 border border-purple-500/30 text-purple-200 hover:bg-purple-500/25 transition-all hover:scale-105 shadow-[0_0_12px_rgba(168,85,247,0.2)]"
+              className="hidden md:inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full bg-[#22c55e]/20 border border-[#22c55e]/40 text-emerald-900 dark:text-[#4ade80] hover:bg-[#22c55e]/30 transition-all hover:scale-105 shadow-xs whitespace-nowrap shrink-0"
             >
-              <Zap className="w-3.5 h-3.5 text-purple-300" />
+              <Zap className="w-3.5 h-3.5 text-[#22c55e] shrink-0" />
               <span>Daily OS</span>
             </Link>
 
-            <NotificationCenter />
+            {/* Uiverse Celestial Day/Night Theme Switch */}
+            <div className="shrink-0">
+              <ThemeToggle />
+            </div>
+
+            <div className="shrink-0">
+              <NotificationCenter />
+            </div>
           </div>
         </header>
 

@@ -783,7 +783,7 @@ public class Solution {
               <Compass className="w-4 h-4" />
               Continuous Improvement Engine v5.0.0
             </div>
-            <h1 className="text-3xl font-bold text-white tracking-tight">
+            <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-slate-900 via-slate-800 to-slate-700 dark:from-[#fdbcb4] dark:via-[#add8e6] dark:to-[#22c55e] bg-clip-text text-transparent font-heading">
               Daily Career Operating System
             </h1>
             <p className="text-slate-400 text-sm mt-1">
@@ -791,7 +791,7 @@ public class Solution {
             </p>
           </div>
 
-          <div className="flex items-center gap-3 bg-slate-900/80 border border-slate-800 rounded-xl p-1.5 pl-3 shadow-inner">
+          <div className="flex items-center gap-3 bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 rounded-xl p-1.5 pl-3 shadow-inner">
             <label className="text-xs text-slate-400 font-medium whitespace-nowrap flex items-center gap-1.5">
               <Target className="w-3.5 h-3.5 text-indigo-400" />
               <span>Target Role:</span>
@@ -799,7 +799,7 @@ public class Solution {
             <select
               value={targetRole}
               onChange={(e) => handleRoleChange(e.target.value)}
-              className="bg-slate-950 border border-slate-700/80 text-white font-medium text-xs rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none cursor-pointer hover:border-slate-600 transition min-w-[180px] w-auto"
+              className="bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700/80 text-slate-900 dark:text-white font-medium text-xs rounded-lg px-3 py-2 focus:ring-2 focus:ring-[#add8e6] focus:outline-none cursor-pointer hover:border-[#add8e6] transition min-w-[180px] w-auto"
             >
               <option value="AI/ML Engineer">AI/ML Engineer</option>
               <option value="Backend Engineer">Backend Engineer</option>
@@ -821,7 +821,7 @@ public class Solution {
           const dynamicProgressPct = Math.round((completedDailyCount / dailyMission.tasks.length) * 100);
 
           return (
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 lg:p-8 space-y-6 shadow-xl relative overflow-hidden">
+            <div className="glass-panel rounded-2xl p-6 lg:p-8 space-y-6 shadow-xl relative overflow-hidden">
               <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/5 rounded-full blur-3xl pointer-events-none" />
 
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-5">

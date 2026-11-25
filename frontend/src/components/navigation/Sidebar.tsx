@@ -139,30 +139,30 @@ export const Sidebar = ({ onClose }: { onClose?: () => void }) => {
   const { user, logout } = useAuthStore();
 
   return (
-    <aside className="w-full h-full border-r border-white/10 bg-slate-950/80 backdrop-blur-2xl flex flex-col overflow-hidden shadow-[20px_0_40px_rgba(0,0,0,0.5)]">
+    <aside className="w-full h-full border-r border-slate-200/80 dark:border-white/10 bg-white/95 dark:bg-slate-950/80 backdrop-blur-2xl flex flex-col overflow-hidden shadow-xl dark:shadow-[20px_0_40px_rgba(0,0,0,0.5)] transition-colors">
       {/* Brand Header */}
-      <div className="p-6 border-b border-white/5 flex items-center justify-between">
+      <div className="p-6 border-b border-slate-200/80 dark:border-white/5 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-primary via-indigo-500 to-accent flex items-center justify-center font-black text-white shadow-lg shadow-indigo-500/30">
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#fdbcb4] via-[#add8e6] to-[#22c55e] flex items-center justify-center font-black text-slate-950 shadow-md shadow-[#add8e6]/30">
             V
           </div>
           <div>
             <div className="flex items-center gap-1.5">
-              <h1 className="text-xl font-bold tracking-tight bg-gradient-to-r from-white via-indigo-200 to-accent bg-clip-text text-transparent font-heading">
+              <h1 className="text-xl font-bold tracking-tight bg-gradient-to-r from-slate-900 via-slate-800 to-slate-700 dark:from-white dark:via-[#add8e6] dark:to-[#fdbcb4] bg-clip-text text-transparent font-heading">
                 VIREONIQ
               </h1>
-              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-[#fdbcb4]/20 text-[#fca59b] dark:text-[#fdbcb4] border border-[#fdbcb4]/40">
                 X
               </span>
             </div>
-            <div className="flex items-center gap-1.5 text-[11px] text-slate-400">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+            <div className="flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#22c55e] shadow-[0_0_8px_#22c55e] animate-ping" />
               <span>AI Core Online</span>
             </div>
           </div>
         </div>
         {onClose && (
-          <button onClick={onClose} className="lg:hidden text-slate-400 hover:text-white p-1 rounded-lg hover:bg-white/5 transition-colors">
+          <button onClick={onClose} className="lg:hidden text-slate-400 hover:text-slate-700 dark:hover:text-white p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors">
             <X className="w-5 h-5" />
           </button>
         )}
@@ -172,7 +172,7 @@ export const Sidebar = ({ onClose }: { onClose?: () => void }) => {
       <nav className="flex-1 px-3 py-4 overflow-y-auto custom-scrollbar space-y-4">
         {navSections.map((section) => (
           <div key={section.label} className="space-y-1">
-            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-3 py-1">
+            <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest px-3 py-1">
               {section.label}
             </p>
             {section.items.map((item) => {
@@ -184,14 +184,14 @@ export const Sidebar = ({ onClose }: { onClose?: () => void }) => {
                   className={cn(
                     "flex items-center justify-between px-3 py-2 rounded-xl transition-all duration-200 group text-xs font-medium",
                     isActive
-                      ? "bg-gradient-to-r from-primary/20 via-indigo-500/15 to-transparent text-white border-l-2 border-primary shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1)] font-semibold"
-                      : "text-slate-400 hover:text-slate-100 hover:bg-white/[0.04] border-l-2 border-transparent"
+                      ? "bg-gradient-to-r from-[#add8e6]/25 via-[#fdbcb4]/15 to-transparent text-slate-900 dark:text-white border-l-2 border-[#add8e6] shadow-sm font-semibold"
+                      : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100/70 dark:hover:bg-white/[0.04] border-l-2 border-transparent"
                   )}
                 >
                   <div className="flex items-center gap-2.5 min-w-0">
                     <item.icon className={cn(
                       "w-4 h-4 shrink-0 transition-colors",
-                      isActive ? "text-indigo-400" : "text-slate-500 group-hover:text-slate-300"
+                      isActive ? "text-[#38bdf8] dark:text-[#add8e6]" : "text-slate-400 dark:text-slate-500 group-hover:text-slate-700 dark:group-hover:text-slate-300"
                     )} />
                     <span className="truncate">{item.name}</span>
                   </div>
@@ -199,8 +199,8 @@ export const Sidebar = ({ onClose }: { onClose?: () => void }) => {
                     <span className={cn(
                       "text-[9px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wider shrink-0",
                       isActive
-                        ? "bg-indigo-500/30 text-indigo-200 border border-indigo-400/40"
-                        : "bg-white/5 text-slate-400 group-hover:text-slate-300"
+                        ? "bg-[#fdbcb4]/30 text-[#fca59b] dark:text-[#fdbcb4] border border-[#fdbcb4]/50 shadow-[0_0_8px_rgba(253,188,180,0.3)]"
+                        : "bg-slate-200/60 dark:bg-white/5 text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-slate-300"
                     )}>
                       {item.badge}
                     </span>
@@ -213,21 +213,21 @@ export const Sidebar = ({ onClose }: { onClose?: () => void }) => {
       </nav>
 
       {/* User Profile Footer */}
-      <div className="p-3 border-t border-white/5 bg-slate-950/60">
-        <div className="flex items-center justify-between p-2 rounded-xl bg-white/[0.03] border border-white/5">
+      <div className="p-3 border-t border-slate-200/80 dark:border-white/5 bg-slate-50/80 dark:bg-slate-950/60">
+        <div className="flex items-center justify-between p-2 rounded-xl bg-white dark:bg-white/[0.03] border border-slate-200 dark:border-white/5 shadow-xs">
           <div className="flex items-center gap-2.5 overflow-hidden">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-primary to-accent flex items-center justify-center font-bold text-xs text-white shadow-md shadow-primary/20 shrink-0">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-[#fdbcb4] to-[#add8e6] flex items-center justify-center font-bold text-xs text-slate-950 shadow-xs shrink-0">
               {user?.full_name?.[0] || 'U'}
             </div>
             <div className="overflow-hidden min-w-0">
-              <p className="text-xs font-semibold truncate text-slate-200">{user?.full_name || 'Candidate'}</p>
+              <p className="text-xs font-semibold truncate text-slate-800 dark:text-slate-200">{user?.full_name || 'Candidate'}</p>
               <p className="text-[10px] text-slate-500 truncate">{user?.email || 'user@vireoniq.com'}</p>
             </div>
           </div>
           <button 
             onClick={logout}
             title="Sign Out"
-            className="p-1.5 text-slate-400 hover:text-rose-400 rounded-lg hover:bg-white/5 transition-colors shrink-0"
+            className="p-1.5 text-slate-400 hover:text-rose-500 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors shrink-0 cursor-pointer"
           >
             <LogOut className="w-4 h-4" />
           </button>

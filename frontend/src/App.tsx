@@ -286,7 +286,7 @@ export default function App() {
           </Routes>
         </Suspense>
       </BrowserRouter>
-      <Toaster theme="dark" richColors position="top-right" />
+      <Toaster richColors position="bottom-right" closeButton />
     </QueryClientProvider>
   );
 }
