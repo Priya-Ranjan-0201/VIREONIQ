@@ -2,7 +2,7 @@
 Reinforcement Learning adaptive question personalization engine.
 Manages per-student difficulty, topic weights, and reward computation.
 """
-from typing import Dict, List, Optional, Any
+from typing import Dict, Optional, Any
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from db.models import RLState

@@ -12,7 +12,7 @@ import logging
 import re
 from typing import Dict, Any, Optional, List
 
-from core.llm.orchestrator import acall_llm_json, acall_llm
+from core.llm.orchestrator import acall_llm_json
 from services import resume_parser
 
 logger = logging.getLogger(__name__)
@@ -128,8 +128,8 @@ def categorize_keyword(keyword: str) -> str:
     cloud_devops = {"aws", "gcp", "azure", "docker", "kubernetes", "k8s", "terraform", "ci/cd", "github actions", "linux", "bash", "prometheus", "grafana", "helm", "argocd", "microservices", "system design", "distributed systems", "serverless", "cloud"}
     databases = {"postgresql", "postgres", "mysql", "mongodb", "redis", "cassandra", "dynamodb", "elasticsearch", "sqlite", "oracle", "snowflake", "bigquery", "delta lake", "vector databases", "qdrant", "pinecone", "chroma"}
     
-    for l in languages:
-        if l in kw or kw in l:
+    for lang_kw in languages:
+        if lang_kw in kw or kw in lang_kw:
             return "languages"
     for f in frameworks:
         if f in kw or kw in f:
@@ -721,8 +721,9 @@ def calculate_comprehensive_ats_score(
             full_text_parts.append(p.get("name", ""))
             full_text_parts.append(p.get("description", ""))
             full_text_parts.append(p.get("impact", ""))
-            if isinstance(p.get("technologies"), list):
-                full_text_parts.extend(p.get("technologies"))
+            techs = p.get("technologies")
+            if isinstance(techs, list):
+                full_text_parts.extend(str(t) for t in techs)
 
     # 4. Skills
     skills = resume_data.get("skills", {})
@@ -792,7 +793,7 @@ def calculate_comprehensive_ats_score(
 
     role_keywords = ROLE_KEYWORD_TAXONOMY.get(matched_role_key, ROLE_KEYWORD_TAXONOMY["General / Universal CV"])
 
-    company_keywords = []
+    company_keywords: List[str] = []
     if target_company and target_company.strip() and target_company.lower() not in ["none", "general"]:
         comp_profile = COMPANY_PROFILES.get(target_company)
         if not comp_profile:
@@ -801,7 +802,7 @@ def calculate_comprehensive_ats_score(
                     comp_profile = cdata
                     break
         if comp_profile:
-            company_keywords = comp_profile.get("keywords", [])
+            company_keywords = [str(k) for k in comp_profile.get("keywords", [])]
 
     combined_target_kws = list(dict.fromkeys(role_keywords + company_keywords))
 
@@ -822,11 +823,16 @@ def calculate_comprehensive_ats_score(
     has_edu = len(education) >= 1
     has_proj = len(projects) >= 1
 
-    if has_exp: section_points += 30
-    if has_proj: section_points += 25
-    if has_skills_section: section_points += 25
-    if has_edu: section_points += 20
-    if has_summary: section_points += 15
+    if has_exp:
+        section_points += 30
+    if has_proj:
+        section_points += 25
+    if has_skills_section:
+        section_points += 25
+    if has_edu:
+        section_points += 20
+    if has_summary:
+        section_points += 15
 
     # Standard technical resumes qualify for full completeness with skills, education, and experience/projects
     if (has_exp or has_proj) and has_skills_section and has_edu:
@@ -1085,18 +1091,18 @@ def _heuristic_parse_resume(text: str, target_role: str) -> Dict[str, Any]:
     github = github_match.group(0) if github_match else ""
 
     # Extract name from top lines
-    lines = [l.strip() for l in text.split('\n') if l.strip()]
+    lines = [line.strip() for line in text.split('\n') if line.strip()]
     name = "Candidate"
     location = ""
-    for l in lines[:6]:
-        if len(l) < 40 and "@" not in l and not re.search(r'\d{3,}', l) and not any(kw in l.lower() for kw in ["resume", "curriculum", "cv", "page", "email", "phone", "github", "linkedin", "http"]):
-            name = l
+    for line in lines[:6]:
+        if len(line) < 40 and "@" not in line and not re.search(r'\d{3,}', line) and not any(kw in line.lower() for kw in ["resume", "curriculum", "cv", "page", "email", "phone", "github", "linkedin", "http"]):
+            name = line
             break
             
     # Try finding location in header
-    for l in lines[:6]:
-        if any(w in l.lower() for w in ["india", "usa", "ca", "ny", "tx", "bangalore", "mumbai", "delhi", "hyderabad", "pune", "chennai", "london", "san francisco", "remote"]):
-            location = l
+    for line in lines[:6]:
+        if any(w in line.lower() for w in ["india", "usa", "ca", "ny", "tx", "bangalore", "mumbai", "delhi", "hyderabad", "pune", "chennai", "london", "san francisco", "remote"]):
+            location = line
             break
     
     # Extract experience bullets
@@ -1106,7 +1112,7 @@ def _heuristic_parse_resume(text: str, target_role: str) -> Dict[str, Any]:
     parsed_experiences = []
     if exp_blocks:
         for block in exp_blocks[:6]:
-            b_lines = [l.strip() for l in block.split('\n') if l.strip()]
+            b_lines = [line.strip() for line in block.split('\n') if line.strip()]
             if not b_lines:
                 continue
             first_line = b_lines[0]
@@ -1144,7 +1150,7 @@ def _heuristic_parse_resume(text: str, target_role: str) -> Dict[str, Any]:
     edu_text = sections.get("education", "")
     parsed_education = []
     if edu_text:
-        edu_lines = [l.strip() for l in edu_text.split('\n') if len(l.strip()) > 5]
+        edu_lines = [line.strip() for line in edu_text.split('\n') if len(line.strip()) > 5]
         curr_inst = ""
         curr_deg = ""
         curr_yr = ""
@@ -1173,9 +1179,9 @@ def _heuristic_parse_resume(text: str, target_role: str) -> Dict[str, Any]:
     if proj_text:
         proj_blocks = [p.strip() for p in proj_text.split('\n\n') if len(p.strip()) > 10]
         if not proj_blocks:
-            proj_blocks = [l.strip() for l in proj_text.split('\n') if len(l.strip()) > 10]
+            proj_blocks = [line.strip() for line in proj_text.split('\n') if len(line.strip()) > 10]
         for pb in proj_blocks[:4]:
-            p_lines = [l.strip() for l in pb.split('\n') if l.strip()]
+            p_lines = [line.strip() for line in pb.split('\n') if line.strip()]
             if p_lines:
                 pname = p_lines[0]
                 pdesc = " ".join(p_lines[1:]) if len(p_lines) > 1 else p_lines[0]
@@ -1223,7 +1229,7 @@ def _heuristic_parse_resume(text: str, target_role: str) -> Dict[str, Any]:
     cert_text = sections.get("certifications", "")
     parsed_certifications = []
     if cert_text:
-        cert_lines = [l.strip() for l in cert_text.split('\n') if len(l.strip()) > 5]
+        cert_lines = [line.strip() for line in cert_text.split('\n') if len(line.strip()) > 5]
         for cl in cert_lines[:4]:
             parsed_certifications.append({
                 "name": cl,

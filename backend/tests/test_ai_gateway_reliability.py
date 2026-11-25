@@ -1,9 +1,8 @@
-import pytest
 from pydantic import BaseModel
 from typing import List
 
 from core.llm.validator import validate_llm_json_schema, sanitize_untrusted_input, verify_evidence_grounding
-from core.llm.observability import estimate_cost, log_ai_execution
+from core.llm.observability import estimate_cost
 
 class SampleEvaluationSchema(BaseModel):
     score: float

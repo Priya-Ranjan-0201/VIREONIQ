@@ -12,13 +12,12 @@ Provides:
 from typing import Dict, Any, List, Optional
 import uuid
 import logging
-from datetime import datetime, timezone
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, and_
 
 from db.models import (
     JobPosting, User, Profile, SkillEvidence, VerifiedCredential, 
-    ProjectEvidence, RecruiterCandidateMatch, RecruiterShortlist, RecruiterOrganization
+    ProjectEvidence
 )
 from services.canonical_skill_service import normalize_skill_name
 from services.role_comparison_service import compute_candidate_role_alignment
@@ -229,7 +228,7 @@ async def search_candidates_for_job(
 
     # 2. Fetch candidates eligible for recruiter discovery
     users_stmt = select(User).join(Profile, User.id == Profile.user_id).where(
-        Profile.allow_recruiter_discovery == True
+        Profile.allow_recruiter_discovery.is_(True)
     )
     eligible_users = list((await db.execute(users_stmt)).scalars().all()) if db else []
 

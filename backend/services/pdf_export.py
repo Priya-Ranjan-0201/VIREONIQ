@@ -2,7 +2,6 @@
 Gap Report / Offer Letter PDF generation service.
 Uses standard HTML-to-PDF mappings or simple ReportLab outputs.
 """
-from typing import Dict, Any
 import io
 
 

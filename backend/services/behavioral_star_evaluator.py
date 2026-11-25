@@ -9,12 +9,11 @@ Evaluates structured behavioral interview responses using the STAR framework:
 Also extracts observable communication indicators (structure markers, pace, hedging).
 """
 
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any
 import logging
+import re
 
 logger = logging.getLogger(__name__)
-
-import re
 
 STAR_INDICATORS = {
     "situation": ["when", "project", "client", "problem", "incident", "outage", "legacy", "challenge", "context", "background", "stakeholder", "architecture", "scenario"],

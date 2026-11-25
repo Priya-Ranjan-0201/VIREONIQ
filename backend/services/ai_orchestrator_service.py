@@ -6,12 +6,10 @@ Coordinates the complete AI intelligence loop:
   Semantic Validation -> Provenance Tagging -> Observability Logging
 """
 
-from typing import Dict, Any, List, Optional
-import uuid
+from typing import Dict, Any, List
 import time
 import logging
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
 
 from db.models import User, AIOrchestrationLog
 from services.ai_model_router import ModelRouter, estimate_ai_cost

@@ -1,9 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func
+from sqlalchemy import select
 from api.deps import get_db, get_current_active_user
-from db.models import User, CollegeProfile, StudentProfile
-from typing import Dict, Any
+from db.models import User, CollegeProfile
 
 router = APIRouter()
 

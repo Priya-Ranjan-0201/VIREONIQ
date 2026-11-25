@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List, Dict, Any
 from sqlalchemy import select, and_
@@ -104,12 +104,12 @@ async def get_links_status(
     
     return [
         {
-            "parent_link_id": str(l.id),
-            "parent_name": l.parent_name,
-            "parent_phone": l.parent_phone,
-            "consent_status": l.consent_status,
-            "consent_requested_at": l.consent_requested_at.isoformat(),
-            "consented_at": l.consented_at.isoformat() if l.consented_at else None
+            "parent_link_id": str(link.id),
+            "parent_name": link.parent_name,
+            "parent_phone": link.parent_phone,
+            "consent_status": link.consent_status,
+            "consent_requested_at": link.consent_requested_at.isoformat(),
+            "consented_at": link.consented_at.isoformat() if link.consented_at else None
         }
-        for l in links
+        for link in links
     ]

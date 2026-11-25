@@ -9,13 +9,13 @@ Features:
   - User Control (Accept, Reject with reason, Postpone)
 """
 
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List
 import uuid
 import logging
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
-from db.models import SkillEvidence, ProjectEvidence, AssessmentResult, User
+from db.models import SkillEvidence
 from services.gap_intelligence_service import analyze_career_gaps
 from services.career_readiness_engine import compute_role_career_readiness
 from services.canonical_skill_service import normalize_skill_name
@@ -23,7 +23,7 @@ from services.canonical_skill_service import normalize_skill_name
 logger = logging.getLogger(__name__)
 
 # Curated High-Leverage Interventions Catalog with Multi-Gap Closure Capabilities
-CURATED_INTERVENTIONS = [
+CURATED_INTERVENTIONS: List[Dict[str, Any]] = [
     {
         "id": "action-dist-sys-proj",
         "title": "Build Distributed Notification & Task Processing Engine",

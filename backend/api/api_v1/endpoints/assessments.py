@@ -4,7 +4,7 @@ from typing import Dict, Any, List, Optional
 import uuid
 
 from api.deps import get_db, get_current_active_user
-from db.models import User, AssessmentSession, AssessmentEvaluationResult
+from db.models import User, AssessmentSession
 from sqlalchemy import select
 from services.unified_assessment_service import (
     create_assessment_session, get_next_adaptive_question,

@@ -1,12 +1,12 @@
 import uuid
 from datetime import datetime, timezone, timedelta
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, Optional
 from sqlalchemy import select, and_, func
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import HTTPException
 
 from db.models import (
-    User, EarnToLearnLedger, UserPremiumStatus, ContentReviewQueue,
+    EarnToLearnLedger, UserPremiumStatus, ContentReviewQueue,
     RealInterviewDebrief, Notification, Subscription
 )
 

@@ -1,4 +1,3 @@
-import json
 
 CODING_INTERVIEWER_SYSTEM_PROMPT = """
 You are a Staff Software Engineer at a top-tier tech company conducting a coding interview.

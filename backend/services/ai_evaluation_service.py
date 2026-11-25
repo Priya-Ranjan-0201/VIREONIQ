@@ -6,12 +6,12 @@ Provides:
   3. Immutable Evaluation Run Logging
 """
 
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any
 import uuid
 import logging
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from db.models import AIEvaluationRun, User
+from db.models import AIEvaluationRun
 from services.ai_copilot_service import process_copilot_chat
 
 logger = logging.getLogger(__name__)

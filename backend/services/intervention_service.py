@@ -7,11 +7,10 @@ Includes milestones, daily objectives, hands-on projects, assessments, and reass
 from typing import Dict, Any, List, Optional
 import uuid
 import logging
-from datetime import datetime, timezone
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, and_
 
-from db.models import PrescriptiveIntervention, User
+from db.models import PrescriptiveIntervention
 from services.roi_gap_optimizer import calculate_roi_gaps
 
 logger = logging.getLogger(__name__)

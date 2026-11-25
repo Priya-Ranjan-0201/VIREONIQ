@@ -5,12 +5,8 @@ and rubric-backed assessment challenges with hidden test suites.
 """
 
 from typing import Dict, Any, List, Optional
-import uuid
 import logging
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
 
-from db.models import AssessmentBlueprint, AssessmentQuestion
 from services.canonical_skill_service import normalize_skill_name
 
 logger = logging.getLogger(__name__)

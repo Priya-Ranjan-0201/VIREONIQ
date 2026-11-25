@@ -9,7 +9,7 @@ Provides:
   6. Global Platform Health & Subsystem Readiness Telemetry
 """
 
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List
 import uuid
 import hashlib
 import hmac
@@ -20,8 +20,7 @@ from sqlalchemy import select, and_
 
 from db.models import (
     PlatformApiKey, WebhookSubscription, WebhookDeliveryLog,
-    PartnerConnector, TenantEntitlement, EventOutbox, RecruiterOrganization,
-    User, Profile, JobPosting
+    PartnerConnector, TenantEntitlement
 )
 
 logger = logging.getLogger(__name__)
@@ -81,7 +80,7 @@ async def verify_scoped_api_key(
     stmt = select(PlatformApiKey).where(
         and_(
             PlatformApiKey.key_prefix == key_prefix,
-            PlatformApiKey.revoked_at == None
+            PlatformApiKey.revoked_at.is_(None)
         )
     )
     key_record = (await db.execute(stmt)).scalars().first()

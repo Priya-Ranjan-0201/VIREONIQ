@@ -5,11 +5,10 @@ from sqlalchemy import select
 
 from db.models import (
     User, Role, Profile, SkillEvidence, RecruiterOrganization, JobPosting,
-    CandidatePrivacyPreference, SecurityAuditLog
+    CandidatePrivacyPreference
 )
 from services.security_governance_service import (
-    log_security_event, get_or_create_privacy_preferences,
-    update_privacy_preferences, export_user_data, delete_user_account
+    log_security_event, export_user_data, delete_user_account
 )
 from services.recruiter_matching_service import search_candidates_for_job
 from services.ai_fairness_service import run_fairness_audit, audit_features_for_proxies

@@ -1,7 +1,7 @@
 from typing import List, Dict, Any
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, and_
-from db.models import User, JobListing, JobMatch, Resume, InterviewScore, GapAnalysis, UserPreference
+from sqlalchemy import select
+from db.models import User, JobListing, Resume, InterviewScore, GapAnalysis, UserPreference
 from . import filters, scorer, ranker, explainability
 
 async def get_job_recommendations(

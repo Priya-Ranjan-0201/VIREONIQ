@@ -11,11 +11,11 @@ Provides:
 from typing import Dict, Any, List, Optional, Tuple
 import uuid
 import logging
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timezone
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, and_, or_
+from sqlalchemy import select, and_
 
-from db.models import EvidenceItem, SkillEvidence, User
+from db.models import EvidenceItem
 from services.canonical_skill_service import normalize_skill_name
 
 logger = logging.getLogger(__name__)
@@ -457,7 +457,6 @@ async def analyze_developer_profiles(
     Ensures observations are mapped to DEMONSTRATED or OBSERVED states (never unassessed verified expertise).
     """
     import re
-    import random
 
     strengths = []
     weaknesses = []
@@ -561,7 +560,7 @@ async def analyze_developer_profiles(
 
     if hackerrank_user:
         platform_data["hackerrank"] = {"username": hackerrank_user, "verified": True, "stars": 5}
-        strengths.append(f"5-star problem solving badge on HackerRank.")
+        strengths.append("5-star problem solving badge on HackerRank.")
 
     # Overall developer grade
     strength_score = len(strengths) * 25

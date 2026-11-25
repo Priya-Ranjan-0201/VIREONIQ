@@ -3,12 +3,12 @@ import uuid
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
-from db.models import CareerInterventionPlan, CareerInterventionTask, EvidenceItem, SkillEvidence
+from db.models import CareerInterventionTask, EvidenceItem
 from services.career_intervention_engine import (
     generate_career_intervention_plan, replan_career_intervention
 )
 from services.daily_career_os_service import (
-    get_todays_career_mission, complete_intervention_task
+    complete_intervention_task
 )
 from services.weekly_career_review_service import generate_weekly_career_review
 

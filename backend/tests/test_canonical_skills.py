@@ -1,4 +1,3 @@
-import pytest
 from services.canonical_skill_service import (
     normalize_skill_name, derive_proficiency_level, get_skill_relationships
 )

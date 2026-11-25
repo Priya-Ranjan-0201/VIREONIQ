@@ -1,5 +1,5 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from db.models import RecommendationLog, User
+from db.models import RecommendationLog
 from typing import Literal
 
 InteractionType = Literal["impression", "click", "save", "apply", "dismiss"]

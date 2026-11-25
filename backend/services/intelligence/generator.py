@@ -1,4 +1,4 @@
-from typing import List, Dict
+from typing import List, Dict, Any
 import random
 import uuid
 
@@ -8,7 +8,7 @@ class DynamicQuestionEngine:
     Generates 'Battlefield' scenarios that test real engineering ability.
     """
     
-    SCENARIO_TEMPLATES = [
+    SCENARIO_TEMPLATES: List[Dict[str, Any]] = [
         {
             "id": "scenario_001",
             "type": "Broken Production",

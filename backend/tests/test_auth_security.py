@@ -1,7 +1,6 @@
-import pytest
 from core.security import (
     get_password_hash, verify_password,
-    create_access_token, create_refresh_token, decode_token,
+    create_access_token, decode_token,
     check_prompt_injection
 )
 

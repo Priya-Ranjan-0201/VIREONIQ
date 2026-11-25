@@ -7,13 +7,13 @@ Provides:
   4. Structured Response Formatter with Fact / Inference / Recommendation / Projection Tags
 """
 
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, Optional
 import uuid
 import logging
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
-from db.models import User, Profile, Role
+from db.models import User, Profile
 from services.ai_orchestrator_service import orchestrate_ai_task
 
 logger = logging.getLogger(__name__)
@@ -79,7 +79,7 @@ async def process_copilot_chat(
             "structured_response": {
                 "facts": [
                     f"Your verified Career Readiness Index for {current_target} is {score}%.",
-                    f"Evidence confirmed for primary skills with active assessments and project demonstrations."
+                    "Evidence confirmed for primary skills with active assessments and project demonstrations."
                 ],
                 "inferences": [
                     f"Your primary limiting constraint is {bottleneck} due to a missing verified project/assessment."

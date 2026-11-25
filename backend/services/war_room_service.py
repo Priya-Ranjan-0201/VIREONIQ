@@ -1,9 +1,9 @@
 import uuid
-from typing import Dict, Any, List
-from sqlalchemy import select, and_, func
+from typing import Dict, Any
+from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import HTTPException
-from db.models import User, StudentProfile, Profile, GapAnalysis, CollegeProfile
+from db.models import StudentProfile, Profile, GapAnalysis, CollegeProfile
 
 async def get_college_readiness_report(
     college_id: str,

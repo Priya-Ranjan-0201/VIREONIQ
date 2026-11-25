@@ -4,10 +4,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
 from db.models import (
-    User, Role, Profile, SkillEvidence, CareerSimulation, CareerInterventionPlan
+    User, Role, Profile, SkillEvidence
 )
 from services.career_simulation_service import (
-    run_counterfactual_simulation, compare_career_paths, convert_scenario_to_active_plan
+    run_counterfactual_simulation, convert_scenario_to_active_plan
 )
 
 @pytest.mark.asyncio

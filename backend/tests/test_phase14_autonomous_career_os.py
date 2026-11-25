@@ -4,8 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
 from db.models import (
-    User, Role, Profile, AssessmentSession, AssessmentEvaluationResult, CareerSignal,
-    NextBestAction, CareerGoalRecord, EvidenceDispute
+    User, Role, AssessmentSession, AssessmentEvaluationResult
 )
 from services.autonomous_career_os_service import (
     detect_career_signals, compute_next_best_action, generate_daily_career_brief,

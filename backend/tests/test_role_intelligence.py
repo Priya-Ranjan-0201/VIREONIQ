@@ -1,5 +1,4 @@
-import pytest
-from services.role_intelligence_service import get_role_definition, get_all_roles, STANDARD_ROLES
+from services.role_intelligence_service import get_role_definition, get_all_roles
 
 def test_standard_roles_completeness():
     roles = get_all_roles()

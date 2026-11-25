@@ -1,6 +1,4 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func
-from db.models import ResumeScore, GapAnalysis, InterviewScore, InterviewSession
 from typing import Dict, Any
 import uuid
 

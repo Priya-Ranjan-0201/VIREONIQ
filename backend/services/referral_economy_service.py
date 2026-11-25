@@ -1,11 +1,10 @@
 import uuid
 from datetime import datetime, date, timezone, timedelta
-from typing import Dict, Any, List, Optional
-from decimal import Decimal
+from typing import Dict, Any, List
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func, and_
+from sqlalchemy import select, and_
 
-from db.models import User, Profile, StudentProfile, MentorProfile, ReferralSlot, Notification
+from db.models import Profile, StudentProfile, MentorProfile, ReferralSlot, Notification
 from services import gamification_service
 from core.redis import redis_client
 

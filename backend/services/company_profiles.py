@@ -6,7 +6,6 @@ from typing import List, Dict, Any, Optional
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from db.models import CompanyInterviewProfile
-import uuid
 
 COMPANY_PROFILES: Dict[str, Dict[str, Any]] = {
     "tcs": {
@@ -147,7 +146,7 @@ async def seed_company_profiles_if_empty(db: AsyncSession) -> None:
 async def get_company_profiles(db: AsyncSession) -> List[CompanyInterviewProfile]:
     """Retrieve all active company interview profiles."""
     await seed_company_profiles_if_empty(db)
-    stmt = select(CompanyInterviewProfile).where(CompanyInterviewProfile.is_active == True)
+    stmt = select(CompanyInterviewProfile).where(CompanyInterviewProfile.is_active.is_(True))
     return list((await db.execute(stmt)).scalars().all())
 
 

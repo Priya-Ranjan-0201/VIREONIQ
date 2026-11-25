@@ -4,7 +4,7 @@ from db.session import get_db
 from db.models import User, UserActivity, Waitlist
 from api import deps
 from pydantic import BaseModel
-from typing import Optional, List, Dict, Any
+from typing import Optional
 from services import analytics_service
 
 router = APIRouter()

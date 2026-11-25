@@ -1,9 +1,10 @@
 from fastapi import APIRouter, Depends
+from fastapi.responses import Response
 from sqlalchemy.ext.asyncio import AsyncSession
 from db.session import get_db
 from db.models import User
 from api import deps
-from services import report_service
+from services import report_service, pdf_export
 
 router = APIRouter()
 
@@ -17,9 +18,6 @@ async def get_benchmark_report(
     """
     return await report_service.generate_benchmark_report(db, current_user.id)
 
-
-from fastapi.responses import Response
-from services import pdf_export
 
 @router.post("/export-pdf")
 async def export_gap_report_pdf(

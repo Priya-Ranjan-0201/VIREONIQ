@@ -1,10 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException, Body, Query
+from fastapi import APIRouter, Depends, Body
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Dict, Any, List, Optional
-import uuid
 
 from api.deps import get_db, get_current_active_user
-from db.models import User, AIOrchestrationLog, AIEvaluationRun
+from db.models import User, AIOrchestrationLog
 from sqlalchemy import select, func
 from services.ai_copilot_service import process_copilot_chat
 from services.ai_orchestrator_service import orchestrate_ai_task

@@ -12,24 +12,21 @@ Verifies:
 
 import pytest
 import uuid
-from datetime import datetime, timezone, timedelta
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
 
 from db.models import (
-    User, Role, Profile, SkillEvidence, ProjectEvidence, AssessmentResult,
-    EvidenceItem, NextBestAction, VerifiedCredential
+    User, Role, Profile
 )
 from services.evidence_graph_service import (
     CANONICAL_EVIDENCE_STATES, validate_evidence_state, record_granular_evidence,
-    detect_evidence_conflicts, trace_skill_lineage, analyze_developer_profiles
+    trace_skill_lineage
 )
 from services.career_digital_twin_service import (
     generate_career_digital_twin_snapshot, compute_twin_diff
 )
 from services.career_readiness_engine import compute_role_career_readiness
 from services.autonomous_career_os_service import (
-    compute_next_best_action, generate_daily_career_brief, execute_autonomous_action_with_guard
+    compute_next_best_action, execute_autonomous_action_with_guard
 )
 from services.code_execution_service import analyze_python_ast_complexity
 from services.mnc_interview_intelligence_service import (
@@ -37,8 +34,7 @@ from services.mnc_interview_intelligence_service import (
     generate_and_validate_coding_question
 )
 from services.credential_issuance_service import (
-    compute_canonical_hmac_signature, verify_canonical_hmac_signature,
-    evaluate_and_issue_credential, verify_credential_public
+    compute_canonical_hmac_signature, verify_canonical_hmac_signature
 )
 
 
@@ -246,8 +242,6 @@ def nested_bubble_sort(arr):
 @pytest.mark.asyncio
 async def test_mnc_interview_blueprint_generation(db_session: AsyncSession, setup_test_candidate):
     """Verifies MNC studio generates structured multi-round blueprints from public frameworks."""
-    user = setup_test_candidate
-
     profile = await create_company_interview_profile(
         company_name="Google",
         industry="Technology",

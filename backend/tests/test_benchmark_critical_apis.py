@@ -5,7 +5,6 @@ from httpx import AsyncClient, ASGITransport
 from sqlalchemy.ext.asyncio import AsyncSession
 from main import app
 from core.security import create_access_token
-from db.models import User, Role
 
 from db.session import get_db
 
@@ -21,8 +20,7 @@ async def test_benchmark_critical_endpoints(db_session: AsyncSession):
 
     app.dependency_overrides[get_db] = override_get_db
     transport = ASGITransport(app=app)
-    token = create_access_token(subject="bench_candidate", jti="bench_jti_123")
-    headers = {"Authorization": f"Bearer {token}"}
+    _token = create_access_token(subject="bench_candidate", jti="bench_jti_123")
 
     benchmarks = {}
 

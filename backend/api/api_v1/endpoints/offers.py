@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from pydantic import BaseModel
+from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from db.session import get_db
 from db.models import User
@@ -7,9 +8,6 @@ from services import offer_service
 import uuid
 
 router = APIRouter()
-
-from typing import Optional, Dict, Any
-from pydantic import BaseModel
 
 class CounterRequest(BaseModel):
     tactic: str

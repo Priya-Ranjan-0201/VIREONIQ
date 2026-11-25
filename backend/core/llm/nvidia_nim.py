@@ -17,7 +17,7 @@ class NvidiaNimProvider(BaseLLMProvider):
         self.model_name = settings.NVIDIA_MODEL
 
     async def chat(self, messages: List[Dict[str, str]], system_prompt: Optional[str] = None) -> str:
-        api_messages = []
+        api_messages: List[Any] = []
         if system_prompt:
             api_messages.append({"role": "system", "content": system_prompt})
         api_messages.extend(messages)
@@ -29,7 +29,7 @@ class NvidiaNimProvider(BaseLLMProvider):
                 temperature=0.7,
                 max_tokens=1024,
             )
-            return completion.choices[0].message.content
+            return completion.choices[0].message.content or ""
         except Exception as e:
             logger.error(f"NVIDIA NIM API Error: {e}")
             raise e

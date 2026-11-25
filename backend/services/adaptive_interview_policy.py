@@ -5,14 +5,12 @@ Computes multi-dimensional rubric evaluations (DSA, System Design, Behavioral)
 and observable communication proxies without making unsupported psychological claims.
 """
 
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List
 import uuid
 import logging
-from datetime import datetime, timezone
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
 
-from db.models import InterviewSession, InterviewRubricEvaluation, User
+from db.models import InterviewRubricEvaluation
 
 logger = logging.getLogger(__name__)
 
@@ -113,7 +111,6 @@ async def evaluate_interview_rubric(
             "scalability_tradeoffs": round(max(40.0, overall_score - 5.0), 1)
         }
 
-        total_words = sum(len(a.get("text", "").split()) for a in answers_data)
         total_hedging = sum(a.get("hedging_count", 0) for a in answers_data)
         comm_proxies = compute_communication_proxies(" ".join(a.get("text", "") for a in answers_data), 120.0, total_hedging)
 

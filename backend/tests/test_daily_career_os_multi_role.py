@@ -2,8 +2,7 @@ import pytest
 import uuid
 from services.role_mission_catalog import (
     ROLE_MISSION_CATALOG,
-    normalize_target_role,
-    TOP_25_MNCS
+    normalize_target_role
 )
 from services.daily_career_os_service import get_todays_career_mission
 

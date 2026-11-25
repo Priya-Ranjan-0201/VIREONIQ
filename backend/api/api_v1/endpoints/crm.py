@@ -1,13 +1,13 @@
 from typing import List
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, update
+from sqlalchemy import select
 from db.session import get_db
 from schemas.crm import (
     ApplicationResponse, ApplicationUpdate, ApplicationEventCreate, 
     ApplicationEventResponse, OfferCreate, OfferResponse, FunnelStats
 )
-from db.models import User, Application, ApplicationEvent, Offer, JobListing
+from db.models import User, Application, ApplicationEvent, Offer
 from api import deps
 from sqlalchemy import func
 

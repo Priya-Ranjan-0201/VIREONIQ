@@ -9,7 +9,7 @@ Orchestrates:
      Assessment -> EvidenceItem -> SkillEvidence -> Career Digital Twin -> CRI 2.0 -> Next Best Action
 """
 
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, Optional
 import uuid
 import logging
 from datetime import datetime, timezone
@@ -17,8 +17,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, and_
 
 from db.models import (
-    AssessmentSession, AssessmentQuestion, AssessmentResponseAttempt,
-    AssessmentEvaluationResult, SkillEvidence, EvidenceItem, User
+    AssessmentSession, AssessmentResponseAttempt,
+    AssessmentEvaluationResult, SkillEvidence, EvidenceItem
 )
 from services.assessment_blueprint_service import get_role_blueprint, get_blueprint_questions
 from services.system_design_evaluator import evaluate_system_design_response

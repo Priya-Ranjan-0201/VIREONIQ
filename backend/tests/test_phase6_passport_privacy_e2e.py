@@ -1,11 +1,10 @@
 import pytest
 import uuid
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
 
-from db.models import User, Profile, SkillEvidence, VerifiedCredential
+from db.models import SkillEvidence
 from services.talent_passport_service import (
-    get_candidate_talent_passport, create_passport_share_link, revoke_passport_share_link
+    get_candidate_talent_passport, create_passport_share_link
 )
 from services.credential_issuance_service import evaluate_and_issue_credential, verify_credential_public, revoke_credential
 

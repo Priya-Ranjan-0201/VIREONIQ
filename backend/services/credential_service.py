@@ -3,13 +3,13 @@ import hashlib
 import uuid
 import math
 from datetime import datetime, timezone
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func
+from sqlalchemy import select
 from redis.asyncio import Redis
 
 from core.config import settings
-from db.models import User, StudentProfile, InterviewSession, InterviewAnswer, PsychometricProfile, RLState, GamificationProfile, SkillCredential
+from db.models import StudentProfile, InterviewSession, InterviewAnswer, RLState, SkillCredential
 from core.llm.orchestrator import acall_llm
 
 CREDENTIAL_TIERS = {
@@ -42,15 +42,9 @@ async def compute_credential(user_id: uuid.UUID, db: AsyncSession, redis: Redis)
     sessions = list((await db.execute(session_stmt)).scalars().all())
     sessions_completed = len(sessions)
 
-    # 3. Fetch psychometric profile, RLState and gamification
-    psy_stmt = select(PsychometricProfile).where(PsychometricProfile.user_id == user_id)
-    psy = (await db.execute(psy_stmt)).scalars().first()
-
+    # 3. Fetch RLState
     rl_stmt = select(RLState).where(RLState.user_id == user_id)
     rl = (await db.execute(rl_stmt)).scalars().first()
-
-    gam_stmt = select(GamificationProfile).where(GamificationProfile.user_id == user_id)
-    gam = (await db.execute(gam_stmt)).scalars().first()
 
     # Default scores in case of insufficient data
     tech_depth = 50.0
@@ -297,7 +291,7 @@ async def get_talent_passport_data(user_id: uuid.UUID, db: AsyncSession) -> Dict
     Retrieves the complete dynamic Talent Passport with evidence freshness,
     verified competencies inventory, and cryptographic verification metadata.
     """
-    from db.models import SkillEvidence, AssessmentResult, Profile
+    from db.models import SkillEvidence, AssessmentResult
     from services.skill_intelligence_service import calculate_freshness
 
     # 1. Fetch credential

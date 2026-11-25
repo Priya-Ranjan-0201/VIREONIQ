@@ -1,8 +1,8 @@
 import json
 import os
 import uuid
-from datetime import datetime, timezone, timedelta
-from typing import Dict, Any, List, Tuple
+from datetime import datetime, timezone
+from typing import Dict, Any, Tuple
 from sqlalchemy import select, desc
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import HTTPException
@@ -206,7 +206,6 @@ async def sync_offline_session(
     count = 0
 
     for turn_idx, exchange in enumerate(exchanges):
-        q_id = exchange.get("question_id")
         q_text = exchange.get("question_text", "")
         answer_text = exchange.get("answer_text", "")
         latency_seconds = exchange.get("time_to_answer_seconds", 0)

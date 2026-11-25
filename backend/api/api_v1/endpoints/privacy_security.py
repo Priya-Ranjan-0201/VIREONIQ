@@ -1,14 +1,13 @@
-from fastapi import APIRouter, Depends, HTTPException, Body, Query
+from fastapi import APIRouter, Depends, Body, Query
 from sqlalchemy.ext.asyncio import AsyncSession
-from typing import Dict, Any, List, Optional
-import uuid
+from typing import Dict, Any, List
 
 from api.deps import get_db, get_current_active_user
 from db.models import User, SecurityAuditLog
 from sqlalchemy import select, desc
 from services.security_governance_service import (
     get_or_create_privacy_preferences, update_privacy_preferences,
-    export_user_data, delete_user_account, log_security_event
+    export_user_data, delete_user_account
 )
 from services.ai_fairness_service import run_fairness_audit
 

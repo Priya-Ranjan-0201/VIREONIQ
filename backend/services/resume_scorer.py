@@ -49,16 +49,16 @@ def analyze_resume(sections: dict, target_role: str) -> Tuple[Dict[str, Any], Li
     if nlp is None or doc is None:
         # High-speed fallback analyzer without spacy
         sentences = [s.strip() for s in re.split(r'[.\n]+', full_text) if s.strip()]
-        for sent in sentences:
-            sent_lower = sent.lower()
-            if any(char.isdigit() for char in sent) and any(m in sent_lower for m in ["%", "$", "reduced", "increased", "latency", "f1", "roc"]):
+        for sentence in sentences:
+            sent_lower = sentence.lower()
+            if any(char.isdigit() for char in sentence) and any(m in sent_lower for m in ["%", "$", "reduced", "increased", "latency", "f1", "roc"]):
                 quantified_count += 1
-                entities.append({"entity_type": "quantified_achievement", "entity_value": "metric", "context": sent})
+                entities.append({"entity_type": "quantified_achievement", "entity_value": "metric", "context": sentence})
             words = re.findall(r'\b[a-zA-Z]+\b', sent_lower)
             for w in words:
                 if w in STRONG_ACTION_VERBS:
                     strong_verb_count += 1
-                    entities.append({"entity_type": "action_verb", "entity_value": w, "context": sent})
+                    entities.append({"entity_type": "action_verb", "entity_value": w, "context": sentence})
                 elif w.endswith(('ed', 'ing')):
                     weak_verb_count += 1
                     
@@ -146,12 +146,18 @@ def compute_ats_compatibility_score(
 
     # High-density tech resumes often omit summaries to maximize room for projects and internships
     section_score = 0.0
-    if has_experience: section_score += 10.0
-    if has_projects: section_score += 9.0
-    if has_skills: section_score += 8.0
-    if has_education: section_score += 8.0
-    if has_summary: section_score += 5.0
-    if has_certs_or_extra: section_score += 5.0
+    if has_experience:
+        section_score += 10.0
+    if has_projects:
+        section_score += 9.0
+    if has_skills:
+        section_score += 8.0
+    if has_education:
+        section_score += 8.0
+    if has_summary:
+        section_score += 5.0
+    if has_certs_or_extra:
+        section_score += 5.0
     section_score = min(35.0, section_score)
 
     # 2. Skill Density (Max 25 points)

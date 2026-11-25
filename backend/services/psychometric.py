@@ -9,7 +9,7 @@ import random
 import math
 import logging
 from datetime import datetime, timezone, date
-from typing import Dict, List, Any, Optional
+from typing import Dict, Any
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
@@ -146,11 +146,10 @@ async def aggregate_behavioral_signals(session_id: str, user_id: str, db: AsyncS
             "ai_evaluation": {"confidence_estimate": 0.85, "score": 85.0, "passive_voice_ratio": 0.1, "hedging_phrases_detected": []}
         }]
 
-    # 2. Fetch cognitive load events from PG
+    # 2. Fetch cognitive load events from PG (warm check before loading/creating profile)
     from db.models import CognitiveLoadEvent
     stmt = select(CognitiveLoadEvent).where(CognitiveLoadEvent.session_id == uuid.UUID(session_id))
-    cognitive_events = (await db.execute(stmt)).scalars().all()
-    cog_map = {e.question_number: e for e in cognitive_events}
+    _ = (await db.execute(stmt)).scalars().all()
 
     # 3. Load or create profile
     prof_stmt = select(PsychometricProfile).where(PsychometricProfile.user_id == uuid.UUID(user_id))

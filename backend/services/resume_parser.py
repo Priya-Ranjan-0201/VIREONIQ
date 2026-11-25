@@ -2,7 +2,6 @@ import io
 import logging
 import fitz  # PyMuPDF
 import docx
-import re
 
 logger = logging.getLogger(__name__)
 

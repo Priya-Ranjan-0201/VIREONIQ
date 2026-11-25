@@ -15,6 +15,8 @@ def calculate_offer_probability(skill_fit: float, job: JobListing, interview_fit
     return max(0, min(100, final_prob))
 
 def get_confidence_level(score: float) -> str:
-    if score > 85: return "High"
-    if score > 60: return "Medium"
+    if score > 85:
+        return "High"
+    if score > 60:
+        return "Medium"
     return "Low"

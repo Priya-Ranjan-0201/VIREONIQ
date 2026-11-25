@@ -1,11 +1,11 @@
 from typing import List
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from db.session import get_db
 from schemas.recommendation import JobMatchResponse, UserPreferenceUpdate, UserPreferenceResponse, RecommendationStats
 from services.recommendation import matching_engine
 from api import deps
-from db.models import User, UserPreference, JobListing
+from db.models import User, UserPreference
 from sqlalchemy import select
 
 router = APIRouter()

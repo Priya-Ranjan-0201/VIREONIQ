@@ -1,6 +1,5 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Query, Body
-from sqlalchemy.ext.asyncio import AsyncSession
-from api.deps import get_db, get_current_active_user
+from fastapi import APIRouter, Depends, HTTPException, Body
+from api.deps import get_current_active_user
 from db.models import User
 from pydantic import BaseModel
 

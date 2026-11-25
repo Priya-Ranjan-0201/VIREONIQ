@@ -1,9 +1,7 @@
 from fastapi import APIRouter, Depends
-from db.session import get_db
 from db.models import User
 from api import deps
 from pydantic import BaseModel
-from typing import Optional
 from services.intelligence.simulation_battlefield import SimulationBattlefield
 
 router = APIRouter()

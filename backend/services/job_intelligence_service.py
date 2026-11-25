@@ -9,12 +9,9 @@ Provides:
 from typing import Dict, Any, List, Optional
 import uuid
 import logging
-from datetime import datetime, timezone
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, and_
 
-from db.models import JobPosting, RecruiterOrganization, User
-from services.canonical_skill_service import normalize_skill_name
+from db.models import JobPosting
 
 logger = logging.getLogger(__name__)
 

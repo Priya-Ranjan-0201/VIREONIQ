@@ -4,8 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
 from db.models import (
-    User, Role, Profile, SkillEvidence, VerifiedCredential, CareerInterventionPlan,
-    AssessmentResult, AnalyticsEvent, CareerMilestoneProgression
+    User, Role
 )
 from services.outcome_intelligence_service import (
     record_analytics_event, update_candidate_milestone_progression,

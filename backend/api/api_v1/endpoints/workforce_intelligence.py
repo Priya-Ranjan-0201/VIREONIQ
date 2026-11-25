@@ -5,10 +5,9 @@ import uuid
 
 from api.deps import get_db, require_roles, user_has_role
 from db.models import (
-    User, RecruiterOrganization, RecruiterProfile, OrganizationUnit,
-    OrganizationRoleCatalog, OrganizationCapabilitySnapshot, OrganizationAssessmentCampaign
+    User, RecruiterOrganization, RecruiterProfile, OrganizationRoleCatalog, OrganizationCapabilitySnapshot
 )
-from sqlalchemy import select, and_
+from sqlalchemy import select
 from services.workforce_intelligence_service import (
     calculate_team_capability_coverage, generate_workforce_capability_matrix,
     evaluate_hiring_vs_upskilling, find_internal_talent_mobility,

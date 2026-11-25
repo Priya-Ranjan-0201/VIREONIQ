@@ -8,12 +8,12 @@ Includes evidence freshness decay, multi-source provenance, and explainable scor
 import uuid
 import math
 import logging
-from datetime import datetime, timezone, timedelta
-from typing import Dict, Any, List, Optional, Tuple
+from datetime import datetime, timezone
+from typing import Dict, Any, List, Optional
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, and_, func
+from sqlalchemy import select, and_
 
-from db.models import SkillEvidence, User, Resume, AssessmentResult, ProjectEvidence
+from db.models import SkillEvidence
 
 logger = logging.getLogger(__name__)
 

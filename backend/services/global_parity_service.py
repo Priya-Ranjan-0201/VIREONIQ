@@ -1,14 +1,13 @@
 import json
 import uuid
 from datetime import datetime, timezone
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List
 from decimal import Decimal
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
-from db.models import User, Profile, StudentProfile, SkillCredential, LanguageProgression, TalentPassport
+from db.models import Profile, StudentProfile, SkillCredential, LanguageProgression, TalentPassport
 from core.llm.orchestrator import acall_llm
-from core.redis import redis_client
 
 REMOTE_HIRING_TIERS = {
     "tier_1_global": {
@@ -31,7 +30,7 @@ REMOTE_HIRING_TIERS = {
     }
 }
 
-COUNTRY_HIRING_PROFILES = {
+COUNTRY_HIRING_PROFILES: Dict[str, Dict[str, Any]] = {
     "IN": {
         "name": "India",
         "strongest_export_roles": ["backend_developer", "data_engineer", "ML_engineer"],
@@ -148,7 +147,6 @@ async def generate_talent_passport(
     # Base values
     prs = float(profile.placement_readiness_score) if profile and profile.placement_readiness_score else 65.0
     tier = credential.tier if credential else "silver"
-    completed_sessions = credential.sessions_completed if credential else 5
     bridge_phase = prog.current_bridge_phase if prog else 3
     
     passport_id = f"VIREONIQ-{str(user_id)[:8].upper()}-{datetime.now().year}"
@@ -262,9 +260,6 @@ async def translate_credential_for_market(
     """
     stmt = select(TalentPassport).where(TalentPassport.user_id == user_id)
     passport = (await db.execute(stmt)).scalars().first()
-    
-    cred_stmt = select(SkillCredential).where(SkillCredential.user_id == user_id)
-    credential = (await db.execute(cred_stmt)).scalars().first()
 
     market_contexts = {
         "US": "Tech companies value GitHub activity, system design depth, and LeetCode proficiency",

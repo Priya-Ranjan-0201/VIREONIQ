@@ -5,7 +5,7 @@ Differentiates between low scores in low-importance skills vs critical deficits 
   Bottleneck Score = Role Importance * Deficit Severity * Dependency Multiplier
 """
 
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any
 import uuid
 import logging
 from sqlalchemy.ext.asyncio import AsyncSession

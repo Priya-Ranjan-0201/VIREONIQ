@@ -6,11 +6,11 @@ and generates detailed candidate match explanations.
 
 import uuid
 import logging
-from typing import Dict, List, Any
+from typing import List
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, desc
 
-from db.models import StudentProfile, PsychometricProfile, Profile, JobListing, JobMatch
+from db.models import StudentProfile, PsychometricProfile, Profile, JobListing
 from core.llm.nvidia import NVIDIA_NIM_Client
 from core.config import settings
 

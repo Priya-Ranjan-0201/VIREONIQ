@@ -1,5 +1,5 @@
 from typing import List
-from fastapi import APIRouter, Depends, UploadFile, File, Form, HTTPException, status
+from fastapi import APIRouter, Depends, UploadFile, File, Form
 from sqlalchemy.ext.asyncio import AsyncSession
 from db.session import get_db
 from schemas.resume import ResumeUploadResponse, ResumeHistoryResponse

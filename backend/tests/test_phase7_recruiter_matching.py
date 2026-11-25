@@ -3,14 +3,13 @@ import uuid
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from db.models import (
-    User, Profile, SkillEvidence, VerifiedCredential, ProjectEvidence,
-    JobPosting, RecruiterOrganization, RecruiterProfile, RecruiterShortlist
+    User, Profile, SkillEvidence, JobPosting, RecruiterOrganization
 )
 from services.recruiter_matching_service import (
-    compute_candidate_job_match, search_candidates_for_job, compare_candidates_for_job
+    compute_candidate_job_match, search_candidates_for_job
 )
 from services.job_intelligence_service import (
-    create_job_posting, extract_structured_requirements_from_text
+    create_job_posting
 )
 
 @pytest.mark.asyncio

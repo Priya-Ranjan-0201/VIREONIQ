@@ -1,14 +1,13 @@
 import asyncio
 import uuid
-import json
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timedelta
 from sqlalchemy import select
-from db.session import async_session_maker, engine
+from db.session import async_session_maker
 from db.models import (
     User, Role, Profile, StudentProfile, UserPremiumStatus,
     EarnToLearnLedger, ParentLink, MoodCheckin, FacultyClass,
     FacultyClassStudent, InterviewSession, InterviewScore,
-    VernacularConcept, OfflineBundle, StudyGroupSession, PeerFeedback
+    VernacularConcept, OfflineBundle
 )
 from core.config import settings
 from core.security import get_password_hash

@@ -4,9 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
 from db.models import (
-    User, Role, MNCCompanyInterviewProfile, MNCQuestionBlueprint,
-    MNCCodingQuestion, MNCInterviewSession, MNCInterviewTurn,
-    SkillEvidence, IntelligenceReceipt
+    User, Role, SkillEvidence
 )
 from services.mnc_interview_intelligence_service import (
     create_company_interview_profile, generate_question_blueprint,

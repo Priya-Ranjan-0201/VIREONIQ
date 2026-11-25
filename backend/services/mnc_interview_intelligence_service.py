@@ -1,18 +1,15 @@
 import uuid
 import ast
-import json
 import logging
 from datetime import datetime, timezone
 from typing import Dict, Any, List, Optional
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, desc, and_
+from sqlalchemy import select, and_
 
 from db.models import (
     MNCCompanyInterviewProfile, MNCQuestionBlueprint, MNCCodingQuestion,
-    MNCInterviewSession, MNCInterviewTurn, QuestionQualityMetric,
-    User, Profile, SkillEvidence, IntelligenceReceipt
+    MNCInterviewSession, MNCInterviewTurn, SkillEvidence
 )
-from services.career_readiness_engine import compute_role_career_readiness
 from services.convergence_certification_service import generate_intelligence_receipt
 
 logger = logging.getLogger(__name__)
@@ -590,9 +587,6 @@ async def finalize_mnc_interview_and_sync_twin(
 
     # 1. Elevate tested skill evidence to ASSESSED
     if db:
-        ev_stmt = select(SkillEvidence).where(SkillEvidence.user_id == user_id)
-        existing_ev = (await db.execute(ev_stmt)).scalars().all()
-        # Elevate evidence or insert
         elevated_ev = SkillEvidence(
             id=uuid.uuid4(),
             user_id=user_id,

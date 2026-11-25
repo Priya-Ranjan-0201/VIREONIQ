@@ -9,7 +9,7 @@ Provides:
   6. Grounded Executive Insights Generation with Exact Numerical Proof
 """
 
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, Optional
 import uuid
 import logging
 from datetime import datetime, timezone
@@ -17,9 +17,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func, and_
 
 from db.models import (
-    AnalyticsEvent, CareerMilestoneProgression, InterventionExperiment,
-    HiringOutcomeRecord, User, Profile, SkillEvidence, VerifiedCredential,
-    CareerInterventionPlan, AssessmentResult, JobPosting
+    AnalyticsEvent, CareerMilestoneProgression, HiringOutcomeRecord, User, Profile, VerifiedCredential,
+    CareerInterventionPlan, AssessmentResult
 )
 
 logger = logging.getLogger(__name__)

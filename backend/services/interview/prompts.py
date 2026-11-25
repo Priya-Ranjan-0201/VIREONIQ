@@ -1,4 +1,3 @@
-import json
 
 INTERVIEWER_SYSTEM_PROMPT = """
 You are a world-class AI Placement Coach conducting a simulated interview.

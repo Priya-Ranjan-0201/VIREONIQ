@@ -1,11 +1,9 @@
-import re
-import json
 import uuid
-from datetime import datetime, timezone, timedelta
-from typing import Dict, Any, List, Optional
+from datetime import datetime, timezone
+from typing import Dict, Any, List
 from decimal import Decimal
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func, and_
+from sqlalchemy import select
 
 from db.models import User, RealInterviewDebrief, EmployerTruthScore, EmployerFlag, Notification
 from services.bias_detection_service import compute_company_bias_score
@@ -105,7 +103,7 @@ async def compute_employer_truth_score(
         (equity_score * ETS_DIMENSIONS["equity_score"]["weight"])
     )
 
-    label_details = get_iso_label = get_label_for_score(weighted_ets)
+    label_details = get_label_for_score(weighted_ets)
     
     # Save/Update in db
     exist_stmt = select(EmployerTruthScore).where(EmployerTruthScore.company_name == company_name)

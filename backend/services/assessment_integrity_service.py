@@ -6,7 +6,7 @@ to produce non-punitive, objective Assessment Integrity Signals:
   - Emits Signal, Severity (LOW, MEDIUM, HIGH), Confidence, and human-readable explanation
 """
 
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any
 import logging
 
 logger = logging.getLogger(__name__)

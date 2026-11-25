@@ -1,4 +1,5 @@
 import time
+from typing import Any, Dict, Optional
 import redis.asyncio as redis
 import structlog
 
@@ -12,9 +13,9 @@ class SafeRedis:
 
     def __init__(self, url: str, retry_cooldown_seconds: float = 30.0):
         self._url = url
-        self._client = None
-        self._fallback_store = {}
-        self._fallback_expiry = {}
+        self._client: Optional[Any] = None
+        self._fallback_store: Dict[str, Any] = {}
+        self._fallback_expiry: Dict[str, float] = {}
         self._disabled_until: float = 0.0
         self._retry_cooldown = retry_cooldown_seconds
         try:
@@ -58,7 +59,7 @@ class SafeRedis:
 
     async def get(self, name: str):
         self._purge_if_expired(name)
-        if self._is_temporarily_disabled:
+        if self._client is None or self._is_temporarily_disabled:
             return self._fallback_store.get(name)
         try:
             return await self._client.get(name)
@@ -68,7 +69,7 @@ class SafeRedis:
 
     async def set(self, name: str, value: str, *args, **kwargs):
         ex = kwargs.get("ex")
-        if not self._is_temporarily_disabled:
+        if self._client is not None and not self._is_temporarily_disabled:
             try:
                 return await self._client.set(name, value, *args, **kwargs)
             except Exception as e:
@@ -81,7 +82,7 @@ class SafeRedis:
         return True
 
     async def setex(self, name: str, time_sec: int, value: str):
-        if not self._is_temporarily_disabled:
+        if self._client is not None and not self._is_temporarily_disabled:
             try:
                 return await self._client.setex(name, time_sec, value)
             except Exception as e:
@@ -95,7 +96,7 @@ class SafeRedis:
         return True
 
     async def delete(self, *names):
-        if not self._is_temporarily_disabled:
+        if self._client is not None and not self._is_temporarily_disabled:
             try:
                 return await self._client.delete(*names)
             except Exception as e:
@@ -108,8 +109,14 @@ class SafeRedis:
             self._fallback_expiry.pop(name, None)
         return count
 
-    async def hset(self, name: str, key: str = None, value: str = None, mapping: dict = None):
-        if not self._is_temporarily_disabled:
+    async def hset(
+        self,
+        name: str,
+        key: Optional[str] = None,
+        value: Optional[str] = None,
+        mapping: Optional[Dict[str, Any]] = None,
+    ):
+        if self._client is not None and not self._is_temporarily_disabled:
             try:
                 return await self._client.hset(name, key=key, value=value, mapping=mapping)
             except Exception as e:
@@ -126,7 +133,7 @@ class SafeRedis:
 
     async def hgetall(self, name: str):
         self._purge_if_expired(name)
-        if not self._is_temporarily_disabled:
+        if self._client is not None and not self._is_temporarily_disabled:
             try:
                 return await self._client.hgetall(name)
             except Exception as e:
@@ -136,7 +143,7 @@ class SafeRedis:
 
     async def hget(self, name: str, key: str):
         self._purge_if_expired(name)
-        if not self._is_temporarily_disabled:
+        if self._client is not None and not self._is_temporarily_disabled:
             try:
                 return await self._client.hget(name, key)
             except Exception as e:
@@ -145,7 +152,7 @@ class SafeRedis:
         return val.get(key) if isinstance(val, dict) else None
 
     async def expire(self, name: str, time_sec: int):
-        if not self._is_temporarily_disabled:
+        if self._client is not None and not self._is_temporarily_disabled:
             try:
                 return await self._client.expire(name, time_sec)
             except Exception as e:
@@ -159,7 +166,7 @@ class SafeRedis:
         return True
 
     async def ping(self) -> bool:
-        if self._is_temporarily_disabled:
+        if self._client is None or self._is_temporarily_disabled:
             return False
         try:
             return bool(await self._client.ping())

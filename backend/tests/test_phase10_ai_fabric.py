@@ -3,9 +3,8 @@ import uuid
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
-from db.models import User, Role, Profile, SkillEvidence, AIOrchestrationLog
+from db.models import User, Role, Profile, SkillEvidence
 from services.ai_copilot_service import process_copilot_chat
-from services.ai_orchestrator_service import orchestrate_ai_task
 from services.ai_evaluation_service import run_ai_evaluation_suite
 
 @pytest.mark.asyncio

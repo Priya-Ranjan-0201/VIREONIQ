@@ -8,11 +8,11 @@ Includes completion tracking, estimated time budgets, and projected readiness po
 from typing import Dict, Any, List, Optional
 import uuid
 import logging
-from datetime import datetime, timezone, date
+from datetime import date
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, and_
 
-from db.models import DailyMission, User, Profile
+from db.models import DailyMission
 from services.roi_gap_optimizer import calculate_roi_gaps
 
 logger = logging.getLogger(__name__)
@@ -50,7 +50,7 @@ async def get_or_generate_daily_mission(
     top_gap = gaps[0]["skill_name"] if gaps else "System Design"
     second_gap = gaps[1]["skill_name"] if len(gaps) > 1 else "Data Structures"
 
-    tasks = [
+    tasks: List[Dict[str, Any]] = [
         {
             "id": "task_1",
             "title": f"Solve 2 Medium DSA problems focusing on {second_gap}",

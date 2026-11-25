@@ -1,5 +1,6 @@
 import uuid
 import os
+import magic
 from fastapi import UploadFile, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -11,8 +12,6 @@ UPLOAD_DIR = "uploads"
 MAX_FILE_SIZE = 5 * 1024 * 1024  # 5 MB
 
 os.makedirs(UPLOAD_DIR, exist_ok=True)
-
-import magic
 
 async def process_and_score_resume(
     db: AsyncSession, 

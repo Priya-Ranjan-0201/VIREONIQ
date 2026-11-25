@@ -1,8 +1,6 @@
 from typing import List, Dict
 import asyncio
-import json
 import logging
-from core.config import settings
 
 logger = logging.getLogger(__name__)
 
@@ -151,8 +149,11 @@ class HiringCommittee:
         return "Solid candidate demonstrating capable fundamentals with clear growth trajectory."
 
     def _get_consensus_label(self, score: float) -> str:
-        if score >= 0.85: return "Strong Hire"
-        if score >= 0.70: return "Hire"
-        if score >= 0.50: return "Lean Hire"
+        if score >= 0.85:
+            return "Strong Hire"
+        if score >= 0.70:
+            return "Hire"
+        if score >= 0.50:
+            return "Lean Hire"
         return "No Hire"
 

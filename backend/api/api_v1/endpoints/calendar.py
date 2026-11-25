@@ -1,9 +1,11 @@
-from typing import List, Optional, Dict, Any
+from typing import Optional, Dict, Any
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import Response
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, and_
 from db.session import get_db
-from db.models import User, ExternalCalendar, ApplicationEvent
+from db.models import User, ExternalCalendar, PreparationCalendar
+from services import calendar_service
 from api import deps
 from datetime import datetime, timedelta
 
@@ -86,17 +88,13 @@ async def sync_event_to_calendar(
     # result = await db.get(ApplicationEvent, event_id)
     # Check if user has connected calendar
     cal_res = await db.execute(
-        select(ExternalCalendar).where(and_(ExternalCalendar.user_id == current_user.id, ExternalCalendar.is_active == True))
+        select(ExternalCalendar).where(and_(ExternalCalendar.user_id == current_user.id, ExternalCalendar.is_active.is_(True)))
     )
     if not cal_res.scalars().first():
         raise HTTPException(status_code=400, detail="No active calendar connected")
     # In production: Use googleapiclient.discovery.build('calendar', 'v3', ...)
     return {"status": "success", "message": "Event synced to Google Calendar (Simulated)"}
 
-
-from fastapi.responses import Response
-from services import calendar_service
-from db.models import PreparationCalendar
 
 @router.post("/generate-ics")
 async def generate_student_prep_ics(

@@ -2,7 +2,6 @@
 Multilingual translation and language detection service.
 Utilizes lightweight token-based detection and translates queries using NLLB-200 endpoints or local models.
 """
-from typing import Dict, Any
 
 
 def detect_language(text: str) -> str:

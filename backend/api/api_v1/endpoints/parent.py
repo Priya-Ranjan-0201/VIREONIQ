@@ -1,9 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from api.deps import get_db, get_current_active_user
-from db.models import User, ParentProfile, StudentProfile
-from typing import Dict, Any
+from db.models import User, ParentProfile
 
 router = APIRouter()
 
@@ -16,10 +15,7 @@ async def get_parent_read_only_dashboard(
     Retrieve read-only placement performance snapshot of a student linked to this parent profile.
     """
     stmt = select(ParentProfile).where(ParentProfile.user_id == current_user.id)
-    parent_prof = (await db.execute(stmt)).scalar_one_or_none()
-    
-    # Mock data fallback for verification
-    student_id = parent_prof.student_user_id if parent_prof else current_user.id
+    _parent_prof = (await db.execute(stmt)).scalar_one_or_none()
     
     return {
         "student_name": "Student Profile",

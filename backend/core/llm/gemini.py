@@ -2,6 +2,12 @@ import json
 import logging
 from typing import List, Dict, Any, Optional
 
+from core.llm.base import BaseLLMProvider
+from core.config import settings
+
+genai: Any
+genai_types: Any
+
 try:
     from google import genai
     from google.genai import types as genai_types
@@ -15,9 +21,6 @@ except ImportError:
         genai = None
         genai_types = None
         _NEW_SDK = False
-
-from core.llm.base import BaseLLMProvider
-from core.config import settings
 
 logger = logging.getLogger(__name__)
 
@@ -33,15 +36,14 @@ class GeminiProvider(BaseLLMProvider):
             model_name: Optional Gemini model name override (defaulting to config).
         """
         self.api_key = api_key
-        self.model_name = model_name or getattr(settings, "GEMINI_MODEL", "gemini-2.5-flash")
+        self.model_name = str(model_name or getattr(settings, "GEMINI_MODEL", "gemini-2.5-flash"))
+        self._client: Optional[Any] = None
 
         if self.api_key and self.api_key not in ("", "AIzaSy-REPLACE_ME"):
             if _NEW_SDK:
                 self._client = genai.Client(api_key=self.api_key)
             else:
                 genai.configure(api_key=self.api_key)  # type: ignore[union-attr]
-        else:
-            self._client = None
 
     async def chat(
         self,
@@ -58,7 +60,7 @@ class GeminiProvider(BaseLLMProvider):
             The model's text response.
         """
         if _NEW_SDK and self._client:
-            contents: List[genai_types.Content] = []
+            contents: List[Any] = []
             for msg in messages:
                 role = "model" if msg["role"] == "assistant" else "user"
                 contents.append(
@@ -72,7 +74,7 @@ class GeminiProvider(BaseLLMProvider):
             )
             try:
                 response = await self._client.aio.models.generate_content(
-                    model=self.model_name,
+                    model=str(self.model_name),
                     contents=contents,
                     config=config,
                 )

@@ -50,7 +50,7 @@ async def search_candidates_for_recruiter(db: AsyncSession, role: Optional[str] 
         stmt = stmt.where(Profile.target_role.ilike(f"%{role}%"))
 
     result = await db.execute(stmt)
-    return result.all()
+    return list(result.all())
 
 async def get_candidate_deep_report_data(db: AsyncSession, candidate_id: uuid.UUID) -> Optional[dict]:
     """Retrieve full profile, ATS score, gap analysis, and interview session histories for a candidate."""

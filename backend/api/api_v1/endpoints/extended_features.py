@@ -1,9 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Body
+from fastapi import APIRouter, Depends, HTTPException, Body
 from sqlalchemy.ext.asyncio import AsyncSession
-from api.deps import get_db, get_current_active_user, get_current_recruiter_user
-from db.models import User, OfferLetter, GamificationProfile
+from api.deps import get_db, get_current_active_user
+from db.models import User, OfferLetter
 from sqlalchemy import select
-import uuid
 
 from services import skill_decay, gamification_service, offer_letter_service, session_replay_service
 from core.redis import redis_client

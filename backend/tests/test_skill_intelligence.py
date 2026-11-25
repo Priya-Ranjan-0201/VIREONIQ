@@ -1,5 +1,4 @@
 import pytest
-import uuid
 from datetime import datetime, timezone, timedelta
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -7,7 +6,6 @@ from services.skill_intelligence_service import (
     calculate_freshness, sync_skills_from_resume,
     record_assessment_skill_evidence, get_candidate_skill_profile
 )
-from db.models import SkillEvidence
 
 def test_evidence_freshness_decay_math():
     now = datetime.now(timezone.utc)

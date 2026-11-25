@@ -1,15 +1,20 @@
 import json
 import logging
 from typing import Dict, Any, List, Tuple
+from fastapi import HTTPException, status
+from core.security import check_prompt_injection
 from db.models import TargetRole
 from core.llm.factory import get_llm_provider
 
 logger = logging.getLogger(__name__)
 
 def _calculate_severity(score: float) -> str:
-    if score >= 80: return "None"
-    if score >= 60: return "Minor"
-    if score >= 40: return "Moderate"
+    if score >= 80:
+        return "None"
+    if score >= 60:
+        return "Minor"
+    if score >= 40:
+        return "Moderate"
     return "Critical"
 
 GAP_ANALYSIS_SYSTEM_PROMPT = """
@@ -47,9 +52,6 @@ You MUST return ONLY a valid JSON object. No markdown block, no preamble. Follow
   ]
 }}
 """
-
-from fastapi import HTTPException, status
-from core.security import check_prompt_injection
 
 async def analyze_gap(parsed_resume: dict, target_role: TargetRole, company_type: str) -> Tuple[Dict[str, Any], List[Dict[str, Any]]]:
     # 1. Compress resume
@@ -98,8 +100,10 @@ async def analyze_gap(parsed_resume: dict, target_role: TargetRole, company_type
 
     base_salary = float(target_role.salary_band_base) if target_role.salary_band_base else 50000.0
     multiplier = overall / 100.0
-    if company_type.lower() == "product": multiplier *= 1.5
-    elif company_type.lower() == "startup": multiplier *= 1.2
+    if company_type.lower() == "product":
+        multiplier *= 1.5
+    elif company_type.lower() == "startup":
+        multiplier *= 1.2
     
     expected_salary = base_salary * multiplier
     salary_band = f"${int(expected_salary * 0.9):,} - ${int(expected_salary * 1.1):,}"
@@ -166,7 +170,7 @@ def _fallback_analyze_gap(parsed_resume: dict, target_role: TargetRole, company_
         {
             "time_horizon_days": 30,
             "dimension": "technical",
-            "task_description": f"Master the missing core technologies.",
+            "task_description": "Master the missing core technologies.",
             "resources": []
         }
     ]

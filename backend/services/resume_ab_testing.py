@@ -4,9 +4,8 @@ Generates structural content variations of resumes (skills-focused vs achievemen
 and compiles analytics on variant performance.
 """
 
-import uuid
 import logging
-from typing import Dict, List, Any
+from typing import List
 from core.redis import redis_client
 
 logger = logging.getLogger(__name__)
@@ -21,17 +20,17 @@ async def create_resume_variants(original_text: str) -> List[dict]:
     
     # Heuristic variations
     variant_a = (
-        f"SKILLS-FOCUSED VARIANT A\n\n"
-        f"SUMMARY:\nExpert backend developer specializing in high-throughput microservices.\n\n"
-        f"CORE TECHNICAL STACK:\nLanguages: Python, Go, SQL\nFrameworks: FastAPI, Gin, SQLAlchemy\nDatabases: PostgreSQL, Redis, MongoDB\n\n"
-        f"EXPERIENCE:\n- Designed and implemented clean API endpoints.\n- Configured relational database indexes."
+        "SKILLS-FOCUSED VARIANT A\n\n"
+        "SUMMARY:\nExpert backend developer specializing in high-throughput microservices.\n\n"
+        "CORE TECHNICAL STACK:\nLanguages: Python, Go, SQL\nFrameworks: FastAPI, Gin, SQLAlchemy\nDatabases: PostgreSQL, Redis, MongoDB\n\n"
+        "EXPERIENCE:\n- Designed and implemented clean API endpoints.\n- Configured relational database indexes."
     )
     
     variant_b = (
-        f"ACHIEVEMENTS-FOCUSED VARIANT B\n\n"
-        f"SUMMARY:\nMetric-driven backend engineer with proven track record of reducing latency and scaling services.\n\n"
-        f"KEY RESULTS:\n- Scaled microservices system capacity from 5k to 50k requests per minute, reducing response times by 35%.\n"
-        f"- Optimized database queries and indexed keys, decreasing CPU load on RDS instances by 40%."
+        "ACHIEVEMENTS-FOCUSED VARIANT B\n\n"
+        "SUMMARY:\nMetric-driven backend engineer with proven track record of reducing latency and scaling services.\n\n"
+        "KEY RESULTS:\n- Scaled microservices system capacity from 5k to 50k requests per minute, reducing response times by 35%.\n"
+        "- Optimized database queries and indexed keys, decreasing CPU load on RDS instances by 40%."
     )
 
     return [

@@ -16,16 +16,15 @@ Outputs explainable diagnostics for every dimension: WHY, EVIDENCE, CONFIDENCE, 
 import uuid
 import logging
 from datetime import datetime, timezone
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, and_, func
+from sqlalchemy import select
 
 from db.models import (
-    User, Profile, SkillEvidence, ProjectEvidence, AssessmentResult,
-    InterviewSession, InterviewRubricEvaluation, Resume, ResumeScore,
+    SkillEvidence, ProjectEvidence, AssessmentResult,
+    InterviewRubricEvaluation, Resume, ResumeScore,
     CareerReadinessScore, TargetRole
 )
-from services.skill_intelligence_service import calculate_freshness
 
 logger = logging.getLogger(__name__)
 

@@ -5,13 +5,13 @@ Prioritizes skill gaps using mathematical ROI formula:
 Identifies the single highest-leverage intervention for maximum career progression.
 """
 
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List
 import uuid
 import logging
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
-from db.models import SkillEvidence, TargetRole
+from db.models import SkillEvidence
 from services.role_intelligence_service import get_role_definition
 
 logger = logging.getLogger(__name__)

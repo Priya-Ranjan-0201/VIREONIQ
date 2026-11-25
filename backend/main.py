@@ -1,6 +1,8 @@
+import os
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 from starlette.middleware.cors import CORSMiddleware
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
@@ -33,7 +35,7 @@ if settings.SENTRY_DSN:
         traces_sample_rate=0.2 if settings.is_production else 1.0,
         profiles_sample_rate=0.1,
         environment=settings.ENVIRONMENT,
-        release=f"vireoniq@v0.9.0-beta",
+        release="vireoniq@v0.9.0-beta",
         send_default_pii=False,  # GDPR compliance
     )
 
@@ -46,7 +48,7 @@ async def lifespan(app: FastAPI):
     from db.session import is_sqlite, engine
     if is_sqlite and not settings.is_production:
         from db.models import Base
-        import db.models  # Ensure all models are loaded
+        import db.models  # noqa: F401 - Ensure all models are loaded before create_all
         try:
             logger.info("sqlite_auto_init_start")
             async with engine.begin() as conn:
@@ -178,8 +180,6 @@ async def remove_trailing_slash(request: Request, call_next):
     return await call_next(request)
 
 # ─── Static Files (Public Offline Bundles Only) ──
-from fastapi.staticfiles import StaticFiles
-import os
 os.makedirs(os.path.join("uploads", "offline-bundles"), exist_ok=True)
 app.mount(
     "/uploads/offline-bundles",

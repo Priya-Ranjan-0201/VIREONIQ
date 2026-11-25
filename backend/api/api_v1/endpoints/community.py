@@ -2,13 +2,13 @@
 Community API Endpoints — Daily challenges, study groups, and social feed.
 """
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from api.deps import get_db, get_current_active_user
 from db.models import User
 from services import community_service
 from pydantic import BaseModel
-from typing import Optional, List, Dict, Any
+from typing import Optional, Dict, Any
 import uuid
 
 router = APIRouter()

@@ -19,11 +19,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, and_
 
 from db.models import (
-    User, Profile, SkillEvidence, CareerSimulation, CareerInterventionPlan, CareerInterventionTask
+    Profile, SkillEvidence, CareerSimulation
 )
 from services.canonical_skill_service import normalize_skill_name
 from services.career_readiness_engine import compute_role_career_readiness
-from services.role_comparison_service import compute_candidate_role_alignment
 from services.career_intervention_engine import generate_career_intervention_plan
 
 logger = logging.getLogger(__name__)

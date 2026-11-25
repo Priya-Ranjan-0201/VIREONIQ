@@ -5,9 +5,9 @@ from sqlalchemy import select
 
 from services.unified_assessment_service import (
     create_assessment_session, get_next_adaptive_question,
-    submit_question_response, finalize_assessment_session
+    submit_question_response
 )
-from db.models import AssessmentSession, AssessmentResponseAttempt
+from db.models import AssessmentResponseAttempt
 
 @pytest.mark.asyncio
 async def test_assessment_session_initialization_and_modes(db_session: AsyncSession, test_user):

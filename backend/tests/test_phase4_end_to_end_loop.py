@@ -3,7 +3,7 @@ import uuid
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
-from db.models import SkillEvidence, EvidenceItem, AssessmentEvaluationResult
+from db.models import SkillEvidence, EvidenceItem
 from services.unified_assessment_service import (
     create_assessment_session, get_next_adaptive_question,
     submit_question_response, finalize_assessment_session

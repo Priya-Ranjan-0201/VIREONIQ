@@ -17,10 +17,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, and_
 
 from db.models import (
-    User, Profile, VerifiedCredential, TalentPassportShare, 
-    SkillEvidence, ProjectEvidence, AssessmentEvaluationResult
+    Profile, VerifiedCredential, TalentPassportShare, 
+    SkillEvidence, ProjectEvidence
 )
-from services.career_digital_twin_service import generate_career_digital_twin_snapshot
 from services.role_comparison_service import compute_candidate_role_alignment
 
 logger = logging.getLogger(__name__)
@@ -38,10 +37,7 @@ async def get_candidate_talent_passport(
     Synthesizes candidate Talent Passport.
     If is_public_view=True, enforces strict data minimization (no private gaps, no private goals, no internal recommendations).
     """
-    # 1. Fetch User & Profile
-    user_stmt = select(User).where(User.id == user_id)
-    user = (await db.execute(user_stmt)).scalars().first() if db else None
-    
+    # 1. Fetch Profile
     prof_stmt = select(Profile).where(Profile.user_id == user_id)
     profile = (await db.execute(prof_stmt)).scalars().first() if db else None
 
@@ -150,7 +146,7 @@ async def get_candidate_talent_passport(
     # If Private Candidate View, attach share management details
     if not is_public_view and db:
         shares_stmt = select(TalentPassportShare).where(
-            and_(TalentPassportShare.user_id == user_id, TalentPassportShare.is_active == True)
+            and_(TalentPassportShare.user_id == user_id, TalentPassportShare.is_active.is_(True))
         )
         active_shares = list((await db.execute(shares_stmt)).scalars().all())
         passport_payload["active_share_links"] = [

@@ -1,9 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Body
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from api.deps import get_db, get_current_active_user
 from db.models import User, InterviewSession
 from pydantic import BaseModel
-import uuid
 
 from services import cybersecurity_engine
 

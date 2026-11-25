@@ -8,7 +8,7 @@ from api.deps import get_db, get_current_active_user, get_optional_current_user
 from db.models import User
 from services import resume_builder_service
 from pydantic import BaseModel
-from typing import Optional, Dict, Any, List
+from typing import Optional, Dict, Any
 
 router = APIRouter()
 

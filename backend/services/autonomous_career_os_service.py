@@ -18,8 +18,8 @@ from sqlalchemy import select, and_, desc
 
 from db.models import (
     CareerSignal, NextBestAction, CareerGoalRecord, EvidenceDispute,
-    AutomationPreference, User, Profile, SkillEvidence, AssessmentEvaluationResult,
-    JobPosting, VerifiedCredential
+    SkillEvidence, AssessmentEvaluationResult,
+    JobPosting
 )
 
 logger = logging.getLogger(__name__)

@@ -1,11 +1,10 @@
 import pytest
 import uuid
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
 
 from db.models import (
-    User, Role, RecruiterOrganization, PlatformApiKey, WebhookSubscription,
-    WebhookDeliveryLog, PartnerConnector, TenantEntitlement, EventOutbox
+    RecruiterOrganization, WebhookSubscription,
+    PartnerConnector
 )
 from services.platform_ecosystem_service import (
     create_scoped_api_key, verify_scoped_api_key, dispatch_webhook_event,

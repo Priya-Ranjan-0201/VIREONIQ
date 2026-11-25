@@ -6,13 +6,13 @@ Computes placement readiness score (PRS), evaluates interview stage outcomes, an
 import uuid
 import logging
 import random
-from datetime import datetime, timezone, date, timedelta
-from typing import Dict, Any, List
+from datetime import date, timedelta
+from typing import Dict, Any
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
-from db.models import OfferLetter, InterviewSession, InterviewScore, Profile, GapAnalysis, StudentProfile
+from db.models import OfferLetter, InterviewSession, InterviewScore, Profile, GapAnalysis
 from core.llm.nvidia import NVIDIA_NIM_Client  # Use standard core LLM helpers or fallback to Anthropic if set up
 from core.config import settings
 

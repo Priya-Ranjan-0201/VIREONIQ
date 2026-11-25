@@ -1,5 +1,5 @@
 from typing import List
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, update, and_
 from db.session import get_db
@@ -42,7 +42,7 @@ async def get_reminders(
 ):
     """Get active reminders for the current user."""
     result = await db.execute(
-        select(Reminder).where(and_(Reminder.user_id == current_user.id, Reminder.is_completed == False)).order_by(Reminder.remind_at.asc())
+        select(Reminder).where(and_(Reminder.user_id == current_user.id, Reminder.is_completed.is_(False))).order_by(Reminder.remind_at.asc())
     )
     return result.scalars().all()
 

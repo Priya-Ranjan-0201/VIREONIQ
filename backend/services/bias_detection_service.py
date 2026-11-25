@@ -1,11 +1,8 @@
 import json
 import uuid
-import numpy as np
-from datetime import datetime, timezone
-from typing import Dict, Any, List, Optional
-from decimal import Decimal
+from typing import Dict, Any, List
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func
+from sqlalchemy import select
 
 from sqlalchemy.orm import selectinload
 from db.models import User, Profile, RealInterviewDebrief, StudentProfile
@@ -99,7 +96,7 @@ async def analyze_individual_bias_exposure(
                 {
                     "tactic_name": "Keyword Density Alignment",
                     "steps": [
-                        f"Align top 5 core technical keywords in job spec (e.g. Distributed Systems, Concurrency, Redis, Go/Java).",
+                        "Align top 5 core technical keywords in job spec (e.g. Distributed Systems, Concurrency, Redis, Go/Java).",
                         "Ensure projects feature quantified metrics: 'Reduced latency by 35%' instead of 'Worked on backend'."
                     ],
                     "expected_impact": "Bypasses Automated ATS Rejection Filters"
@@ -261,13 +258,8 @@ async def compute_company_bias_score(
     # Group and compare pass rates
     pass_counts = {}
     total_counts = {}
-    stage_gaps = {}
     
     for d in all_debriefs:
-        # Get submitter details
-        sub_prof_stmt = select(Profile).where(Profile.user_id == d.user_id)
-        sub_prof = (await db.execute(sub_prof_stmt)).scalar_one_or_none()
-        
         sub_stud_stmt = select(StudentProfile).options(selectinload(StudentProfile.user).selectinload(User.profile)).where(StudentProfile.user_id == d.user_id)
         sub_stud = (await db.execute(sub_stud_stmt)).scalar_one_or_none()
 

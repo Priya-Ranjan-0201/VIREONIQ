@@ -5,11 +5,11 @@ from sqlalchemy.pool import StaticPool
 from httpx import AsyncClient, ASGITransport
 
 from main import app
-from db.models import Base, Role, User, Profile, SkillEvidence
+from db.models import Base, Role, User, SkillEvidence
 from db.session import get_db
 from core.security import create_access_token
 from services.career_decision_explainability_service import (
-    build_decision_explanation, generate_explainable_career_recommendation, explain_what_if_simulation
+    build_decision_explanation, generate_explainable_career_recommendation
 )
 from services.career_intervention_engine import generate_next_best_actions
 from services.evidence_graph_service import record_granular_evidence

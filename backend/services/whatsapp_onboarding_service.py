@@ -1,7 +1,6 @@
 import uuid
 import difflib
-from datetime import datetime, timezone
-from typing import Dict, Any, List, Optional
+from typing import Any, Dict, List, Optional
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -10,7 +9,7 @@ from db.models import User, StudentProfile, RLState, Role, Profile
 from services.gamification_service import award_xp
 from services.interview.engine import check_prompt_injection
 
-ONBOARDING_FLOW_STATES = {
+ONBOARDING_FLOW_STATES: Dict[str, Dict[str, Any]] = {
     "greeting": {
         "message": "Hi! I'm VIREONIQ. I help you prepare for placements for free, right "
                     "here on WhatsApp. Takes 2 minutes to set up. Ready?",
@@ -142,7 +141,7 @@ async def process_onboarding_reply(
     state = onboarding_data.get("state")
     user_id = onboarding_data.get("user_id")
     
-    state_config = ONBOARDING_FLOW_STATES.get(state)
+    state_config = ONBOARDING_FLOW_STATES.get(str(state)) if state else None
     if not state_config:
         # Fallback if state gets corrupt
         await redis_client.delete(redis_key)
@@ -230,9 +229,9 @@ async def process_onboarding_reply(
         await redis_client.delete(redis_key)
 
         return (
-            f"Nice work! That's Day 1 done. I've graded your answer. I'll send you one question every morning.\n\n"
-            f"Want the full app for detailed feedback, gap analysis, and mock interviews?\n"
-            f"Reply APP for the link, or just keep replying here daily — both work!"
+            "Nice work! That's Day 1 done. I've graded your answer. I'll send you one question every morning.\n\n"
+            "Want the full app for detailed feedback, gap analysis, and mock interviews?\n"
+            "Reply APP for the link, or just keep replying here daily — both work!"
         )
 
     # Move to next state
@@ -264,9 +263,6 @@ async def process_onboarding_reply(
 async def generate_referral_share_message(user_id: str, db: AsyncSession) -> str:
     """Generates pre-formatted referral share text for WhatsApp sharing."""
     user_uuid = uuid.UUID(user_id)
-    stmt = select(Profile).where(Profile.user_id == user_uuid)
-    profile = (await db.execute(stmt)).scalars().first()
-    display_name = profile.first_name if profile else "Student"
 
     # Fetch simple dummy stats
     session_count_stmt = select(StudentProfile.onboarding_step).where(StudentProfile.user_id == user_uuid)

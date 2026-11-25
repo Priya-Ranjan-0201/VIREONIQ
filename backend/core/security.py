@@ -2,7 +2,7 @@ import os
 import re
 from functools import lru_cache
 from datetime import datetime, timedelta, timezone
-from typing import Any, Union, Dict, Tuple
+from typing import Any, Optional, Union, Dict, Tuple
 
 from jose import jwt
 from passlib.context import CryptContext
@@ -92,7 +92,7 @@ def get_password_hash(password: str) -> str:
     return pwd_context.hash(password)
 
 
-def create_access_token(subject: Union[str, Any], jti: str, expires_delta: timedelta = None) -> str:
+def create_access_token(subject: Union[str, Any], jti: str, expires_delta: Optional[timedelta] = None) -> str:
     """Create an RS256 signed JWT access token for a subject."""
     if expires_delta:
         expire = datetime.now(timezone.utc) + expires_delta
@@ -103,7 +103,7 @@ def create_access_token(subject: Union[str, Any], jti: str, expires_delta: timed
     return jwt.encode(to_encode, get_private_key(), algorithm=settings.JWT_ALGORITHM)
 
 
-def create_refresh_token(subject: Union[str, Any], jti: str, expires_delta: timedelta = None) -> str:
+def create_refresh_token(subject: Union[str, Any], jti: str, expires_delta: Optional[timedelta] = None) -> str:
     """Create an RS256 signed JWT refresh token for a subject."""
     if expires_delta:
         expire = datetime.now(timezone.utc) + expires_delta

@@ -4,7 +4,7 @@ Synthesizes today's focused 3-task mission, enforces idempotent task completion,
 maintains strict Activity vs Capability separation, and records transactional career events.
 """
 
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any
 import uuid
 import logging
 from datetime import datetime, timezone, date
@@ -13,14 +13,13 @@ from sqlalchemy import select, and_
 
 from db.models import (
     CareerInterventionPlan, CareerInterventionTask, 
-    EvidenceItem, SkillEvidence, ProjectEvidence, User
+    EvidenceItem
 )
 from services.career_events_service import record_career_event
 from services.canonical_skill_service import normalize_skill_name
 from services.role_mission_catalog import (
     ROLE_MISSION_CATALOG,
-    normalize_target_role,
-    TOP_25_MNCS
+    normalize_target_role
 )
 
 logger = logging.getLogger(__name__)

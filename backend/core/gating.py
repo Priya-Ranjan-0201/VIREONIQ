@@ -50,7 +50,7 @@ async def check_feature_access(
         select(Subscription).where(Subscription.user_id == current_user.id)
     )).scalars().first()
     
-    plan_id = sub.plan_id if sub else "free"
+    plan_id = str(sub.plan_id) if sub and sub.plan_id else "free"
     plan = PLAN_FEATURES.get(plan_id, PLAN_FEATURES["free"])
     
     if feature not in plan:

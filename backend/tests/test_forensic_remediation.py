@@ -11,12 +11,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, and_, func
 
 from db.models import (
-    User, Role, FacultyClass, FacultyClassStudent, MentorProfile, MentorSession,
-    ReferralSlot, RealInterviewDebrief, MoodCheckin, SkillDecayModel, RLState
+    User, Role, FacultyClass, FacultyClassStudent, MentorProfile, ReferralSlot, RealInterviewDebrief
 )
 from services.skill_decay import (
-    get_category_stability, CATEGORY_STABILITY_DEFAULTS, update_skill_mastery_after_session,
-    get_skill_health_report
+    get_category_stability
 )
 from services.ai_fairness_service import run_fairness_audit, audit_features_for_proxies
 from core.llm.mock import MockLLMProvider
@@ -111,7 +109,7 @@ async def test_mentors_impact_stats_func_count(db_session: AsyncSession):
     db_session.add(profile)
     await db_session.commit()
 
-    m_count_stmt = select(func.count(MentorProfile.id)).where(MentorProfile.is_active == True)
+    m_count_stmt = select(func.count(MentorProfile.id)).where(MentorProfile.is_active.is_(True))
     total_mentors = (await db_session.execute(m_count_stmt)).scalar() or 0
     assert total_mentors >= 1
 

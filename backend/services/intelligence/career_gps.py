@@ -4,7 +4,7 @@ Turn-by-turn intelligent career navigation, live rerouting, multi-route comparis
 and empirical hiring traffic telemetry tailored to candidate parameters.
 """
 
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any
 
 class CareerGPSNavigator:
     """
@@ -243,7 +243,7 @@ class CareerGPSNavigator:
                     {
                         "step_number": 4,
                         "type": "DESTINATION",
-                        "title": f"Terminal Arrival: Elite Tier-1 MNC Offer",
+                        "title": "Terminal Arrival: Elite Tier-1 MNC Offer",
                         "eta": "Day 75",
                         "description": "Defend high-level system architecture in Multi-Agent Bar Raiser round and secure peak CTC package.",
                         "action_item": "Finalize multi-offer comparison in Offer Comparator.",
@@ -303,7 +303,7 @@ class CareerGPSNavigator:
 
         # Active Route based on strategy
         active_route_id = "fastest_sprint" if strategy == "FASTEST_PATH" else "max_compensation" if strategy == "MAX_COMPENSATION" else "strategic_pivot"
-        active_route = next((r for r in routes if r["route_id"] == active_route_id), routes[0])
+        _ = next((r for r in routes if r["route_id"] == active_route_id), routes[0])
 
         # Real-world Traffic Hazards
         traffic_hazards = [

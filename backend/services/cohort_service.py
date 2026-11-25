@@ -1,11 +1,11 @@
 import uuid
 from datetime import datetime, timezone
 from typing import Dict, Any, List
-from sqlalchemy import select, and_
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import HTTPException
 
-from db.models import StudyGroup, StudyGroupMember, StudyGroupSession, PeerFeedback, User, Profile
+from db.models import StudyGroup, StudyGroupSession, PeerFeedback, Profile
 from services.gamification_service import award_xp
 
 async def create_study_group_session(

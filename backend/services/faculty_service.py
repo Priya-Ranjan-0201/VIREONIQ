@@ -2,13 +2,13 @@ import secrets
 import uuid
 import numpy as np
 from datetime import datetime, timezone, timedelta
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any
 from sqlalchemy import select, and_, func
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import HTTPException
 
 from db.models import (
-    User, Profile, StudentProfile, FacultyClass, FacultyClassStudent,
+    User, Profile, FacultyClass, FacultyClassStudent,
     RLState, SkillDecayModel, InterviewSession, Notification, AuditLog
 )
 from core.llm.orchestrator import call_llm

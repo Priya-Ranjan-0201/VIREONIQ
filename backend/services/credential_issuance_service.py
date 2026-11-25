@@ -8,19 +8,18 @@ Provides:
   5. Distinction between Credential Validity and Evidence Freshness
 """
 
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any
 import uuid
 import hmac
 import hashlib
 import logging
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timezone
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, and_
 
 from core.config import settings
 from db.models import (
-    VerifiedCredential, CredentialAuditLog, SkillEvidence, 
-    AssessmentResult, AssessmentSession, User
+    VerifiedCredential, CredentialAuditLog, SkillEvidence
 )
 from services.canonical_skill_service import normalize_skill_name
 

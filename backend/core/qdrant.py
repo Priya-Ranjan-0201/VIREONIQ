@@ -3,7 +3,7 @@ VIREONIQ Vector Engine Client (Qdrant)
 Provides lazy connection initialization to Qdrant with transparent in-memory fallback.
 Avoids network timeouts on module import.
 """
-from typing import Any
+from typing import Any, List
 import structlog
 
 from core.config import settings
@@ -13,7 +13,7 @@ logger = structlog.get_logger("vireoniq.qdrant")
 
 class MockCollections:
     """Mock collections container for offline/in-memory fallback."""
-    collections = []
+    collections: List[Any] = []
 
 
 class MockQdrantClient:
@@ -47,7 +47,7 @@ def init_qdrant_client() -> Any:
             client = QdrantClient(
                 url=settings.QDRANT_URL,
                 api_key=settings.QDRANT_API_KEY,
-                timeout=1.5,
+                timeout=2,
             )
             client.get_collections()
             logger.info("qdrant_client_initialized", url=settings.QDRANT_URL)

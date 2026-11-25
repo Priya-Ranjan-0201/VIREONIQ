@@ -1,13 +1,10 @@
 """Celery task definitions for VIREONIQ.
 """
 
-import logging
 import asyncio
 import math
-import uuid
 import json
 from typing import Any, Optional
-from datetime import datetime, timezone
 
 from sqlalchemy import select
 from qdrant_client.http.models import Filter, FieldCondition, MatchValue
@@ -53,8 +50,6 @@ def build_dna_vector_task(user_id: str) -> str:
 @celery_app.task(name="workers.tasks.overnight_interview_twin_batch")
 def overnight_interview_twin_batch() -> str:
     """Run overnight for all students with 5+ sessions to map similarities with target companies."""
-    from sqlalchemy import select
-    from qdrant_client.http.models import Filter, FieldCondition, MatchValue
 
     async def run():
         async with async_session_maker() as db:
@@ -66,7 +61,7 @@ def overnight_interview_twin_batch() -> str:
             profiles = (await db.execute(stmt)).scalars().all()
             
             # Fetch all companies/job roles
-            comp_stmt = select(CompanyInterviewProfile).where(CompanyInterviewProfile.is_active == True).limit(20)
+            comp_stmt = select(CompanyInterviewProfile).where(CompanyInterviewProfile.is_active.is_(True)).limit(20)
             companies = (await db.execute(comp_stmt)).scalars().all()
             
             if not companies:
@@ -162,7 +157,6 @@ def overnight_interview_twin_batch() -> str:
 @celery_app.task(name="workers.tasks.verify_pending_contributions_task")
 def verify_pending_contributions_task() -> str:
     """Verify pending student contributions for premium access credit."""
-    from services.earn_to_learn_service import verify_pending_contributions
     async def run():
         async with async_session_maker() as db:
             count = await verify_pending_contributions(db)
@@ -173,8 +167,6 @@ def verify_pending_contributions_task() -> str:
 @celery_app.task(name="workers.tasks.send_weekly_parent_digests_task")
 def send_weekly_parent_digests_task() -> str:
     """Aggregate student metrics and send weekly updates to active parent links."""
-    from services.parent_digest_service import generate_weekly_parent_message
-    from db.models import ParentLink
     from sqlalchemy import select
     
     async def run():

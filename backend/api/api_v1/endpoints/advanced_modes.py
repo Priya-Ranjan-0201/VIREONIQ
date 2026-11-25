@@ -1,5 +1,5 @@
-from typing import Optional, List, Dict, Any
-from fastapi import APIRouter, Depends, HTTPException, status, WebSocket, WebSocketDisconnect, Body
+from typing import Optional
+from fastapi import APIRouter, Depends, HTTPException, status, WebSocket, WebSocketDisconnect
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from jose import JWTError
@@ -7,7 +7,7 @@ import structlog
 
 from api.deps import get_db, get_current_active_user
 from core.security import decode_token
-from db.models import User, InterviewSession, InterviewAnswer
+from db.models import User, InterviewSession
 from pydantic import BaseModel
 import uuid
 import json

@@ -28,8 +28,8 @@ ALL_JUDGE0_LANGUAGES = [
     {"id": 46, "name": "Bash (GNU Bash 5.2 Shell)", "key": "bash", "monacoLang": "shell", "extension": "sh"},
 ]
 
-LANGUAGE_KEY_TO_ID = {l["key"]: l["id"] for l in ALL_JUDGE0_LANGUAGES}
-LANGUAGE_ID_TO_NAME = {l["id"]: l["name"] for l in ALL_JUDGE0_LANGUAGES}
+LANGUAGE_KEY_TO_ID = {lang["key"]: lang["id"] for lang in ALL_JUDGE0_LANGUAGES}
+LANGUAGE_ID_TO_NAME = {lang["id"]: lang["name"] for lang in ALL_JUDGE0_LANGUAGES}
 
 
 def _sandbox_unavailable_result(reason: str) -> Dict[str, Any]:

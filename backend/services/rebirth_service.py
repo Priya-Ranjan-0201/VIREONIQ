@@ -2,14 +2,14 @@ import math
 import uuid
 import json
 from datetime import datetime, date, timedelta, timezone
-from typing import Dict, List, Any, Optional
+from typing import Dict, Any, Optional
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from core.llm.orchestrator import acall_llm
 from core.security import check_prompt_injection
-from db.models import User, CareerRebirthPlan, TargetRole, Resume
+from db.models import CareerRebirthPlan, TargetRole, Resume
 
-TRANSFERABLE_SKILL_MAP = {
+TRANSFERABLE_SKILL_MAP: Dict[str, Dict[str, Any]] = {
     "banking_finance": {
         "transferable_to": ["fintech_analyst", "data_analyst", "product_manager_fintech", "backend_developer_banking"],
         "strong_transfers": ["analytical_thinking", "risk_assessment", "data_interpretation", "regulatory_knowledge", "process_optimization"],
@@ -293,7 +293,7 @@ async def rewrite_resume_for_transition(
                 "Strong cross-functional communication bridging technical and business teams."
             ],
             "experience_bullets_rewritten": {
-                "Managed day-to-day operations and team schedules": f"Architected task scheduling and resource allocation systems to optimize operational throughput.",
+                "Managed day-to-day operations and team schedules": "Architected task scheduling and resource allocation systems to optimize operational throughput.",
                 "Communicated with clients and resolved issues": "Engaged in stakeholder requirements gathering and reduced client onboarding churn via structured feedback loops."
             },
             "skills_to_add": ["FastAPI", "Python", "SQL", "System Design"]

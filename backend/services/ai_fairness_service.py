@@ -8,7 +8,7 @@ Provides:
   5. Mandatory Human-in-the-Loop Governance for High-Impact Employment Decisions
 """
 
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List
 import uuid
 import logging
 import math
@@ -29,7 +29,7 @@ PROXY_VARIABLE_PATTERNS = [
 ]
 
 # Controlled synthetic evaluation cohort for reproducible disparity benchmarking
-SYNTHETIC_BENCHMARK_PROFILES = [
+SYNTHETIC_BENCHMARK_PROFILES: List[Dict[str, Any]] = [
     {"group_id": "GROUP_A_TRADITIONAL_MALE", "proxy_name": "James Smith", "skills": {"Python": 88.0, "System Design": 75.0, "FastAPI": 80.0}},
     {"group_id": "GROUP_B_TRADITIONAL_FEMALE", "proxy_name": "Emily Johnson", "skills": {"Python": 88.0, "System Design": 75.0, "FastAPI": 80.0}},
     {"group_id": "GROUP_C_SOUTH_ASIAN", "proxy_name": "Aarav Sharma", "skills": {"Python": 88.0, "System Design": 75.0, "FastAPI": 80.0}},

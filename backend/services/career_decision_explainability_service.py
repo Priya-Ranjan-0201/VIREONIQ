@@ -20,7 +20,7 @@ from datetime import datetime, timezone
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
-from db.models import SkillEvidence, ProjectEvidence, AssessmentResult, MNCInterviewSession
+from db.models import SkillEvidence
 
 logger = logging.getLogger(__name__)
 
@@ -98,7 +98,6 @@ async def generate_explainable_career_recommendation(
     Generates a full, defensible decision explanation for a candidate's primary next best action
     or critical bottleneck, grounded directly in their existing evidence graph.
     """
-    from services.career_readiness_engine import compute_role_career_readiness
     from services.canonical_skill_service import find_true_prerequisite_bottleneck
     from services.evidence_graph_service import detect_all_evidence_conflicts
 

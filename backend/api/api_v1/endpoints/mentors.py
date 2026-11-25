@@ -1,6 +1,6 @@
 import uuid
 from datetime import datetime
-from typing import List, Optional
+from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, or_, func
@@ -182,7 +182,7 @@ async def get_impact_stats(
     Returns platform-wide metrics about the mentoring network.
     """
     # Total active mentors
-    m_count_stmt = select(func.count(MentorProfile.id)).where(MentorProfile.is_active == True)
+    m_count_stmt = select(func.count(MentorProfile.id)).where(MentorProfile.is_active.is_(True))
     total_mentors = (await db.execute(m_count_stmt)).scalar() or 0
 
     # Total completed sessions

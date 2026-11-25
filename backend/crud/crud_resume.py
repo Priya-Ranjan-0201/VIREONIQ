@@ -1,5 +1,5 @@
 import uuid
-from typing import Optional, List
+from typing import List
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, update
 from sqlalchemy.orm import selectinload

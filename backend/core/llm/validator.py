@@ -6,7 +6,6 @@ Ensures:
   3. Layered prompt injection mitigation & untrusted document tagging
 """
 
-import re
 import json
 import logging
 from typing import Dict, Any, Type, Optional, Tuple, List

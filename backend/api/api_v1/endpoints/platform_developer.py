@@ -1,15 +1,13 @@
-from fastapi import APIRouter, Depends, HTTPException, Body, Query, Path
+from fastapi import APIRouter, Depends, HTTPException, Body, Path
 from sqlalchemy.ext.asyncio import AsyncSession
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List
 import uuid
 
 from api.deps import get_db, get_current_active_user
 from db.models import User, PlatformApiKey, WebhookSubscription, PartnerConnector
 from sqlalchemy import select, and_
 from services.platform_ecosystem_service import (
-    create_scoped_api_key, verify_scoped_api_key, dispatch_webhook_event,
-    execute_partner_connector_sync, check_and_meter_tenant_quota,
-    get_global_platform_health
+    create_scoped_api_key, get_global_platform_health
 )
 
 router = APIRouter()

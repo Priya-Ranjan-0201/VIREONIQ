@@ -1,15 +1,11 @@
 import asyncio
-import uuid
 from datetime import datetime, timedelta
 from sqlalchemy import select
 from db.session import async_session_maker, engine
-from db.models import JobListing, MarketSignal, Base
+from db.models import JobListing, MarketSignal
 
 async def seed_jobs():
-    async with engine.begin() as conn:
-        # Create tables if they don't exist (Simple for MVP)
-        # In production, use Alembic migrations
-        # await conn.run_sync(Base.metadata.create_all)
+    async with engine.begin():
         pass
 
     async with async_session_maker() as session:

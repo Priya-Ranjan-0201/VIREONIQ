@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from main import app
 from core.security import create_access_token
 from db.session import get_db
-from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
+from sqlalchemy.ext.asyncio import async_sessionmaker
 
 @pytest.mark.benchmark
 @pytest.mark.asyncio

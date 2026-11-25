@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from db.models import User, InterviewScore, Offer
+from db.models import InterviewScore, Offer
 from core.llm.factory import get_llm_provider
 from typing import Dict, Any
 import uuid

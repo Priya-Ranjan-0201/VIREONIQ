@@ -4,12 +4,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
 from db.models import (
-    User, Role, Profile, SkillEvidence, RecruiterOrganization,
+    User, Role, SkillEvidence, RecruiterOrganization,
     OrganizationUnit, OrganizationEmployee, OrganizationCapabilitySnapshot
 )
 from services.workforce_intelligence_service import (
-    calculate_team_capability_coverage, generate_workforce_capability_matrix,
-    evaluate_hiring_vs_upskilling, find_internal_talent_mobility,
+    calculate_team_capability_coverage, find_internal_talent_mobility,
     simulate_organizational_counterfactual, create_capability_snapshot
 )
 

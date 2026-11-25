@@ -7,17 +7,16 @@ Enforces:
   4. Structured Tool Schemas with Pre- and Post-Validation
 """
 
-from typing import Dict, Any, List, Optional, Callable, Awaitable
+from typing import Dict, Any
 import uuid
 import logging
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, and_
 
-from db.models import User, Profile, SkillEvidence, RecruiterOrganization
+from db.models import User
 from services.career_readiness_engine import compute_role_career_readiness
 from services.career_bottleneck_engine import identify_career_bottlenecks
 from services.recruiter_matching_service import search_candidates_for_job
-from services.workforce_intelligence_service import calculate_team_capability_coverage, evaluate_hiring_vs_upskilling
+from services.workforce_intelligence_service import calculate_team_capability_coverage
 
 logger = logging.getLogger(__name__)
 

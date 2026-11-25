@@ -19,12 +19,12 @@ from sqlalchemy import select
 from db.models import (
     User, Profile, SkillEvidence, ProjectEvidence, 
     AssessmentResult, InterviewSession, CareerGoal, 
-    CareerReadinessScore, EvidenceItem
+    EvidenceItem
 )
 from services.career_readiness_engine import compute_role_career_readiness, forecast_career_trajectory
 from services.canonical_skill_service import derive_proficiency_level, compute_multidimensional_skill_mastery, find_true_prerequisite_bottleneck
 from services.role_comparison_service import compute_candidate_role_alignment
-from services.evidence_graph_service import detect_all_evidence_conflicts, compute_skill_evidence_integrity
+from services.evidence_graph_service import detect_all_evidence_conflicts
 from services.role_intelligence_service import compute_career_transition_bridges
 from services.mnc_interview_intelligence_service import get_user_interview_memory
 
@@ -48,7 +48,7 @@ async def generate_career_digital_twin_snapshot(
     profile = (await db.execute(prof_stmt)).scalars().first() if db else None
 
     # 2. Target Role & Goals
-    goal_stmt = select(CareerGoal).where(CareerGoal.user_id == user_id, CareerGoal.is_active == True)
+    goal_stmt = select(CareerGoal).where(CareerGoal.user_id == user_id, CareerGoal.is_active.is_(True))
     active_goals = list((await db.execute(goal_stmt)).scalars().all()) if db else []
     
     target_role = target_role_override or (active_goals[0].target_role if active_goals else (profile.target_role if profile and profile.target_role else "Backend Engineer"))
@@ -317,7 +317,7 @@ async def get_career_twin_change_feed(
                 "event_type": "PROJECT_DEMONSTRATED",
                 "title": f"Demonstrated {p.title or 'Production Repository'}",
                 "delta": "+5 Readiness",
-                "explanation": f"Verified project evidence added. Skills demonstrated in live repository.",
+                "explanation": "Verified project evidence added. Skills demonstrated in live repository.",
                 "source": "GitHub Ingest / Project Repository"
             })
 

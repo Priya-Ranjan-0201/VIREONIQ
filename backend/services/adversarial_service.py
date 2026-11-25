@@ -5,7 +5,7 @@ Simulates high-pressure, hostile interview tactics and evaluates student composu
 
 import logging
 import random
-from typing import Dict, List, Any, Optional
+from typing import List, Optional
 from dataclasses import dataclass
 
 from core.llm.nvidia import NVIDIA_NIM_Client

@@ -5,18 +5,17 @@ semantic relationships (prerequisite, parent, complementary), and evidence-deriv
 """
 
 from typing import Dict, Any, List, Optional, Tuple
-import uuid
 import re
 import logging
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, and_
+from sqlalchemy import select
 
-from db.models import CanonicalSkill, SkillRelationship
+from db.models import CanonicalSkill
 
 logger = logging.getLogger(__name__)
 
 # Standard seed taxonomy and aliases
-CANONICAL_SKILL_SEEDS = [
+CANONICAL_SKILL_SEEDS: List[Dict[str, Any]] = [
     {
         "name": "Python",
         "category": "Programming",

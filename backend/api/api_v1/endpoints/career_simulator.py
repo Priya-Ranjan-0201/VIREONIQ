@@ -1,10 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException, Body, Query
+from fastapi import APIRouter, Depends, HTTPException, Body
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Dict, Any, List, Optional
 import uuid
 
 from api.deps import get_db, get_current_active_user
-from db.models import User, Profile, CareerSimulation
+from db.models import User, CareerSimulation
 from sqlalchemy import select, and_
 from services.career_simulation_service import (
     run_counterfactual_simulation, compare_career_paths, convert_scenario_to_active_plan

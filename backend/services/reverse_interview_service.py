@@ -5,7 +5,7 @@ Evaluates the strategic quality of questions asked by the student to a simulated
 
 import uuid
 import logging
-from typing import Dict, Any, List
+from typing import Dict, Any
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 

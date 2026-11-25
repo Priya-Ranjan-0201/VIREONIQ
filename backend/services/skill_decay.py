@@ -2,7 +2,7 @@ import math
 import uuid
 import logging
 from datetime import datetime, timezone
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from db.models import SkillDecayModel, RLState, InterviewSession

@@ -18,8 +18,7 @@ async def list_cohort_sessions(
     current_user: User = Depends(deps.get_current_active_user)
 ) -> List[Dict[str, Any]]:
     """Returns active scheduled and completed peer sessions for current user."""
-    from db.models import StudyGroupSession, Profile, User
-    from sqlalchemy import or_, desc
+    from db.models import StudyGroupSession, Profile
 
     stmt = select(StudyGroupSession).where(
         or_(

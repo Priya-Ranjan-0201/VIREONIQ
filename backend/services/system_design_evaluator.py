@@ -15,7 +15,7 @@ Evaluates candidate system design responses across 12 structured criteria:
   12. Tradeoff Analysis & Justification
 """
 
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, Optional
 import logging
 
 logger = logging.getLogger(__name__)

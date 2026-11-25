@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from services import internship_service
 from db.models import User
 from api import deps
-from typing import List, Dict, Any
+from typing import Dict, Any
 
 router = APIRouter()
 

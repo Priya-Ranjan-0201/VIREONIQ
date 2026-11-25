@@ -1,4 +1,3 @@
-import json
 import logging
 from typing import List, Dict, Any, Optional
 from core.llm.base import BaseLLMProvider
@@ -203,7 +202,7 @@ class MockLLMProvider(BaseLLMProvider):
         
         # Extract user answer from system prompt
         user_answer = ""
-        if "candidate answer:" in system_prompt_lower:
+        if system_prompt and "candidate answer:" in system_prompt_lower:
             parts = system_prompt.split("CANDIDATE ANSWER:")
             if len(parts) > 1:
                 user_answer = parts[1].split("QUESTION ASKED:")[0].strip()

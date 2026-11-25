@@ -1,9 +1,8 @@
 import pytest
 import uuid
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
 
-from db.models import VerifiedCredential, CredentialAuditLog, SkillEvidence
+from db.models import SkillEvidence
 from services.credential_issuance_service import (
     compute_canonical_hmac_signature, verify_canonical_hmac_signature,
     evaluate_and_issue_credential, verify_credential_public, revoke_credential

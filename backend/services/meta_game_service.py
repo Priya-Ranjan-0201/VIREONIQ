@@ -5,14 +5,13 @@ Manages hiring cycle intelligence, rejection recovery sequences, and day-of-inte
 
 import uuid
 import logging
-import math
-from datetime import datetime, timezone, date, timedelta
-from typing import Dict, List, Any, Optional
+from datetime import datetime, date, timedelta
+from typing import List
 from dataclasses import dataclass
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
-from db.models import RLState, GapAnalysis, InterviewSession, Notification, CompanyInterviewProfile
+from db.models import RLState, GapAnalysis, InterviewSession, Notification
 from core.llm.nvidia import NVIDIA_NIM_Client
 from core.config import settings
 
@@ -148,7 +147,7 @@ async def generate_rejection_recovery_sequence(
         msgs = [
             f"Dear Recruiter,\nThank you for the opportunity to interview with {company_name}. I appreciate the feedback and look forward to staying in touch.",
             f"Dear Recruiter,\nI wanted to share a quick update that I have recently certified in several backend design tracks, specifically focusing on {improvement_ref}.",
-            f"Dear Recruiter,\nIt has been 6 months since we last spoke. I have significantly deepened my expertise in distributed architectures and would love to re-apply for open roles."
+            "Dear Recruiter,\nIt has been 6 months since we last spoke. I have significantly deepened my expertise in distributed architectures and would love to re-apply for open roles."
         ]
 
     # Save Scheduled notifications

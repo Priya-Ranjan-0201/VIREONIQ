@@ -39,7 +39,7 @@ def generate_ics_calendar(
             f"DTSTART;VALUE=DATE:{formatted_date}",
             f"DTEND;VALUE=DATE:{formatted_date}",
             f"SUMMARY:VIREONIQ Day {day_num} - {topic}",
-            f"DESCRIPTION:Tasks:\\n" + "\\n".join([f"- {t}" for t in tasks]),
+            "DESCRIPTION:Tasks:\\n" + "\\n".join([f"- {t}" for t in tasks]),
             "END:VEVENT"
         ])
         

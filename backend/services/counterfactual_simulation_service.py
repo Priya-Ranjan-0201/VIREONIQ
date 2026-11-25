@@ -9,9 +9,7 @@ from typing import Dict, Any, List, Optional
 import uuid
 import logging
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
 
-from db.models import SkillEvidence, ProjectEvidence, AssessmentResult
 from services.career_readiness_engine import compute_role_career_readiness, DEFAULT_DIMENSION_WEIGHTS
 from services.career_bottleneck_engine import identify_career_bottlenecks
 from services.gap_intelligence_service import analyze_career_gaps
@@ -163,7 +161,6 @@ async def simulate_what_if_query(
                 "skill_name": f"Production Project {idx+1}", "score": 88.0, "tier": "DEMONSTRATED", "action_type": "BUILD"
             })
     elif query_type == "CLOUD_CERT":
-        cert_name = params.get("cert_name", "AWS Certified Solutions Architect")
         effort_hours = 60
         difficulty = "HARD"
         hypothetical_items.append({"skill_name": "Cloud Architecture", "score": 92.0, "tier": "VERIFIED", "action_type": "ASSESS"})

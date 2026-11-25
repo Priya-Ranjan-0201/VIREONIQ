@@ -48,7 +48,7 @@ class DeepSeekProvider(BaseLLMProvider):
         Returns:
             The assistant's text response.
         """
-        api_messages: List[Dict[str, str]] = []
+        api_messages: List[Any] = []
         if system_prompt:
             api_messages.append({"role": "system", "content": system_prompt})
         api_messages.extend(messages)
@@ -60,7 +60,7 @@ class DeepSeekProvider(BaseLLMProvider):
                 temperature=0.7,
                 max_tokens=2048,
             )
-            return completion.choices[0].message.content
+            return completion.choices[0].message.content or ""
         except Exception as e:
             logger.error(f"DeepSeek API Error: {e}")
             raise

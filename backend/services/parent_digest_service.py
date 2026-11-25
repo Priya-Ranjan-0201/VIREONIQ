@@ -1,13 +1,12 @@
 import uuid
 from datetime import datetime, timezone, timedelta
-from typing import Dict, Any, Optional
 from sqlalchemy import select, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import HTTPException
 import structlog
 
 from db.models import (
-    User, Profile, StudentProfile, ParentLink, InterviewSession,
+    Profile, ParentLink, InterviewSession,
     GamificationProfile, Notification
 )
 
@@ -68,10 +67,6 @@ async def confirm_parent_link(
     link.consented_at = datetime.now(timezone.utc)
     
     # Fetch student name
-    s_stmt = select(Profile).where(Profile.user_id == student_uuid)
-    student_profile = (await db.execute(s_stmt)).scalars().first()
-    student_name = student_profile.first_name if student_profile else "Student"
-
     # Record notification event without logging raw personal contact numbers
     logger.info("parent_welcome_queued", link_id=str(link.id), student_id=str(student_uuid))
 

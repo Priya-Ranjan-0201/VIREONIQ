@@ -13,12 +13,11 @@ Includes fairness monitoring metrics (selection rate ratios, demographic parity 
 
 import uuid
 import logging
-from datetime import datetime, timezone
 from typing import Dict, Any, List, Optional
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, and_
+from sqlalchemy import select
 
-from db.models import User, Profile, SkillEvidence, ProjectEvidence, AssessmentResult, JobListing
+from db.models import User, SkillEvidence, ProjectEvidence, AssessmentResult
 from services.role_intelligence_service import get_role_definition
 
 logger = logging.getLogger(__name__)
@@ -152,7 +151,7 @@ async def search_candidates_for_recruiter(
     """
     Explainable recruiter candidate discovery with verified evidence scoring and fairness tracking.
     """
-    stmt = select(User).where(User.is_active == True).limit(20)
+    stmt = select(User).where(User.is_active.is_(True)).limit(20)
     users = list((await db.execute(stmt)).scalars().all())
 
     results = []

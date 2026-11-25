@@ -1,6 +1,5 @@
 from typing import Optional, List, Dict, Any
 from pydantic import BaseModel, UUID4
-from datetime import datetime
 
 class ResumeScoreResponse(BaseModel):
     id: UUID4

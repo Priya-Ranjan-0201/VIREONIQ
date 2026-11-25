@@ -1,8 +1,8 @@
 import uuid
-from typing import List, Dict, Any, Optional
-from fastapi import APIRouter, Depends, HTTPException, status, Body, Query
+from typing import Dict, Any, Optional
+from fastapi import APIRouter, Depends, HTTPException, status, Body
 from sqlalchemy.ext.asyncio import AsyncSession
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 from db.session import get_db
 from api.deps import get_current_user

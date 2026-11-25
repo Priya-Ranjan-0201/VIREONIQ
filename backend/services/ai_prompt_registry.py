@@ -6,7 +6,7 @@ Provides:
   3. Grounded Context Formatting
 """
 
-from typing import Dict, Any, Optional
+from typing import Dict, Any
 
 PROMPT_REGISTRY: Dict[str, Dict[str, Any]] = {
     "candidate_copilot": {

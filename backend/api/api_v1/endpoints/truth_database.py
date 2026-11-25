@@ -1,16 +1,15 @@
-import uuid
 from datetime import datetime
-from typing import List, Optional, Dict, Any
-from fastapi import APIRouter, Depends, HTTPException, status, BackgroundTasks, Query
+from typing import List, Optional
+from fastapi import APIRouter, Depends, BackgroundTasks, Query
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, desc, func
+from sqlalchemy import select, desc
 
 from db.session import get_db
 from api import deps
 from db.models import User, RealInterviewDebrief, CompanyTruthAggregate
 from services import truth_db_service, gamification_service
 from core.redis import redis_client
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 router = APIRouter()
 
@@ -63,13 +62,6 @@ async def get_company_details(
     if not agg:
         # Check current count
         from sqlalchemy import and_
-        stmt = select(func.count(RealInterviewDebrief.id)).where(
-            and_(
-                RealInterviewDebrief.company_name.ilike(f"%{company_name}%"),
-                RealInterviewDebrief.role.ilike(f"%{role_category}%")
-            )
-        )
-        # Helper trick to execute count
         stmt_count = select(RealInterviewDebrief).where(
             and_(
                 RealInterviewDebrief.company_name.ilike(f"%{company_name}%"),

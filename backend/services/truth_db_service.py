@@ -7,9 +7,9 @@ from collections import Counter
 from typing import Dict, Any, List, Optional
 from decimal import Decimal
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func, and_
+from sqlalchemy import select, and_
 
-from db.models import User, RealInterviewDebrief, CompanyTruthAggregate
+from db.models import RealInterviewDebrief, CompanyTruthAggregate
 from services import gamification_service
 from core.llm.orchestrator import acall_llm
 from core.redis import redis_client

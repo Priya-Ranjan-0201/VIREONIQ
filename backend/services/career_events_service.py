@@ -5,14 +5,14 @@ PROJECT_COMPLETED, INTERVIEW_COMPLETED, CREDENTIAL_VERIFIED, CAREER_GOAL_CHANGED
 and provides historical trajectory query capabilities.
 """
 
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List
 import uuid
 import logging
 from datetime import datetime, timezone
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, and_
+from sqlalchemy import select
 
-from db.models import CareerEvent, User
+from db.models import CareerEvent
 
 logger = logging.getLogger(__name__)
 

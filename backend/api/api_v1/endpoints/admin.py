@@ -1,7 +1,7 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from api.deps import get_db, get_current_recruiter_user  # recruiter or admin
-from db.models import User, StudentProfile, InterviewSession, GapAnalysis
+from db.models import User, StudentProfile, InterviewSession
 from sqlalchemy import select, func
 
 router = APIRouter()

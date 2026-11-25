@@ -6,15 +6,13 @@ Provides:
 Outputs transparent projections with confidence intervals without presenting guarantees.
 """
 
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List
 import uuid
 import logging
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
 
-from db.models import SkillEvidence, Profile, CounterfactualSimulationLog
+from db.models import CounterfactualSimulationLog
 from services.readiness_index_service import compute_career_readiness_index
-from services.role_intelligence_service import get_role_definition
 
 logger = logging.getLogger(__name__)
 

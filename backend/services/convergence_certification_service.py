@@ -3,11 +3,9 @@ import logging
 from datetime import datetime, timezone
 from typing import Dict, Any, List, Optional
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, desc
 
 from db.models import (
-    IntelligenceReceipt, AIModelRegistryRecord, ProductionCertificationGate,
-    User, Profile, AssessmentSession, AssessmentEvaluationResult, VerifiedCredential
+    IntelligenceReceipt
 )
 
 logger = logging.getLogger(__name__)

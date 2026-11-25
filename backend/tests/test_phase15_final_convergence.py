@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
 from db.models import (
-    User, Role, IntelligenceReceipt, AIModelRegistryRecord, ProductionCertificationGate
+    User, Role
 )
 from services.convergence_certification_service import (
     generate_intelligence_receipt, get_model_registry_scorecard,

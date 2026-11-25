@@ -1,10 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException, Query, Body
+from fastapi import APIRouter, Depends, Query, Body
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Dict, Any, List, Optional
 import uuid
 
 from api.deps import get_db, get_current_active_user
-from db.models import User, CareerInterventionPlan, CareerInterventionTask, RecommendationFeedback
+from db.models import User, CareerInterventionPlan, RecommendationFeedback
 from sqlalchemy import select, and_
 from services.career_intervention_engine import (
     generate_career_intervention_plan, replan_career_intervention

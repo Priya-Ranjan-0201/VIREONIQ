@@ -12,12 +12,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
 from db.models import (
-    User, Profile, SkillEvidence, ProjectEvidence, 
-    AssessmentResult, InterviewSession, InterviewRubricEvaluation,
-    CareerReadinessScore, EvidenceItem
+    SkillEvidence, ProjectEvidence, 
+    AssessmentResult, InterviewRubricEvaluation,
+    EvidenceItem
 )
 from services.role_intelligence_service import get_role_definition
-from services.canonical_skill_service import normalize_skill_name, derive_proficiency_level
+from services.canonical_skill_service import normalize_skill_name
 
 logger = logging.getLogger(__name__)
 

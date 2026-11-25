@@ -1,6 +1,6 @@
 from typing import List, Optional, Any
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from pydantic import AliasChoices, AnyHttpUrl, Field, field_validator
+from pydantic import AliasChoices, Field, field_validator
 import os
 import socket
 import re

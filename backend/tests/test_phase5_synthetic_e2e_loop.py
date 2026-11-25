@@ -3,7 +3,7 @@ import uuid
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
-from db.models import SkillEvidence, EvidenceItem, CareerInterventionPlan, CareerInterventionTask
+from db.models import CareerInterventionTask
 from services.career_intervention_engine import generate_career_intervention_plan
 from services.daily_career_os_service import get_todays_career_mission, complete_intervention_task
 from services.unified_assessment_service import (

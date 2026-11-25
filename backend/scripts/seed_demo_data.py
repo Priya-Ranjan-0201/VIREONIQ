@@ -1,6 +1,5 @@
 import asyncio
-import uuid
-from datetime import datetime, timezone
+from datetime import datetime
 from sqlalchemy import select
 from core.config import settings
 from db.session import async_session_maker

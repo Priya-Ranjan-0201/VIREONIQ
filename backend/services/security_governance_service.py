@@ -8,16 +8,15 @@ Provides:
   5. Granular Privacy & Recruiter Discovery Preferences
 """
 
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, Optional
 import uuid
 import logging
 from datetime import datetime, timezone
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, and_
+from sqlalchemy import select
 
 from db.models import (
-    User, Profile, SkillEvidence, ProjectEvidence, AssessmentResult,
-    VerifiedCredential, CareerSimulation, SecurityAuditLog, CandidatePrivacyPreference
+    User, Profile, SkillEvidence, ProjectEvidence, VerifiedCredential, CareerSimulation, SecurityAuditLog, CandidatePrivacyPreference
 )
 
 logger = logging.getLogger(__name__)

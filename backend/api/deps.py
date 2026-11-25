@@ -1,7 +1,7 @@
 import uuid
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
-from jose import jwt, JWTError
+from jose import JWTError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.config import settings
@@ -50,9 +50,9 @@ async def get_optional_current_user(
         return None
     try:
         payload = decode_token(token)
-        user_id_str: str = payload.get("sub")
-        token_type: str = payload.get("type")
-        if not user_id_str or token_type != "access":
+        user_id_str = payload.get("sub")
+        token_type = payload.get("type")
+        if not isinstance(user_id_str, str) or not user_id_str or token_type != "access":
             return None
         user_id = uuid.UUID(user_id_str)
         return await crud_user.get_user_by_id(db, user_id=user_id)
@@ -74,11 +74,11 @@ async def get_current_user(
     )
     try:
         payload = decode_token(token)
-        user_id_str: str = payload.get("sub")
-        jti: str = payload.get("jti")
-        token_type: str = payload.get("type")
+        user_id_str = payload.get("sub")
+        jti = payload.get("jti")
+        token_type = payload.get("type")
         
-        if user_id_str is None or token_type != "access":
+        if not isinstance(user_id_str, str) or not user_id_str or token_type != "access":
             raise credentials_exception
         
         if jti:

@@ -1,14 +1,13 @@
 import uuid
 from datetime import datetime, timezone
-from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func, and_
+from sqlalchemy import select, func
 from pydantic import BaseModel
 
 from db.session import get_db
 from api import deps
-from db.models import User, ReferralSlot, MentorProfile
+from db.models import User, ReferralSlot
 from services import referral_economy_service
 
 router = APIRouter()

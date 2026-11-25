@@ -8,16 +8,15 @@ Synthesizes weekly candidate progress:
   - Next Week's Priority Focus
 """
 
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any
 import uuid
 import logging
-from datetime import datetime, timezone, timedelta, date
+from datetime import datetime, timezone, timedelta
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, and_
+from sqlalchemy import select
 
 from db.models import (
-    WeeklyCareerReview, CareerReadinessScore, EvidenceItem, 
-    CareerEvent, User
+    WeeklyCareerReview, EvidenceItem
 )
 from services.career_readiness_engine import compute_role_career_readiness
 from services.career_bottleneck_engine import identify_career_bottlenecks

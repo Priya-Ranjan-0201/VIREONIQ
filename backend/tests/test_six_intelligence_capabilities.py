@@ -1,21 +1,20 @@
 import pytest
 import uuid
-from datetime import datetime, timezone, timedelta
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
 from sqlalchemy.pool import StaticPool
 
 from db.models import (
-    Base, Role, User, Profile, SkillEvidence, ProjectEvidence,
-    AssessmentResult, MNCInterviewSession, EvidenceItem, CareerGoal
+    Base, Role, User, Profile, ProjectEvidence,
+    MNCInterviewSession
 )
 from services.evidence_graph_service import (
-    compute_skill_evidence_integrity, detect_all_evidence_conflicts, record_granular_evidence
+    compute_skill_evidence_integrity, record_granular_evidence
 )
 from services.canonical_skill_service import (
-    compute_multidimensional_skill_mastery, find_true_prerequisite_bottleneck, normalize_skill_name
+    compute_multidimensional_skill_mastery, find_true_prerequisite_bottleneck
 )
 from services.career_readiness_engine import (
-    compute_role_career_readiness, forecast_career_trajectory
+    forecast_career_trajectory
 )
 from services.counterfactual_simulation_service import (
     simulate_what_if_query, compare_counterfactual_paths
@@ -24,8 +23,7 @@ from services.role_intelligence_service import (
     analyze_skill_transferability, compute_career_transition_bridges
 )
 from services.mnc_interview_intelligence_service import (
-    get_user_interview_memory, select_adaptive_next_question,
-    start_mnc_interview_session, finalize_mnc_interview_and_sync_twin
+    get_user_interview_memory, select_adaptive_next_question
 )
 from services.career_digital_twin_service import (
     generate_career_digital_twin_snapshot, compute_twin_diff, get_career_twin_change_feed

@@ -1,4 +1,5 @@
 import logging
+from typing import Optional
 from core.llm.nvidia_nim import NvidiaNimProvider
 from core.config import settings
 
@@ -9,7 +10,7 @@ class NVIDIA_NIM_Client:
         # Initialize the underlying provider using settings configuration
         self.provider = NvidiaNimProvider(api_key=settings.NVIDIA_NIM_API_KEY or "")
 
-    async def generate(self, prompt: str, system_prompt: str = None) -> str:
+    async def generate(self, prompt: str, system_prompt: Optional[str] = None) -> str:
         """
         Sends a query to the NVIDIA NIM client and returns the raw string content.
         """

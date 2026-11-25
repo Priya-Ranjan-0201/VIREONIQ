@@ -375,7 +375,7 @@ async def submit_task_solution(task_id: str, solution_text: str) -> Dict[str, An
         )
         if not isinstance(result, dict) or "score" not in result:
             raise ValueError("Malformed LLM response")
-    except Exception as e:
+    except Exception:
         # 2. Intelligent deterministic fallback evaluation
         sol_len = len(solution_text.strip())
         has_logic = any(keyword in solution_text.lower() for keyword in ["def ", "class ", "return ", "import ", "redis", "time", "try", "except", "if "])

@@ -12,7 +12,7 @@ from api.api_v1.endpoints import (
       offline_sync, faculty, earn_to_learn, parent_link, pressure, cohorts, war_room, vernacular_library,
       readiness, skills_evidence, roi_gaps, missions, career_simulator, ai_observability,
       career_twin, career_goals, roles_intelligence, assessments, interventions,
-      credentials, passport, recruiter_intelligence, workforce_intelligence, ai_orchestration,
+      passport, recruiter_intelligence, workforce_intelligence, ai_orchestration,
        privacy_security, outcomes_analytics, platform_developer, autonomous_os,
        convergence_certification, mnc_interview
 )

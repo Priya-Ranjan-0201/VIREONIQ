@@ -1,7 +1,6 @@
-from fastapi import APIRouter, Depends, HTTPException, Body
+from fastapi import APIRouter, Depends, Body
 from sqlalchemy.ext.asyncio import AsyncSession
-from typing import Dict, Any, List, Optional
-import uuid
+from typing import Dict, Any, List
 
 from api.deps import get_db, get_current_active_user
 from db.models import User, CareerGoal, Profile
@@ -20,7 +19,7 @@ async def get_user_career_goals(
     """
     stmt = select(CareerGoal).where(
         CareerGoal.user_id == current_user.id,
-        CareerGoal.is_active == True
+        CareerGoal.is_active.is_(True)
     ).order_by(CareerGoal.priority.asc())
 
     goals = list((await db.execute(stmt)).scalars().all())

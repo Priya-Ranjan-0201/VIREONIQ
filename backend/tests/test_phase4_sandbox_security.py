@@ -1,4 +1,3 @@
-import pytest
 from services.assessment_blueprint_service import get_blueprint_questions
 from services.code_execution_service import analyze_python_ast_complexity
 from services.assessment_integrity_service import evaluate_interaction_integrity

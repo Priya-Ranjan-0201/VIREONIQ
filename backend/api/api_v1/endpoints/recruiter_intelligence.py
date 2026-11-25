@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Query, Body
+from fastapi import APIRouter, Depends, HTTPException, Body
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Dict, Any, List, Optional
 from datetime import datetime, timezone
@@ -13,7 +13,7 @@ from services.job_intelligence_service import (
     create_job_posting, extract_structured_requirements_from_text
 )
 from services.recruiter_matching_service import (
-    search_candidates_for_job, compare_candidates_for_job, compute_candidate_job_match
+    search_candidates_for_job, compare_candidates_for_job
 )
 
 router = APIRouter()

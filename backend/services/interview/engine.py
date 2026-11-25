@@ -1,6 +1,6 @@
 import json
 import logging
-from typing import List, Dict, Any, Tuple
+from typing import Dict, Any, Tuple
 from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from db.models import User, InterviewSession
@@ -11,6 +11,8 @@ from services.interview import prompts, cyber_prompts, coding_prompts
 from services.interview.tone_analyzer import analyze_tone_and_confidence
 from services.interview.reward_engine import calculate_interview_reward
 from core.config import settings
+from services.intelligence.orchestrator import HiringCommittee
+from services.intelligence.generator import DynamicQuestionEngine
 
 logger = logging.getLogger(__name__)
 
@@ -218,9 +220,6 @@ async def submit_answer(db: AsyncSession, session_id: Any, answer_text: str, use
         "evaluation": evaluation,
         "reward_signal": last_turn.reward_signal
     }
-
-from services.intelligence.orchestrator import HiringCommittee
-from services.intelligence.generator import DynamicQuestionEngine
 
 # Initialize Engines
 committee = HiringCommittee()

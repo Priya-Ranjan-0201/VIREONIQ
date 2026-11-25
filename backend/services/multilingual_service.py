@@ -1,13 +1,13 @@
 import json
 import uuid
 from datetime import datetime, timezone
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List
 from decimal import Decimal
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
 from core.llm.orchestrator import acall_llm
-from db.models import LanguageProgression, User
+from db.models import LanguageProgression
 
 SUPPORTED_LANGUAGES = {
     "hi": {"name": "Hindi", "script": "Devanagari", "region": "India"},

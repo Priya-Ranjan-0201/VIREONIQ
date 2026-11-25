@@ -1,7 +1,6 @@
-from fastapi import APIRouter, Depends, HTTPException, Body
+from fastapi import APIRouter, Depends, Body
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Dict, Any, List
-import uuid
 
 from api.deps import get_db, get_current_active_user
 from db.models import User

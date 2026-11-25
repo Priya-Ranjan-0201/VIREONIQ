@@ -1,13 +1,12 @@
 import json
 import uuid
-import math
 from datetime import datetime, timezone
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List
 from decimal import Decimal
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func, and_
+from sqlalchemy import select, and_
 
-from db.models import User, HighSchoolTrajectory, MarketIntelligence
+from db.models import HighSchoolTrajectory, MarketIntelligence
 from core.llm.orchestrator import acall_llm
 
 YEAR_BY_YEAR_FRAMEWORK = {

@@ -1,4 +1,3 @@
-import json
 
 CYBER_INTERVIEWER_SYSTEM_PROMPT = """
 You are a Senior CISO and Lead Cybersecurity Interviewer at a top-tier tech company.

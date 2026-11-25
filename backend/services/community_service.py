@@ -9,10 +9,10 @@ Provides the business logic for:
 
 import uuid
 import logging
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timezone
 from typing import Dict, Any, Optional, List
 
-from sqlalchemy import select, func, update, and_
+from sqlalchemy import select, func, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from db.models import (
@@ -212,7 +212,7 @@ async def find_study_groups(
 ) -> List[Dict[str, Any]]:
     """Search for open study groups by role, timezone, and language."""
     query = select(StudyGroup).where(
-        StudyGroup.is_active == True,
+        StudyGroup.is_active.is_(True),
         StudyGroup.current_members < StudyGroup.max_members,
     )
 
@@ -292,7 +292,7 @@ async def get_community_feed(
     """Fetch the public community feed of achievements."""
     result = await db.execute(
         select(CommunityPost)
-        .where(CommunityPost.is_public == True)
+        .where(CommunityPost.is_public.is_(True))
         .order_by(CommunityPost.created_at.desc())
         .offset(offset)
         .limit(limit)

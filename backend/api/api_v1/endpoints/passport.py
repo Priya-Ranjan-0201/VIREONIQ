@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Query, Body
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Dict, Any, List, Optional
-import uuid
 
 from api.deps import get_db, get_current_active_user
 from db.models import User, TalentPassportShare
@@ -70,7 +69,7 @@ async def get_public_passport(
     stmt = select(TalentPassportShare).where(
         and_(
             TalentPassportShare.share_token == share_token,
-            TalentPassportShare.is_active == True
+            TalentPassportShare.is_active.is_(True)
         )
     )
     share = (await db.execute(stmt)).scalars().first()

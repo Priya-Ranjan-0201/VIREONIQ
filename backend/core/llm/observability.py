@@ -4,9 +4,8 @@ Logs LLM requests, providers, models, latency percentiles, token usage, cost est
 and schema validation results for internal platform auditing.
 """
 
-import time
 import logging
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any
 from datetime import datetime, timezone
 
 from db.models import AIObservabilityLog

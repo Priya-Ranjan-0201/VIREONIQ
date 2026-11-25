@@ -11,13 +11,11 @@ Generates and manages structured, multi-strategy career interventions:
 from typing import Dict, Any, List, Optional
 import uuid
 import logging
-from datetime import datetime, timezone, timedelta
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, and_
+from sqlalchemy import select
 
 from db.models import (
-    CareerInterventionPlan, CareerInterventionTask, 
-    RecommendationFeedback, User
+    CareerInterventionPlan, CareerInterventionTask
 )
 from services.career_bottleneck_engine import identify_career_bottlenecks
 from services.canonical_skill_service import normalize_skill_name
@@ -112,7 +110,7 @@ async def generate_career_intervention_plan(
             "id": str(uuid.uuid4()),
             "day_number": 3,
             "title": f"Build High-Throughput Service Layer in {primary_gap}",
-            "description": f"Implement resilient asynchronous workflows, connection pooling, and error boundaries.",
+            "description": "Implement resilient asynchronous workflows, connection pooling, and error boundaries.",
             "task_type": "BUILD",
             "estimated_minutes": daily_time_budget_minutes,
             "expected_evidence_type": "PROJECT_ARTIFACT",
@@ -122,7 +120,7 @@ async def generate_career_intervention_plan(
             "id": str(uuid.uuid4()),
             "day_number": 4,
             "title": f"Unit & Integration Benchmark Suite for {primary_gap}",
-            "description": f"Achieve >85% test coverage with automated mock suites and load testing.",
+            "description": "Achieve >85% test coverage with automated mock suites and load testing.",
             "task_type": "PRACTICE",
             "estimated_minutes": min(45, daily_time_budget_minutes),
             "expected_evidence_type": "TEST_RESULTS",
@@ -142,7 +140,7 @@ async def generate_career_intervention_plan(
             "id": str(uuid.uuid4()),
             "day_number": duration_days,
             "title": f"Final Reassessment & Twin Elevation for {target_role}",
-            "description": f"Perform comprehensive capability measurement updating Career Digital Twin.",
+            "description": "Perform comprehensive capability measurement updating Career Digital Twin.",
             "task_type": "REASSESS",
             "estimated_minutes": 35,
             "expected_evidence_type": "VERIFIED",
@@ -414,7 +412,7 @@ async def generate_next_best_actions(
         skill = c.get("skill_name", "Target Skill")
         exp = build_decision_explanation(
             recommendation=f"Resolve {skill} Evidence Contradiction",
-            reason=c.get("what_conflicts", f"Resume claim contradicts recent assessment. Resolving eliminates employer suspicion and establishes verified capability."),
+            reason=c.get("what_conflicts", "Resume claim contradicts recent assessment. Resolving eliminates employer suspicion and establishes verified capability."),
             supporting_evidence=[
                 {"skill": skill, "sources": c.get("sources", ["Resume Claim", "Assessment"]), "severity": c.get("severity", "HIGH")}
             ],

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List, Dict, Any
 
@@ -6,7 +6,7 @@ from api import deps
 from db.session import get_db
 from db.models import User, OfflineBundle
 from services import offline_sync_service
-from sqlalchemy import select, desc
+from sqlalchemy import select
 
 router = APIRouter()
 

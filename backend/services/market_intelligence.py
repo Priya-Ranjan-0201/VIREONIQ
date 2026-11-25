@@ -5,7 +5,6 @@ from typing import Dict, List, Any, Optional
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from db.models import MarketIntelligence
-import uuid
 from datetime import datetime, timezone, timedelta
 
 

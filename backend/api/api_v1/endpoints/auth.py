@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Request, Response
+from fastapi import APIRouter, Depends, status, Request, Response
 from sqlalchemy.ext.asyncio import AsyncSession
 from core.config import settings
 from core.security import decode_token

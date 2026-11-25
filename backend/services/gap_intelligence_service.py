@@ -5,13 +5,13 @@ Categorizes gaps into NO_GAP, MINOR_GAP, MODERATE_GAP, MAJOR_GAP, CRITICAL_GAP, 
 and computes grounded Gap Priority Scores.
 """
 
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any
 import uuid
 import logging
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
-from db.models import SkillEvidence, ProjectEvidence, AssessmentResult
+from db.models import SkillEvidence, ProjectEvidence
 from services.role_intelligence_service import get_role_definition
 from services.canonical_skill_service import normalize_skill_name, derive_proficiency_level
 
