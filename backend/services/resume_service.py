@@ -46,7 +46,8 @@ async def process_and_score_resume(
         )
         
     # 4. Store Securely (Local mock for S3/R2)
-    storage_key = f"{uuid.uuid4()}_{file.filename}"
+    safe_filename = os.path.basename(file.filename or "resume.pdf")
+    storage_key = f"{uuid.uuid4()}_{safe_filename}"
     file_path = os.path.join(UPLOAD_DIR, storage_key)
     with open(file_path, "wb") as f:
         f.write(file_bytes)

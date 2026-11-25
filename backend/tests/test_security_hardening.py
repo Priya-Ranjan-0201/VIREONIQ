@@ -312,3 +312,68 @@ async def test_safe_redis_ttl_and_cooldown_recovery():
     assert await r.get("k1") == "val1"
     r._fallback_expiry["k1"] = 0.0
     assert await r.get("k1") is None
+
+
+def test_model_supply_chain_security(tmp_path):
+    from core.model_safety import (
+        ModelIntegrityRegistry,
+        ModelSecurityError,
+        compute_sha256,
+    )
+
+    registry = ModelIntegrityRegistry()
+
+    # 1. Dangerous serialization formats rejected
+    for dangerous in ["weights.pkl", "model.joblib", "checkpoint.pt", "data.pickle"]:
+        p = tmp_path / dangerous
+        p.write_bytes(b"malicious pickle data")
+        with pytest.raises(ModelSecurityError, match="forbidden serialization format"):
+            registry.verify_file(p)
+
+    # 2. Safe format accepted and hash verified
+    safe_file = tmp_path / "model.safetensors"
+    safe_file.write_bytes(b"safe tensors binary content 12345")
+    expected_hash = compute_sha256(safe_file)
+
+    # Without pinning, verifies safe extension
+    assert registry.verify_file(safe_file) is True
+
+    # With pinning
+    registry.register_artifact("model_v1", expected_hash)
+    assert registry.verify_file(safe_file, model_id="model_v1") is True
+
+    # Tampered file fails integrity check
+    tampered_file = tmp_path / "tampered.safetensors"
+    tampered_file.write_bytes(b"tampered data")
+    with pytest.raises(ModelSecurityError, match="Integrity check failed"):
+        registry.verify_file(tampered_file, model_id="model_v1")
+
+    # Unregistered model ID fails
+    with pytest.raises(ModelSecurityError, match="not pinned"):
+        registry.verify_file(safe_file, model_id="unregistered_model")
+
+
+@pytest.mark.asyncio
+async def test_upload_magic_byte_validation_rejects_spoofed_files(db_session: AsyncSession):
+    user = await _create_role_and_user(db_session, "User", "upload_tester")
+    await db_session.commit()
+
+    async def override_get_db():
+        yield db_session
+
+    app.dependency_overrides[get_db] = override_get_db
+    token = create_access_token(subject=str(user.id), jti=f"jti_{uuid.uuid4().hex[:6]}")
+    headers = {"Authorization": f"Bearer {token}"}
+
+    try:
+        async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
+            # Uploading plain text spoofed as a PDF is rejected by python-magic
+            fake_pdf = b"This is just plain text, not a real PDF header"
+            files = {"file": ("spoofed.pdf", fake_pdf, "application/pdf")}
+            data = {"target_role": "Backend Engineer"}
+            res = await ac.post("/api/v1/resume/upload", files=files, data=data, headers=headers)
+            assert res.status_code == 400
+            assert "PDF and DOCX" in res.json().get("detail", "")
+    finally:
+        app.dependency_overrides.clear()
+

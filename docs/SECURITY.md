@@ -1,35 +1,78 @@
 # VIREONIQ Security Architecture & Hardening Controls
 
+Every security control below maps directly to the implementing source module and its verifying test in `backend/tests/`.
+
+---
+
 ## 1. Authentication, Sessions & Access Control
 
-- **Password Hashing**: Argon2id via `passlib==1.7.4` + `argon2-cffi==25.1.0` (`backend/core/security.py`). Unusable account markers (`!`-prefixed hashes) fail verification cleanly without raising 500 errors.
-- **JWT Asymmetric Tokens**: RS256 signed JWTs (`ACCESS_TOKEN_EXPIRE_MINUTES=15`, `REFRESH_TOKEN_EXPIRE_DAYS=7`) with lazy key initialization, Redis `blacklist:{jti}` access revocation, and DB-backed refresh token rotation (`POST /api/v1/auth/refresh`, `HttpOnly`, `SameSite=Lax`, `Secure` in production).
-- **Registration & RBAC**: Public self-registration (`POST /api/v1/auth/register`) restricts `role_name` to standard candidate/user roles (`User`, `student`, `candidate`) and rejects elevated roles (`Admin`, `Recruiter`, `Faculty`) with HTTP 403. Case-insensitive RBAC dependencies (`require_roles`) guard recruiter, workforce, and faculty routes.
-- **AI Orchestration RBAC**: `POST /api/v1/ai/tasks/execute` (`endpoints/ai_orchestration.py`) ignores client-supplied role overrides and resolves permissions strictly from `current_user.role`.
-- **WebSocket Authentication**: `/api/v1/ws/matchmaker/{user_id}` and `/api/v1/advanced/adversarial/{session_id}/stream` verify JWT access tokens and session/user ownership prior to `websocket.accept()`.
+| Control | Implementation File | Verifying Test |
+|---|---|---|
+| **Argon2id Password Hashing** | `backend/core/security.py` | `test_security_hardening.py::test_verify_password_handles_unusable_markers` |
+| **RS256 Asymmetric JWT** | `backend/core/security.py` | `test_security_hardening.py::test_production_settings_validation_rejects_defaults_and_reads_jwt_aliases` |
+| **Refresh Token Rotation & Replay Block** | `backend/api/api_v1/endpoints/auth.py` | `test_security_hardening.py::test_auth_register_blocks_privilege_escalation_and_refresh_rotates` |
+| **Privilege Escalation Guard on Signup** | `backend/api/api_v1/endpoints/auth.py` | `test_security_hardening.py::test_auth_register_blocks_privilege_escalation_and_refresh_rotates` |
+| **Case-Insensitive RBAC (`require_roles`)** | `backend/api/deps.py` | `test_security_hardening.py::test_endpoint_rbac_and_tenant_isolation` |
+| **AI Orchestration Role Spoofing Block** | `backend/api/api_v1/endpoints/ai_orchestration.py` | `test_security_hardening.py::test_endpoint_rbac_and_tenant_isolation` |
+| **Authenticated WebSockets** | `backend/api/api_v1/endpoints/matchmaker.py`, `advanced_modes.py` | `test_security_endpoints_coverage.py::test_matchmaker_websocket_auth_and_ownership` |
 
-## 2. Production Configuration Guardrails
+---
 
-At application startup (`backend/main.py` lifespan -> `Settings.validate_production_settings()` in `backend/core/config.py`), `ENVIRONMENT=production` fails closed if any of the following occur:
+## 2. Production Configuration & Environment Guardrails
+
+At application startup (`backend/main.py` lifespan -> `Settings.validate_production_settings()` in `backend/core/config.py`), `ENVIRONMENT=production` fails closed with a `RuntimeError` if:
 - `SECRET_KEY` or `CREDENTIAL_SIGNING_KEY` uses the insecure default value or is shorter than 32 characters.
 - `DATABASE_URL` or `POSTGRES_PASSWORD` uses SQLite or the default `password` value (no silent SQLite auto-failover in production).
 - `BACKEND_CORS_ORIGINS` contains wildcard `"*"` while `allow_credentials=True`.
 - RSA keys are absent (neither `JWT_PRIVATE_KEY`/`JWT_PUBLIC_KEY` env vars nor PEM files at `PRIVATE_KEY_PATH` / `JWT_PRIVATE_KEY_PATH`).
 
-Demo seed scripts (`backend/scripts/seed_user.py`, `seed_demo_data.py`, `seed_resilience_demo.py`, `init_db_schema.py`) explicitly refuse to run when `is_production` is true. Dev offline mock auth (`frontend/src/lib/mockAuth.ts`) is strictly gated behind `import.meta.env.DEV && VITE_ENABLE_MOCK_AUTH === 'true'`.
+**Demo Seed & Dev Guards**:
+- Demo seed scripts (`backend/scripts/seed_user.py`, `seed_demo_data.py`, `seed_resilience_demo.py`, `init_db_schema.py`) explicitly refuse to execute when `is_production` is true.
+- Dev offline mock auth (`frontend/src/lib/mockAuth.ts`) is strictly gated behind `import.meta.env.DEV && VITE_ENABLE_MOCK_AUTH === 'true'`.
+
+---
 
 ## 3. Tenant Isolation, Payments & Sandboxing
 
-- **Multi-Tenant Isolation**:
-  - `GET /api/v1/privacy-security/audit-logs` filters `SecurityAuditLog.actor_id == current_user.id` for non-admin callers.
-  - `/api/v1/platform/api-keys*`, `/webhooks`, and `/connectors` enforce `tenant_id` ownership.
-  - `/uploads/offline-bundles` is the only static upload mount; private candidate resume uploads are not served statically without auth.
-- **Payment Verification**: `POST /api/v1/payments/verify` fails closed (HTTP 503) if `RAZORPAY_KEY_SECRET` is unconfigured and validates HMAC-SHA256 signature, transaction owner (`tx.user_id == current_user.id`), pending status (409 on replay), and exact plan amount.
-- **Credential Minting**: `evaluate_and_issue_credential` refuses to issue signed credentials when no `SkillEvidence` exists (`NOT_ELIGIBLE`) and signs payloads with `CREDENTIAL_SIGNING_KEY` + constant-time `hmac.compare_digest`.
-- **Code Execution Sandbox**: Host execution via `sys.executable -c` and synthetic passing test fabrication in `judge0_provider.py` and `code_execution_service.py` were removed; requests fail closed with explicit `Sandbox Unavailable` (`status.id = 13`, `passed = False`) when `JUDGE0_API_URL` is unconfigured or unreachable.
+| Control | Implementation File | Verifying Test |
+|---|---|---|
+| **Audit Log Scoping (Actor Isolation)** | `backend/api/api_v1/endpoints/privacy_security.py` | `test_security_hardening.py::test_endpoint_rbac_and_tenant_isolation` |
+| **Platform API Key Tenant Isolation** | `backend/api/api_v1/endpoints/platform_developer.py` | `test_security_hardening.py::test_endpoint_rbac_and_tenant_isolation` |
+| **Recruiter Discovery Privacy Flag** | `backend/crud/crud_user.py` | `test_security_hardening.py::test_sandbox_and_credential_fail_closed_and_search_respects_privacy` |
+| **Fail-Closed Payment HMAC Verification** | `backend/api/api_v1/endpoints/payments.py` | `test_security_hardening.py::test_payments_verify_fails_closed_without_secret_and_validates_owner` |
+| **Fail-Closed Credential Minting** | `backend/services/credential_issuance_service.py` | `test_security_hardening.py::test_sandbox_and_credential_fail_closed_and_search_respects_privacy` |
+| **Judge0 Offline Execution Fail-Closed** | `backend/services/code/judge0_provider.py` | `test_security_hardening.py::test_sandbox_and_credential_fail_closed_and_search_respects_privacy` |
 
-## 4. Known Dependency Advisories & Pending Governance Decisions
+---
 
-- **`python-jose` (`3.5.0`)**: Upgraded from `3.3.0` to `3.5.0`; `PYSEC-2026-4298` remains open upstream. Replacing `python-jose` with `pyjwt[cryptography]` and `passlib==1.7.4` (unmaintained) with `pwdlib[argon2]` / `argon2-cffi` requires explicit maintainer sign-off.
-- **Frontend Runtime npm Advisories**: `npm audit --omit=dev` flags 5 advisories across `jspdf@^2.5.1` (0 direct imports in `frontend/src/`), transitive `dompurify`, `react-router-dom@^6.22.0`, transitive `react-router`, and `zod@^3.22.4`. All available fixes require semver-major upgrades (`jspdf@4.2.1`, `react-router-dom@7.18.7`, `zod@4.6.7`).
-- **Access Token Storage**: `backend/api/deps.py` (`OAuth2PasswordBearer`) reads `Authorization: Bearer` tokens rather than cookies; therefore `frontend/src/store/authStore.ts` persists the access token in Zustand (`vireoniq-auth`). Migrating API auth extraction to `HttpOnly` access cookies is tracked for future hardening.
+## 4. Model Supply Chain & Serialization Security
+
+- **Safe Formats**: Only safe serialization formats (`.safetensors`, `.onnx`, `.json`, `.tflite`) are permitted for machine learning artifacts (`backend/core/model_safety.py`).
+- **Forbidden Execution Formats**: Unsafe formats (`.pkl`, `.pickle`, `.joblib`, `.pt`, `.bin`) are explicitly forbidden and raise `ModelSecurityError`.
+- **Integrity Pinning**: Model artifacts are validated against SHA-256 digests in `ModelIntegrityRegistry`. Unpinned or tampered artifacts are rejected at load time.
+- **Verifying Test**: `backend/tests/test_security_hardening.py::test_model_supply_chain_security`.
+
+---
+
+## 5. Input Validation & MIME Magic-Byte Checks
+
+- **MIME Magic-Byte Detection**: `backend/services/resume_service.py` and `backend/api/api_v1/endpoints/syllabus.py` inspect file content bytes via `python-magic` (`magic.from_buffer`), ensuring files disguised as PDFs or DOCX with text or executable payloads are rejected with HTTP 400.
+- **Path Traversal Sanitization**: Upload filenames are passed through `os.path.basename` before filesystem writing to prevent directory traversal.
+- **Verifying Test**: `backend/tests/test_security_hardening.py::test_upload_magic_byte_validation_rejects_spoofed_files`.
+
+---
+
+## 6. Prompt Injection Defense Posture
+
+> [!WARNING]
+> **Prompt Injection Defense Limitations**: The legacy `check_prompt_injection` function in `backend/core/security.py` is an elementary heuristic keyword blocklist. It is **not** a comprehensive defense against indirect prompt injection, hidden text, or adversarial framing. Full defense is established in Phase 7 via:
+> 1. Render-versus-extract structural discrepancy detection (identifying zero-width characters, white-on-white text, and microscopic fonts).
+> 2. Strict instruction-data channel separation (enclosing untrusted candidate text within immutable inert XML delimiters that system prompts explicitly declare non-executable).
+
+---
+
+## 7. Known Dependency Advisories & Pending Decisions
+
+- **`python-jose` (`3.5.0`)**: `PYSEC-2026-4298` remains open upstream. Replacing `python-jose` with `pyjwt[cryptography]` and `passlib==1.7.4` with `pwdlib[argon2]` / `argon2-cffi` is queued pending maintainer sign-off.
+- **Frontend Runtime npm Advisories**: Pinned in `docs/KNOWN_LIMITATIONS.md` pending semver-major review (`jspdf@4`, `react-router-dom@7`, `zod@4`).
+- **Access Token Storage**: Currently held in Zustand memory (`vireoniq-auth`); migration to `HttpOnly` access cookies is queued.
