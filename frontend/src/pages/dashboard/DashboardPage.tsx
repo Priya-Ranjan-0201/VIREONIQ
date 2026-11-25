@@ -566,7 +566,7 @@ export const DashboardPage: React.FC = () => {
                     </div>
                   </div>
                   <span className="badge-neon badge-neon-indigo shrink-0">
-                    +{task.expected_gain_points ?? task.projected_delta} pts
+                    +{(task.expected_gain_points ?? task.projected_delta ?? '1.0').toString().replace(/^\++/, '')} pts
                   </span>
                 </div>
               ))

@@ -49,7 +49,7 @@ export const DashboardLayout = () => {
 
       {/* Sidebar */}
       <div className={`
-        fixed inset-y-0 left-0 z-50 w-64 transform transition-transform duration-300 lg:relative lg:translate-x-0
+        fixed inset-y-0 left-0 z-50 w-72 transform transition-transform duration-300 lg:relative lg:translate-x-0
         ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
         <Sidebar onClose={() => setIsSidebarOpen(false)} />
@@ -58,8 +58,8 @@ export const DashboardLayout = () => {
       {/* Main Content Area */}
       <div className="relative z-10 flex-1 flex flex-col overflow-hidden min-w-0">
         {/* Top Header */}
-        <header className="h-16 border-b border-white/[0.08] bg-slate-950/60 backdrop-blur-3xl flex items-center justify-between px-6 lg:px-10 z-40 shadow-[0_4px_30px_rgba(0,0,0,0.35)]">
-          <div className="flex items-center gap-4">
+        <header className="h-16 border-b border-white/[0.08] bg-slate-950/60 backdrop-blur-3xl flex items-center justify-between px-4 sm:px-6 lg:px-8 z-40 shadow-[0_4px_30px_rgba(0,0,0,0.35)]">
+          <div className="flex items-center gap-3">
             <Button 
               variant="ghost" 
               size="icon" 
@@ -80,13 +80,13 @@ export const DashboardLayout = () => {
           </div>
 
           {/* Center/Right Quick Pills */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
             <div className="hidden md:flex items-center gap-2 bg-white/[0.04] border border-white/10 px-3 py-1.5 rounded-full text-xs text-slate-300 backdrop-blur-md shadow-sm">
               <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="font-medium text-slate-400">Readiness:</span>
-              <span className="font-bold text-emerald-400">82.5%</span>
+              <span className="font-medium text-slate-400">Intelligence Engine:</span>
+              <span className="font-semibold text-emerald-400">Active</span>
               <span className="text-slate-600">|</span>
-              <span className="text-indigo-300 font-medium">Target: SDE-2</span>
+              <span className="text-indigo-300 font-medium">Calibrated v2.0</span>
             </div>
 
             <Link

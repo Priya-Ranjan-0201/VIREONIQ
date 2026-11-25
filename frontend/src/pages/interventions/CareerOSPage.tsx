@@ -799,7 +799,7 @@ public class Solution {
             <select
               value={targetRole}
               onChange={(e) => handleRoleChange(e.target.value)}
-              className="bg-slate-950 border border-slate-700/80 text-white font-medium text-xs rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none cursor-pointer hover:border-slate-600 transition"
+              className="bg-slate-950 border border-slate-700/80 text-white font-medium text-xs rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none cursor-pointer hover:border-slate-600 transition min-w-[180px] w-auto"
             >
               <option value="AI/ML Engineer">AI/ML Engineer</option>
               <option value="Backend Engineer">Backend Engineer</option>
@@ -891,12 +891,12 @@ public class Solution {
                       }`}
                     >
                       <div className="space-y-3">
-                        <div className="flex items-center justify-between gap-2">
-                          <span className={`inline-flex items-center gap-1.5 text-[11px] font-mono px-2 py-0.5 rounded-md border ${style.badge}`}>
+                        <div className="flex items-center justify-between gap-1.5 flex-wrap">
+                          <span className={`inline-flex items-center gap-1.5 text-[10px] font-mono px-2 py-0.5 rounded-md border whitespace-nowrap shrink-0 ${style.badge}`}>
                             {style.icon}
                             <span>Task {idx + 1} • {style.label}</span>
                           </span>
-                          <span className="text-xs text-indigo-400 font-mono font-semibold bg-indigo-950/40 border border-indigo-800/30 px-2 py-0.5 rounded-md shrink-0">
+                          <span className="text-[11px] text-indigo-400 font-mono font-semibold bg-indigo-950/40 border border-indigo-800/30 px-1.5 py-0.5 rounded-md shrink-0">
                             {task.projected_delta} CRI
                           </span>
                         </div>

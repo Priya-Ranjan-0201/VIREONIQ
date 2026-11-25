@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Activity, ArrowRight, BrainCircuit, Code, Shield, Target, Zap } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { useGapStore } from "../../store/gapStore";
 
 export const GapAnalysisPage = () => {
@@ -81,7 +82,18 @@ export const GapAnalysisPage = () => {
           <Button size="lg" onClick={handleAnalyze} className="rounded-full px-12 glow-button">
             Run AI Analysis
           </Button>
-          {error && <p className="text-red-400 mt-4 text-sm">{error}</p>}
+          {error && (
+            <div className="mt-4 p-4 rounded-2xl bg-rose-950/40 border border-rose-500/30 text-rose-300 text-xs flex flex-col sm:flex-row items-center gap-3">
+              <span>{error}</span>
+              <Link
+                to="/app/ats-score"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold transition shrink-0"
+              >
+                <span>Upload Resume</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+          )}
         </Card>
       )}
 

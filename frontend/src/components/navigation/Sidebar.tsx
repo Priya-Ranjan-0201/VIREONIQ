@@ -63,7 +63,7 @@ const navSections = [
   {
     label: 'Interview Studio',
     items: [
-      { name: 'MNC Interview Studio', href: '/app/mnc-interview', icon: Cpu, badge: '8-Round' },
+      { name: 'MNC Interview Studio', href: '/app/mnc-interview', icon: Cpu, badge: 'MNC' },
       { name: 'Adaptive Assessment', href: '/app/assessment', icon: Brain },
       { name: 'AI Interview Simulator', href: '/app/interview', icon: MessageSquare },
       { name: 'Voice Mode', href: '/app/voice-interview', icon: Mic },

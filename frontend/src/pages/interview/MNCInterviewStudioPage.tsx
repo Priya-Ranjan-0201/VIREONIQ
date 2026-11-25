@@ -617,7 +617,7 @@ export const MNCInterviewStudioPage: React.FC = () => {
           {!sessionActive ? (
             <button
               onClick={handleStartSession}
-              className="px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-medium rounded-xl text-sm transition-all shadow-lg shadow-indigo-500/20 flex items-center gap-2"
+              className="px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-medium rounded-xl text-sm transition-all shadow-lg shadow-indigo-500/20 flex items-center gap-2 whitespace-nowrap shrink-0"
             >
               <Play className="w-4 h-4" />
               Start Calibrated Assessment
@@ -643,7 +643,7 @@ export const MNCInterviewStudioPage: React.FC = () => {
             value={selectedCompany}
             onChange={(e) => setSelectedCompany(e.target.value)}
             disabled={sessionActive}
-            className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500 font-medium"
+            className="w-full h-11 bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500 font-medium leading-normal truncate"
           >
             <optgroup label="🌟 General & Universal Standards (All-Rounder)">
               <option value="Generic Tier-1 MNC">Generic Tier-1 MNC (Universal High-Bar Standard)</option>
@@ -693,7 +693,7 @@ export const MNCInterviewStudioPage: React.FC = () => {
             value={selectedRole}
             onChange={(e) => setSelectedRole(e.target.value)}
             disabled={sessionActive}
-            className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500"
+            className="w-full h-11 bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500 leading-normal truncate"
           >
             <option value="Senior Backend Engineer">Senior Backend Engineer</option>
             <option value="Full Stack Engineer">Full Stack Engineer</option>
@@ -709,7 +709,7 @@ export const MNCInterviewStudioPage: React.FC = () => {
             value={selectedLevel}
             onChange={(e) => setSelectedLevel(e.target.value)}
             disabled={sessionActive}
-            className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500"
+            className="w-full h-11 bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500 leading-normal truncate"
           >
             <option value="Intern">Intern (0 yrs)</option>
             <option value="SDE-1">SDE-1 (1-2 yrs)</option>
@@ -725,7 +725,7 @@ export const MNCInterviewStudioPage: React.FC = () => {
             value={selectedRound}
             onChange={(e) => setSelectedRound(Number(e.target.value))}
             disabled={sessionActive}
-            className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500"
+            className="w-full h-11 bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500 leading-normal truncate"
           >
             <option value={1}>Round 1: Online Assessment (OA)</option>
             <option value={2}>Round 2: DSA / Algorithmic Coding</option>
