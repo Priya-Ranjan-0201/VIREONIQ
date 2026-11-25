@@ -4,9 +4,8 @@
 
 ### *The Next-Generation Evidence-Driven Career Operating System & MNC ATS Intelligence Platform*
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
-[![Release Status](https://img.shields.io/badge/Release-v16.0.0--rc1-00c853.svg?style=for-the-badge)]()
-[![Automated Tests](https://img.shields.io/badge/Tests-153%2F153_Passing-4169E1.svg?style=for-the-badge)]()
+[![License](https://img.shields.io/badge/License-See_LICENSE_File-red.svg?style=for-the-badge)](LICENSE)
+[![Status](https://img.shields.io/badge/Stage-Hardening_Audit-orange.svg?style=for-the-badge)](docs/BASELINE.md)
 [![Developed by](https://img.shields.io/badge/Developed%20By-Priya%20Ranjan-8A2BE2.svg?style=for-the-badge&logo=github)](https://github.com/Priya-Ranjan-0201)
 
 <p align="center">
@@ -14,7 +13,7 @@
   <img src="https://img.shields.io/badge/FastAPI-0.109+-009688.svg?style=flat-square&logo=fastapi&logoColor=white" alt="FastAPI" />
   <img src="https://img.shields.io/badge/React-18.2-61DAFB.svg?style=flat-square&logo=react&logoColor=black" alt="React" />
   <img src="https://img.shields.io/badge/TypeScript-5.0+-3178C6.svg?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript" />
-  <img src="https://img.shields.io/badge/TailwindCSS-3.4-38B2AC.svg?style=flat-square&logo=tailwindcss&logoColor=white" alt="TailwindCSS" />
+  <img src="https://img.shields.io/badge/TailwindCSS-4.3-38B2AC.svg?style=flat-square&logo=tailwindcss&logoColor=white" alt="TailwindCSS" />
   <img src="https://img.shields.io/badge/Vite-5.0+-646CFF.svg?style=flat-square&logo=vite&logoColor=white" alt="Vite" />
   <img src="https://img.shields.io/badge/PostgreSQL-15+-4169E1.svg?style=flat-square&logo=postgresql&logoColor=white" alt="PostgreSQL" />
   <img src="https://img.shields.io/badge/Redis-7-DC382D.svg?style=flat-square&logo=redis&logoColor=white" alt="Redis" />
@@ -25,9 +24,9 @@
 
 ---
 
-**VIREONIQ X** is an enterprise-grade, evidence-driven career acceleration and workforce intelligence operating system. It bridges the gap between candidate capability, verifiable engineering evidence, and global hiring bars across 30 tier-1 tech giants and financial institutions.
+**VIREONIQ** is an evidence-focused career preparation and workforce analytics platform built with FastAPI and React. It maps resumes, coding assessments, and role requirements into structured readiness diagnostics across multiple target engineering profiles.
 
-Uniting **16 Continuous Intelligence Subsystems**, **Six High-Value Intelligence Engines**, the **MNC ATS Resume Studio (95+ Score Guaranteed)**, and the **Career Decision Explainability Engine** into a closed-loop Career Twin architecture.
+Combining **16 Intelligence Feature Modules**, an **ATS Resume Studio**, and **Career Decision Explanations**, the codebase aims to organize skill evidence around a Career Twin data model (see [docs/BASELINE.md](docs/BASELINE.md) for current verification status and known limitations).
 
 </div>
 
@@ -51,7 +50,7 @@ Uniting **16 Continuous Intelligence Subsystems**, **Six High-Value Intelligence
 
 - [🌟 Core Platform Features](#-core-platform-features)
 - [🏛️ Closed-Loop Career Twin Architecture](#️-closed-loop-career-twin-architecture)
-- [🌟 16 Production Intelligence Phases](#-16-production-intelligence-phases)
+- [🌟 Intelligence Feature Modules](#-intelligence-feature-modules)
 - [📄 MNC ATS Resume Studio (6 Elite Templates)](#-mnc-ats-resume-studio-6-elite-templates)
 - [🧠 6 High-Value Intelligence Capabilities](#-6-high-value-intelligence-capabilities)
 - [💻 System Tech Stack](#-system-tech-stack)
@@ -59,7 +58,7 @@ Uniting **16 Continuous Intelligence Subsystems**, **Six High-Value Intelligence
   - [Option 1: Ultra-Fast Native Dev Mode (Recommended - Starts in <2s)](#option-1-ultra-fast-native-dev-mode-recommended---starts-in-2s)
   - [Option 2: Optimized Docker Compose Stack](#option-2-optimized-docker-compose-stack)
   - [Option 3: Windows 1-Click Interactive Wizard (`run.bat`)](#option-3-windows-1-click-interactive-wizard-runbat)
-- [🧪 Automated Test Suite (153/153 Tests Passing)](#-automated-test-suite-153153-tests-passing)
+- [🧪 Automated Test Suite](#-automated-test-suite)
 - [🔑 Default Test Credentials](#-default-test-credentials)
 - [📡 API Reference Overview](#-api-reference-overview)
 - [📂 Repository Directory Structure](#-repository-directory-structure)
@@ -104,7 +103,7 @@ $$\text{PERSON} \longrightarrow \text{GOAL} \longrightarrow \text{SKILL} \longri
 
 ---
 
-## 🌟 16 Production Intelligence Phases
+## 🌟 Intelligence Feature Modules
 
 | Phase | Subsystem | Key Innovation & Output | Status |
 |:---|:---|:---|:---:|
@@ -236,7 +235,7 @@ Select:
 
 ---
 
-## 🧪 Automated Test Suite (153/153 Tests Passing)
+## 🧪 Automated Test Suite
 
 VIREONIQ X contains an enterprise test suite covering all 16 intelligence phases:
 
@@ -247,12 +246,15 @@ pytest tests/ -v
 ```
 
 ```
-========================= 153 passed in 14.82s =========================
+# See docs/BASELINE.md for verified pytest counts and collection notes.
 ```
 
 ---
 
-## 🔑 Default Test Credentials
+## 🔑 Local Development Seed Credentials
+
+> [!CAUTION]
+> Seed scripts in `backend/scripts/` are strictly for local development and testing. Never run them or leave default accounts active in staging or production.
 
 | Role | Email | Password | Access Scope |
 |:---|:---|:---|:---|
@@ -294,7 +296,7 @@ VIREONIQ-X/
 │   ├── db/                      # Postgres, Mongo, Redis, Qdrant connectors
 │   ├── schemas/                 # Pydantic request/response schemas
 │   ├── services/                # 16-phase intelligence engines & services
-│   ├── tests/                   # 153 unit & integration test suites
+│   ├── tests/                   # Backend pytest test suite (see docs/BASELINE.md)
 │   ├── workers/                 # Celery task definitions
 │   ├── Dockerfile               # High-speed multi-stage Docker build
 │   └── requirements.txt         # Optimized Python dependencies
@@ -303,7 +305,7 @@ VIREONIQ-X/
 │   │   ├── api/                 # Axios API clients & React Query hooks
 │   │   ├── components/          # Reusable UI components & navigation
 │   │   ├── layouts/             # Auth, Dashboard, and Guest guards
-│   │   ├── pages/               # 40+ production application pages
+│   │   ├── pages/               # Application route pages
 │   │   └── store/               # Zustand state stores
 │   ├── package.json             # React 18, Vite 5, TailwindCSS
 │   └── Dockerfile               # Production static build
@@ -323,13 +325,14 @@ VIREONIQ-X/
 - **HMAC-SHA256 Integrity**: Signed payloads for credential verification and secure webhook deliveries.
 - **Level 3 Autonomy Safety**: Autonomous engine cannot execute high-impact external actions without explicit user confirmation.
 - **Fairness Benchmarking**: Statistical parity benchmarking on controlled synthetic cohorts (DIR = 1.0) with mandatory human oversight.
-- **GDPR & CCPA Compliant**: Built-in data export and account erasure endpoints.
+- **Data Export & Deletion Endpoints**: Includes `/api/v1/privacy-security/export` and `delete-account` endpoints (not independently audited or certified for GDPR/CCPA legal compliance).
 
 ---
 
 ## 📄 License & Attribution
 
-This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
+> [!WARNING]
+> **License Notice (Pending Decision)**: The repository [LICENSE](LICENSE) file currently contains a **Proprietary & Strict Source-Available Copyright License**, which previously conflicted with an MIT badge in this README. Until the repository owner confirms the intended license, treat [LICENSE](LICENSE) as the controlling license file.
 
 <div align="center">
 

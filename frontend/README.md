@@ -1,6 +1,6 @@
 # 🎨 VIREONIQ X — Modern Frontend Architecture & UI Guide
 
-The frontend for **VIREONIQ (PLACEIQ)** is a high-performance, single-page web application built with **React 18**, **TypeScript**, and **Vite 5**, styled using **Tailwind CSS 3.4** and **Radix UI** primitives, with smooth micro-animations powered by **Framer Motion**.
+The frontend for **VIREONIQ** is a high-performance, single-page web application built with **React 18**, **TypeScript**, and **Vite 5**, styled using **Tailwind CSS 4** (`@tailwindcss/vite`) and **Radix UI** primitives, with smooth micro-animations powered by **Framer Motion**.
 
 ---
 
@@ -10,7 +10,7 @@ The frontend for **VIREONIQ (PLACEIQ)** is a high-performance, single-page web a
 |:---|:---|:---|
 | **Framework & Core** | React 18.2 + TypeScript 5.0+ | Strict type-safe UI component hierarchy |
 | **Bundler & Dev Server** | Vite 5.0+ | Sub-second HMR and production bundle optimization |
-| **Styling & Design System** | Tailwind CSS 3.4 | Utility-first responsive design and dark-mode styling |
+| **Styling & Design System** | Tailwind CSS 4 | Utility-first responsive design and dark-mode styling |
 | **Icons & Visuals** | Lucide React | Clean, modern iconography |
 | **Micro-Animations** | Framer Motion | Fluid transitions, modal entries, and interactive gestures |
 | **State Management** | Zustand | Lightweight, atomic client-side state stores |
@@ -117,5 +117,5 @@ npm run preview
 ---
 
 <div align="center">
-  <sub>© 2026 VIREONIQ (PLACEIQ) — Frontend Engineering Guide</sub>
+  <sub>© 2026 VIREONIQ — Frontend Engineering Guide</sub>
 </div>

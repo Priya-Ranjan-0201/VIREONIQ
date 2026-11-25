@@ -1,6 +1,6 @@
-# VIREONIQ (PLACEIQ) — Engineering Guidelines & Master Rules
+# VIREONIQ — Engineering Guidelines & Master Rules
 
-**Project Name**: VIREONIQ (PLACEIQ) — AI Career Intelligence Platform  
+**Project Name**: VIREONIQ — AI Career Intelligence Platform  
 **Purpose**: Production-grade, evidence-driven career acceleration and workforce intelligence operating system.
 
 ---
@@ -18,7 +18,7 @@
 ## 2. Frontend Technology Stack
 - **Framework**: React 18 with TypeScript in strict mode.
 - **Build Tool**: Vite 5 with Hot Module Replacement (HMR).
-- **Styling**: Tailwind CSS 3.4, Lucide React icons, Radix UI primitives.
+- **Styling**: Tailwind CSS 4 (`@tailwindcss/vite`), Lucide React icons, Radix UI primitives.
 - **Animations**: Framer Motion for micro-interactions and transitions.
 - **Charts & Data Viz**: Recharts for readiness, radar, and telemetry visualization.
 - **State Management**: Zustand for fast global state management.
@@ -60,10 +60,10 @@
 - Strict type annotations on all function parameters and return types.
 - Complete docstrings on all public methods and service classes.
 - Zero placeholder functions raising `NotImplementedError` or returning ungrounded dummy data in production paths.
-- All automated tests in `backend/tests` must pass 100% (109/109 tests).
+- Automated tests in `backend/tests` should pass cleanly via `pytest` (benchmarks separated via `-m benchmark`).
 
 ---
 
 <div align="center">
-  <sub>© 2026 VIREONIQ (PLACEIQ) — Engineering Rules & Architecture Invariants</sub>
+  <sub>© 2026 VIREONIQ — Engineering Rules & Architecture Invariants</sub>
 </div>

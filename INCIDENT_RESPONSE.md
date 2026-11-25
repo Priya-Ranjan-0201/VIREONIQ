@@ -56,5 +56,5 @@ graph TD
 ---
 
 <div align="center">
-  <sub>© 2026 VIREONIQ (PLACEIQ) — Incident Response Plan</sub>
+  <sub>© 2026 VIREONIQ — Incident Response Plan</sub>
 </div>
