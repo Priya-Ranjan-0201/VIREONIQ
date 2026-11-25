@@ -66,3 +66,10 @@ uploads/
 # System Files
 .DS_Store
 Thumbs.db
+
+# Celery beat runtime state, tool caches, & local database files
+celerybeat-schedule*
+.ruff_cache/
+.mypy_cache/
+vireoniq.db
+**/vireoniq.db

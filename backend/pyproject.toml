@@ -1,3 +1,30 @@
+[project]
+name = "vireoniq-backend"
+version = "0.9.0"
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+markers = ["benchmark: performance and load benchmarks"]
+addopts = '-m "not benchmark"'
+
+[tool.ruff]
+target-version = "py312"
+line-length = 120
+exclude = [".venv", "alembic", "__pycache__"]
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F"]
+
+[tool.mypy]
+python_version = "3.12"
+explicit_package_bases = true
+ignore_missing_imports = true
+exclude = ["^.venv/", "^alembic/"]
+
 [tool.pyrefly]
-python-interpreter-path = "D:/Downloads/VIREONIQ-MERGE/VIREONIQ-X/backend/.venv/Scripts/python.exe"
-site-package-path = "D:/Downloads/VIREONIQ-MERGE/VIREONIQ-X/backend/.venv/Lib/site-packages"
+project-includes = ["."]
+project-excludes = [".venv", "**/__pycache__"]
+python-version = "3.12.0"
