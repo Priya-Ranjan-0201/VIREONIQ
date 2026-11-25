@@ -78,3 +78,18 @@ The relational PostgreSQL database models (defined in `backend/db/models.py`) in
 - **Readiness & Goals**: `CareerReadinessScore`, `CareerGoal`, `CareerGoalRecord`, `NextBestAction`.
 - **Talent Passport & Verifications**: `VerifiedCredential`, `CredentialAuditLog`, `TalentPassportPublicView`.
 - **Audit & Intelligence Receipts**: `IntelligenceReceipt`, `AuditLog`.
+
+---
+
+## 4. Service Consolidation & Overlap Comparison Matrix
+
+In compliance with Non-Negotiable Rule 4 (prefer consolidating over deleting without unilateral removal), four overlapping functional service pairs were audited:
+
+| Domain | Primary Canonical Service | Legacy Service | Callers / Tests | Overlap Analysis & Consolidation Recommendation |
+|---|---|---|---|---|
+| **Career Simulation** | `services/career_simulation_service.py` | `services/career_simulator_service.py` | `api/v1/endpoints/career_simulator.py`, `tests/test_career_simulator.py` | Both calculate what-if trajectories. The canonical service models multi-year horizon bounds and ROI ratios; legacy service provides fast endpoint-compatible dict responses. **Consolidation**: Route legacy endpoint through the canonical engine with an output adapter. |
+| **Credential Issuance** | `services/credential_issuance_service.py` | `services/credential_service.py` | `api/v1/endpoints/credentials.py`, `tests/test_talent_passport.py` | `credential_issuance_service` enforces strict HMAC signing and empty-evidence rejection; `credential_service` handles public rendering and QR views. **Consolidation**: Maintain `credential_issuance_service` as the signing authority while `credential_service` handles presentation. |
+| **Skill Gap Analysis** | `services/gap_intelligence_service.py` | `services/gap_service.py` & `services/gap_engine.py` | `api/v1/endpoints/gap.py`, `services/analytics_service.py` | Legacy `gap_engine.py` calculates set-difference gaps; `gap_intelligence_service` incorporates taxonomy prerequisite graphs. **Consolidation**: Unified behind `gap_intelligence_service` while maintaining backward-compatible `GapAnalysisResponse` schema. |
+| **Interventions & NBA** | `services/career_intervention_engine.py` | `services/intervention_service.py` | `api/v1/endpoints/missions.py`, `tests/test_prescriptive_interventions.py` | `career_intervention_engine` implements Level 3 human-in-the-loop autonomy guards and root bottleneck ordering; legacy service handles micro-task tracking. **Consolidation**: Combine micro-tasks under the canonical intervention engine. |
+| **Code Execution** | `services/code/judge0_provider.py` | `services/code/judge0_mock.py` | `services/code_execution_service.py` | `judge0_mock.py` has 0 callers in production or tests. Safe to retire once developer mock mode is formalized. |
+

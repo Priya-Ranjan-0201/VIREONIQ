@@ -1,7 +1,6 @@
-# Stage 1: Build
-FROM python:3.11-slim AS builder
+# Stage 1: Build dependencies
+FROM python:3.12-slim AS builder
 
-# Install build dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
     libpq-dev \
@@ -9,32 +8,37 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 WORKDIR /install
 
-COPY requirements.txt .
+COPY requirements.txt requirements-dev.txt ./
 
-# Install requirements with timeout and retry resilience
-RUN pip install --no-cache-dir --default-timeout=1000 --retries 5 --prefix=/install --extra-index-url https://download.pytorch.org/whl/cpu -r requirements.txt
+RUN pip install --no-cache-dir --default-timeout=1000 --retries 5 --prefix=/install \
+    --extra-index-url https://download.pytorch.org/whl/cpu \
+    -r requirements.txt
 
 # Stage 2: Production Runtime
-FROM python:3.11-slim
+FROM python:3.12-slim
 
-# Install runtime dependencies (libmagic for python-magic)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libmagic1 \
     openssl \
+    curl \
     && rm -rf /var/lib/apt/lists/*
+
+# Run as unprivileged user
+RUN useradd -m -u 1000 -s /bin/bash appuser
 
 WORKDIR /app
 
 # Copy python packages from builder
 COPY --from=builder /install /usr/local
 
-# Copy application code
-COPY . .
+# Copy application source
+COPY --chown=appuser:appuser . .
 
-# Generate RS256 JWT Keys if they don't exist
-RUN mkdir -p /app/keys
+USER appuser
 
 EXPOSE 8000
 
-# Default CMD (can be overridden by docker-compose)
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD curl -f http://localhost:8000/health || exit 1
+
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
