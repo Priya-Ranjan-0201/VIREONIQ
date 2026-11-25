@@ -297,7 +297,7 @@ class Solution {
 fun main() {
     val sol = Solution()
     val intervals = arrayOf(intArrayOf(1, 3), intArrayOf(2, 6), intArrayOf(8, 10), intArrayOf(15, 18))
-    println("Merged count: ${sol.merge(intervals).size}")
+    println("Merged count: \${sol.merge(intervals).size}")
 }
 `,
       swift: `class Solution {
@@ -372,7 +372,7 @@ print_r(mergeIntervals([[1, 3], [2, 6], [8, 10], [15, 18]]));
 
   def main(args: Array[String]): Unit = {
     val res = merge(Array(Array(1, 3), Array(2, 6), Array(8, 10), Array(15, 18)))
-    println(s"Merged count: ${res.length}")
+    println(s"Merged count: \${res.length}")
   }
 }
 `,

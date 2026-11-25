@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Upload, FileText, CheckCircle, ArrowLeft, Loader2, Sparkles, AlertCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import client from "@/api/client";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { AlertCircle, CheckCircle, FileText, Loader2, Sparkles, Upload } from "lucide-react";
+import React, { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 interface ScoreResponse {
@@ -30,7 +30,7 @@ interface ResumeScan {
 
 export const ResumeScorePage = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [targetRole, setTargetRole] = useState("General / Universal CV");
+  const [targetRole] = useState("General / Universal CV");
   const [isLoading, setIsLoading] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [history, setHistory] = useState<ResumeScan[]>([]);

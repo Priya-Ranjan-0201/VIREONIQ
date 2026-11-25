@@ -1,8 +1,8 @@
-import { useState, useEffect, useRef } from "react";
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Users2, Search, ArrowRight, Video, MessageCircle, ShieldCheck, Zap, RotateCcw, CheckCircle2, Sparkles } from "lucide-react";
+import { Card } from "@/components/ui/card";
 import { useAuthStore } from "@/store/authStore";
+import { ArrowRight, CheckCircle2, RotateCcw, Search, ShieldCheck, Sparkles, Users2, Video, Zap } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 export const P2PMockPage = () => {
   const { user } = useAuthStore();

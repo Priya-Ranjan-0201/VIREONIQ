@@ -1,4 +1,4 @@
-import { GraduationCap, Users, Target, AlertTriangle, TrendingUp, BarChart2, Building2, Medal } from 'lucide-react';
+import { Building2, GraduationCap, Medal, Target, Users } from 'lucide-react';
 
 const MOCK_DATA = {
   college_name: 'LPU - Lovely Professional University',

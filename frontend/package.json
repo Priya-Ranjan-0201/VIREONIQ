@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "tsc -p tsconfig.app.json --noEmit && vite build",
+    "typecheck": "tsc -p tsconfig.app.json --noEmit",
+    "test": "vitest run",
     "lint": "eslint . --report-unused-disable-directives",
     "preview": "vite preview"
   },
@@ -44,22 +46,24 @@
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.1",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.3",
     "@types/node": "^26.4.0",
     "@types/react": "^18.2.43",
     "@types/react-dom": "^18.2.17",
     "@typescript-eslint/eslint-plugin": "^6.14.0",
     "@typescript-eslint/parser": "^6.14.0",
     "@vitejs/plugin-react": "^4.2.1",
-    "autoprefixer": "^10.4.17",
     "eslint": "^8.55.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
-    "postcss": "^8.4.33",
+    "jsdom": "^25.0.1",
     "tailwindcss": "^4.3.1",
     "typescript": "^5.2.2",
     "typescript-eslint": "^8.62.0",
     "vite": "^5.0.8",
     "vite-plugin-pwa": "^0.19.0",
+    "vitest": "^2.1.9",
     "workbox-build": "^7.4.1"
   },
   "overrides": {

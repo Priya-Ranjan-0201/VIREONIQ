@@ -1,13 +1,26 @@
-import { useState, useEffect, useRef } from "react";
-import {
-  FileText, Wand2, CheckCircle2,
-  Sparkles, Target, Lightbulb, ArrowRight,
-  Upload, Plus, Trash2, Edit3, Printer, Copy, Check, ShieldCheck,
-  Building2, Briefcase, GraduationCap, Award, Cpu, Code2,
-  Flame, Star, Percent, Download, ExternalLink, RefreshCw, X
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
 import client from "@/api/client";
+import { Button } from "@/components/ui/button";
+import {
+    Award,
+    Briefcase,
+    Check,
+    Code2,
+    Copy,
+    Cpu,
+    FileText,
+    GraduationCap,
+    Plus,
+    Printer,
+    ShieldCheck,
+    Sparkles,
+    Star,
+    Target,
+    Trash2,
+    Upload,
+    Wand2,
+    X
+} from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 // ─── Data Interfaces ──────────────────────────────────────────────────────────
@@ -896,7 +909,7 @@ type ActiveEditorSection = "profile_target" | "experience_projects" | "education
 
 export const ResumeBuilder = () => {
   // Mode selection state
-  const [entryMode, setEntryMode] = useState<"choose" | "scratch" | "improve">("scratch");
+  const [, setEntryMode] = useState<"choose" | "scratch" | "improve">("scratch");
   const [targetRole, setTargetRole] = useState("Software Engineer");
   const [targetCompany, setTargetCompany] = useState("Google");
   const [templateStyle, setTemplateStyle] = useState<TemplateStyle>("harvard");
@@ -909,13 +922,12 @@ export const ResumeBuilder = () => {
   const [isGeneratingAi, setIsGeneratingAi] = useState<boolean>(false);
   const [genName, setGenName] = useState<string>("Alex Morgan");
   const [genEmail, setGenEmail] = useState<string>("alex.morgan@example.com");
-  const [genPhone, setGenPhone] = useState<string>("+1 (555) 234-5678");
+  const [genPhone] = useState<string>("+1 (555) 234-5678");
   const [genRole, setGenRole] = useState<string>("Senior Backend Engineer");
-  const [genCompany, setGenCompany] = useState<string>("Google");
+  const [genCompany] = useState<string>("Google");
   const [genLevel, setGenLevel] = useState<string>("Senior (5-8 yrs)");
   const [genStyle, setGenStyle] = useState<TemplateStyle>("faang");
   const [genHighlights, setGenHighlights] = useState<string>("Distributed high-throughput microservices, Redis caching, sub-20ms p99 latency, Kubernetes & AWS scaling");
-  const jsonInputRef = useRef<HTMLInputElement>(null);
 
   // Core resume state
   const [resumeData, setResumeData] = useState<ResumeData>(
@@ -1029,90 +1041,12 @@ export const ResumeBuilder = () => {
     }
   };
 
-  // 1-Click Elevate All Bullets (Polishes existing bullets to action-oriented phrasing without inventing false claims)
-  const handleElevateAllBullets = () => {
-    let count = 0;
-    const actionVerbs = [
-      "Architected", "Spearheaded", "Engineered", "Optimized", "Scaled",
-      "Orchestrated", "Implemented", "Developed", "Deployed", "Streamlined",
-      "Automated", "Delivered", "Transformed", "Standardized", "Refactored"
-    ];
-
-    const elevated = resumeData.experience.map(exp => ({
-      ...exp,
-      bullets: (exp.bullets || []).map((b, idx) => {
-        if (!b || b.trim().length < 3) return b;
-        count++;
-        const trimmed = b.trim();
-        const firstWord = trimmed.split(" ")[0] || "";
-        const lowerFirst = firstWord.toLowerCase().replace(/[^a-z]/g, "");
-        
-        // If already starts with a strong action verb, capitalize cleanly
-        const existingVerb = actionVerbs.find(v => v.toLowerCase() === lowerFirst);
-        if (existingVerb) {
-          return trimmed.charAt(0).toUpperCase() + trimmed.slice(1);
-        }
-        
-        // Pick an action verb based on index and polish lead-in
-        const verb = actionVerbs[idx % actionVerbs.length];
-        const cleanedRemainder = trimmed.replace(/^(responsible for|worked on|helped with|managed to|involved in|worked in|participated in)\s*/i, "");
-        const lowerRest = cleanedRemainder.charAt(0).toLowerCase() + cleanedRemainder.slice(1);
-        return `${verb} ${lowerRest}`;
-      })
-    }));
-
-    const elevatedProjects = (resumeData.projects || []).map(p => ({ ...p }));
-
-    setResumeData(prev => ({
-      ...prev,
-      experience: elevated,
-      projects: elevatedProjects,
-    }));
-    toast.success(`✨ Elevate Complete! ${count} bullets enhanced with strong action verbs! 🚀`);
-  };
-
-  // Export JSON Backup
-  const handleExportJson = () => {
-    const blob = new Blob([JSON.stringify(resumeData, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${(resumeData.name || "resume").toLowerCase().replace(/\s+/g, "_")}_vireoniq.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-    toast.success("Resume JSON backup downloaded! 💾");
-  };
-
-  // Import JSON Backup
-  const handleImportJson = (file: File) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const parsed = JSON.parse(e.target?.result as string);
-        if (parsed.name || parsed.experience) {
-          setResumeData(parsed);
-          toast.success("Resume successfully restored from JSON! 📂");
-        } else {
-          toast.error("Invalid resume JSON structure.");
-        }
-      } catch {
-        toast.error("Failed to parse JSON file.");
-      }
-    };
-    reader.readAsText(file);
-  };
-
-  // 1-Click MNC 90+ Auto-Boost
-  
   // Look up selected company metadata
   const selectedCompanyInfo = TARGET_COMPANIES.find(c => c.name === targetCompany) || TARGET_COMPANIES[0];
 
   // Auto-inject keywords for Target Company & Role
   const handleAutoInjectKeywords = () => {
     const compKws = COMPANY_KEYWORDS_MAP[targetCompany] || ["Distributed Systems", "Cloud", "Microservices"];
-    const roleKws = [
-      "Python", "TypeScript", "FastAPI", "React", "Docker", "Kubernetes", "AWS", "PostgreSQL", "Redis", "CI/CD"
-    ];
 
     setResumeData(prev => {
       const skills = { ...prev.skills };
@@ -1347,7 +1281,7 @@ export const ResumeBuilder = () => {
       const bullets: string[] = [];
       lines.slice(1).forEach(l => {
         if (l.startsWith("•") || l.startsWith("-") || l.startsWith("*")) {
-          bullets.push(l.replace(/^[\s•\-\*]+/, ""));
+          bullets.push(l.replace(/^[\s•\-*]+/, ""));
         }
       });
       const upgraded = autoEnhanceResumeData({
@@ -1398,27 +1332,6 @@ export const ResumeBuilder = () => {
       toast.success("Resume uploaded & loaded into studio! 📄✨");
     } finally {
       setIsParsing(false);
-    }
-  };
-
-  // Load Preset
-  const handleLoadPreset = (roleName: string) => {
-    const preset = PRESET_TEMPLATES[roleName];
-    if (preset) {
-      setResumeData({
-        ...DEFAULT_EMPTY_RESUME,
-        ...preset
-      } as ResumeData);
-      if (roleName.includes("Harvard")) {
-        setTemplateStyle("harvard");
-      } else if (roleName.includes("Wall Street")) {
-        setTemplateStyle("wallstreet");
-      } else {
-        setTemplateStyle("faang");
-      }
-      setTargetRole(roleName.includes("AI") ? "AI / ML Engineer" : "Software Engineer");
-      setEntryMode("scratch");
-      toast.success(`Loaded ${roleName}! 🚀`);
     }
   };
 

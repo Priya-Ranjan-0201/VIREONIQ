@@ -1,38 +1,31 @@
-import React, { useState, useEffect } from "react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import {
-  Navigation,
-  ChevronRight,
-  CheckCircle2,
-  Circle,
-  AlertTriangle,
-  TrendingUp,
-  ShieldCheck,
-  Building2,
-  Zap,
-  MapPin,
-  Clock,
-  ArrowRight,
-  Sparkles,
-  RefreshCw,
-  Compass,
-  Award,
-  ExternalLink,
-  SlidersHorizontal,
-  Layers,
-  AlertOctagon,
-  CheckCheck,
-  Target
-} from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Progress } from "@/components/ui/progress";
-import { analyticsApi } from "@/api/analyticsApi";
 import type {
-  CareerGPSCalculateRequest,
-  CareerGPSNavigationData,
-  CareerGPSRoute,
-  CareerGPSWaypoint
+    CareerGPSCalculateRequest,
+    CareerGPSNavigationData,
+    CareerGPSWaypoint
 } from "@/api/analyticsApi";
+import { analyticsApi } from "@/api/analyticsApi";
+import { Card } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { cn } from "@/lib/utils";
+import {
+    AlertOctagon,
+    Building2,
+    CheckCheck,
+    CheckCircle2,
+    ChevronRight,
+    Circle,
+    Clock,
+    Compass,
+    Layers,
+    Navigation,
+    RefreshCw,
+    SlidersHorizontal,
+    Sparkles,
+    Target,
+    TrendingUp,
+    Zap
+} from "lucide-react";
+import React, { useEffect, useState } from "react";
 
 export const CareerGPSPage: React.FC = () => {
   // User Input Form State

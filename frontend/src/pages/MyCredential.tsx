@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { Award, Share2, Clipboard, Shield, Download, RefreshCw } from "lucide-react";
 import client from "@/api/client";
+import { Award, Clipboard, RefreshCw, Shield } from "lucide-react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 interface Credential {

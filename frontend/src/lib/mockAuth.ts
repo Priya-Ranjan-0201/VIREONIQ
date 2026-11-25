@@ -76,10 +76,18 @@ export function mockRegister(email: string, password: string): { success: boolea
   return { success: true };
 }
 
+export interface MockAuthUser {
+  id: string;
+  email: string;
+  role_id: string;
+  is_active: boolean;
+  is_email_verified: boolean;
+}
+
 export function mockLogin(
   email: string,
   password: string
-): { success: boolean; token?: string; user?: object; error?: string } {
+): { success: boolean; token?: string; user?: MockAuthUser; error?: string } {
   if (!isMockAuthEnabled()) {
     return { success: false, error: 'Offline mock authentication is disabled.' };
   }

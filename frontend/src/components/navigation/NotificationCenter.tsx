@@ -1,10 +1,10 @@
-import { useState } from "react";
-import { Bell, Clock, MessageSquare, Gift, Info } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-import { useNotifications, useMarkRead } from "../../api/hooks/useNotifications";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { AnimatePresence, motion } from "framer-motion";
+import { Bell, Clock, Gift, Info, MessageSquare } from "lucide-react";
+import { useState } from "react";
+import { useMarkRead, useNotifications } from "../../api/hooks/useNotifications";
 
 export const NotificationCenter = () => {
   const [isOpen, setIsOpen] = useState(false);

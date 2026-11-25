@@ -1,6 +1,6 @@
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { TrendingUp, DollarSign, Target, Activity } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { Activity, DollarSign, Target, TrendingUp } from "lucide-react";
 
 interface StatsProps {
   employabilityIndex: number;

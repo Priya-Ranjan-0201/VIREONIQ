@@ -1,30 +1,27 @@
-import { useEffect, useState, useMemo } from "react";
-import { Card, CardContent } from "@/components/ui/card";
+import { internshipApi, type InternshipTask, type TaskEvaluationResult } from "@/api/internshipApi";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import {
-  Briefcase,
-  Zap,
-  Trophy,
-  ShieldCheck,
-  ArrowRight,
-  Clock,
-  CheckCircle2,
-  Code2,
-  Layers,
-  Terminal,
-  Play,
-  Share2,
-  Copy,
-  ExternalLink,
-  Sparkles,
-  Search,
-  Filter,
-  X,
-  Award,
-  AlertCircle,
-  RefreshCw
+    AlertCircle,
+    ArrowRight,
+    Award,
+    Briefcase,
+    CheckCircle2,
+    Clock,
+    Code2,
+    Copy,
+    Layers,
+    Play,
+    RefreshCw,
+    Search,
+    ShieldCheck,
+    Sparkles,
+    Terminal,
+    Trophy,
+    X,
+    Zap
 } from "lucide-react";
-import { internshipApi, InternshipTask, TaskEvaluationResult } from "@/api/internshipApi";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
 // Built-in verified industry tasks fallback catalog
@@ -367,7 +364,6 @@ class GeospatialDispatchEngine:
 
 export const MicroInternships = () => {
   const [tasks, setTasks] = useState<InternshipTask[]>(FALLBACK_TASKS);
-  const [isLoading, setIsLoading] = useState(false);
   const [userXP, setUserXP] = useState<number>(1250);
   const [completedTaskIds, setCompletedTaskIds] = useState<Record<string, { certId: string; score: number; completedAt: string }>>({});
   const [activeTask, setActiveTask] = useState<InternshipTask | null>(null);
@@ -387,7 +383,7 @@ export const MicroInternships = () => {
       .then((data) => {
         if (data && data.length > 0) {
           // Merge API data with rich starter codes from fallback if needed
-          const merged = data.map((apiTask) => {
+          const merged: InternshipTask[] = data.map((apiTask) => {
             const fb = FALLBACK_TASKS.find((t) => t.id === apiTask.id);
             return {
               ...apiTask,

@@ -1,7 +1,7 @@
-import { useState, useEffect, useRef } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Mic, Settings, Play, Send, BrainCircuit, Activity, RotateCcw, AlertTriangle, CheckCircle2, Sparkles, UserCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Activity, AlertTriangle, BrainCircuit, CheckCircle2, Mic, Play, RotateCcw, Send, UserCheck } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { useInterviewStore } from "../../store/interviewStore";
 
 const PERSONAS = [

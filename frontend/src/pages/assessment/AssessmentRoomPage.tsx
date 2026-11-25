@@ -1,23 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import {
-  Brain,
-  Cpu,
-  CheckCircle2,
-  AlertTriangle,
-  Play,
-  ArrowRight,
-  ShieldCheck,
-  Zap,
-  Code2,
-  Terminal,
-  RotateCcw,
-  Sparkles,
-  Award,
-  Layers,
-  ChevronRight
-} from 'lucide-react';
-import { careerIntelligenceApi } from '@/api/careerIntelligenceApi';
 import type { AssessmentQuestionData, AssessmentResultData } from '@/api/careerIntelligenceApi';
+import { careerIntelligenceApi } from '@/api/careerIntelligenceApi';
+import {
+    Award,
+    Brain,
+    ChevronRight,
+    Code2,
+    Play,
+    RotateCcw,
+    ShieldCheck,
+    Sparkles,
+    Terminal
+} from 'lucide-react';
+import React, { useState } from 'react';
 
 export const AssessmentRoomPage: React.FC = () => {
   const [targetRole, setTargetRole] = useState<string>('Backend Engineer');

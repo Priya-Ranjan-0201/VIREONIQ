@@ -1,13 +1,42 @@
-import { Link, useLocation } from 'react-router-dom';
-import {
-  LayoutDashboard, FileText, Target, MessageSquare, Briefcase, ClipboardList,
-  CreditCard, Settings, LogOut, Zap, BarChart3, Mic, ShieldCheck, Users2,
-  BookOpen, X, Navigation, Trophy, Crown, Dna, Brain, Building2,
-  TrendingUp, Activity, Eye, Calendar, Cpu, RefreshCw, Globe, Award, Flame, Sparkles, Compass,
-  CheckCircle2, DollarSign, Code2
-} from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/store/authStore';
+import {
+    Activity,
+    Award,
+    BarChart3,
+    BookOpen,
+    Brain,
+    Briefcase,
+    Building2,
+    Calendar,
+    ClipboardList,
+    Code2,
+    Compass,
+    Cpu,
+    CreditCard,
+    Crown, Dna,
+    DollarSign,
+    Eye,
+    FileText,
+    Flame,
+    Globe,
+    LayoutDashboard,
+    LogOut,
+    MessageSquare,
+    Mic,
+    Navigation,
+    RefreshCw,
+    Settings,
+    ShieldCheck,
+    Sparkles,
+    Target,
+    TrendingUp,
+    Trophy,
+    Users2,
+    X,
+    Zap
+} from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
 
 const navSections = [
   {

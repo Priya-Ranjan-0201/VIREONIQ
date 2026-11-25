@@ -1,4 +1,4 @@
-import type { DailyMissionData, DailyMissionTask } from '@/api/careerIntelligenceApi';
+import type { DailyMissionData } from '@/api/careerIntelligenceApi';
 
 export const TOP_25_MNCS = [
   "Google", "Amazon", "Meta", "Microsoft", "Uber", "Bloomberg", "Adobe",

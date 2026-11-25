@@ -1,33 +1,29 @@
-import React, { useState, useEffect } from 'react';
-import {
-  Compass,
-  Sparkles,
-  Target,
-  TrendingUp,
-  AlertTriangle,
-  CheckCircle2,
-  Clock,
-  Shield,
-  ShieldAlert,
-  ArrowRight,
-  Flame,
-  Layers,
-  HelpCircle,
-  XCircle,
-  RefreshCw,
-  BellRing,
-  Activity,
-  FileQuestion,
-  Power
-} from 'lucide-react';
 import { careerIntelligenceApi } from '@/api/careerIntelligenceApi';
+import {
+    Activity,
+    AlertTriangle,
+    ArrowRight,
+    BellRing,
+    CheckCircle2,
+    Clock,
+    Compass,
+    FileQuestion,
+    Power,
+    RefreshCw,
+    Shield,
+    Sparkles,
+    Target,
+    TrendingUp,
+    XCircle
+} from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 
 export const CareerControlCenterPage: React.FC = () => {
   const [brief, setBrief] = useState<any>(null);
   const [signals, setSignals] = useState<any[]>([]);
   const [goals, setGoals] = useState<any>(null);
-  const [preferences, setPreferences] = useState<any>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [, setPreferences] = useState<any>(null);
+  const [, setLoading] = useState<boolean>(true);
   const [showWhyModal, setShowWhyModal] = useState<boolean>(false);
   const [showDisputeModal, setShowDisputeModal] = useState<boolean>(false);
   const [disputeReason, setDisputeReason] = useState<string>('');

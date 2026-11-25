@@ -1,20 +1,20 @@
-import { 
-  X, 
-  Calendar, 
-  Plus, 
-  FileText, 
-  Trash2,
-  ExternalLink,
-  MapPin,
-  CalendarDays
-} from "lucide-react";
-import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { useAddAppEvent } from "../../api/hooks/useCRM";
-import { useSyncEvent } from "../../api/hooks/useNotifications";
+import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
+import {
+    Calendar,
+    CalendarDays,
+    ExternalLink,
+    FileText,
+    MapPin,
+    Plus,
+    Trash2,
+    X
+} from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useAddAppEvent } from "../../api/hooks/useCRM";
+import { useSyncEvent } from "../../api/hooks/useNotifications";
 
 interface Props {
   application: any;

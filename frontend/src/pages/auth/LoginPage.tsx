@@ -1,12 +1,13 @@
-import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useAuthStore } from '@/store/authStore';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { toast } from 'sonner';
 import api from '@/lib/axios';
+import { extractApiErrorMessage, isNetworkError as isApiNetworkError } from '@/lib/errors';
 import { isMockAuthEnabled, mockLogin } from '@/lib/mockAuth';
+import { useAuthStore } from '@/store/authStore';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 
 export const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -29,14 +30,15 @@ export const LoginPage = () => {
       setAuth(userResponse.data, access_token);
       toast.success('Access Granted. Welcome back.');
       navigate('/app/dashboard');
-    } catch (backendError: any) {
-      const isNetworkError = !backendError.response;
+    } catch (backendError: unknown) {
+      const isNetworkError = isApiNetworkError(backendError);
+
 
       if (isNetworkError && isMockAuthEnabled()) {
         // Explicit dev-only fallback when backend is unreachable
         const result = mockLogin(email, password);
         if (result.success && result.token && result.user) {
-          setAuth(result.user as any, result.token);
+          setAuth(result.user, result.token);
           toast.success('Access Granted (Dev Mock Mode). Welcome back!');
           navigate('/app/dashboard');
         } else {
@@ -45,7 +47,7 @@ export const LoginPage = () => {
       } else if (isNetworkError) {
         toast.error('Authentication server is unreachable. Please try again later.');
       } else {
-        const message = backendError.response?.data?.detail || 'Authentication failed.';
+        const message = extractApiErrorMessage(backendError, 'Authentication failed.');
         toast.error(message);
       }
     } finally {

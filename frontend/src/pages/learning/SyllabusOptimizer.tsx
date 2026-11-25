@@ -1,20 +1,20 @@
-import { useState } from "react";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import {
-  Upload,
-  BookOpen,
-  Sparkles,
-  AlertCircle,
-  ArrowRight,
-  ShieldCheck,
-  TrendingUp,
-  RotateCcw,
-  FileText,
-  CheckCircle2
-} from "lucide-react";
-import { learningApi } from "@/api/learningApi";
 import type { SyllabusOptimization } from "@/api/learningApi";
+import { learningApi } from "@/api/learningApi";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import {
+    AlertCircle,
+    ArrowRight,
+    BookOpen,
+    CheckCircle2,
+    FileText,
+    RotateCcw,
+    ShieldCheck,
+    Sparkles,
+    TrendingUp,
+    Upload
+} from "lucide-react";
+import { useState } from "react";
 import { toast } from "sonner";
 
 const SAMPLE_TIER3_REPORT: SyllabusOptimization = {

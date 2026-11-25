@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
-import { Trophy, Flame, Zap, Award, Users, Crown, CheckCircle2, Sparkles, ArrowRight } from 'lucide-react';
 import client from "@/api/client";
-import { toast } from "sonner";
-import { Link } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Award, CheckCircle2, Crown, Flame, Sparkles, Trophy, Users, Zap } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { toast } from "sonner";
 
 const BADGES = [
   { id: 'first_interview', name: 'First Interview', icon: '🎯', earned: true, category: 'milestone', xp: 300, desc: 'Completed first AI Bar-Raiser mock' },
@@ -23,7 +23,9 @@ export const GamificationPage = () => {
     if (saved) {
       try {
         return JSON.parse(saved);
-      } catch (e) {}
+      } catch (e) {
+        console.warn("Failed to parse saved gamification profile:", e);
+      }
     }
     return {
       total_xp: 2150,
@@ -42,13 +44,15 @@ export const GamificationPage = () => {
     const fetchGamification = async () => {
       try {
         const res = await client.get("/gamification/profile");
-        if (res.data && res.data.total_xp) {
+        if (res.data && res.data.total_xp !== undefined) {
           setProfile((prev: any) => ({
             ...prev,
             ...res.data
           }));
         }
-      } catch (e) {}
+      } catch (e) {
+        console.warn("Unable to sync gamification profile:", e);
+      }
     };
     fetchGamification();
   }, []);
@@ -64,7 +68,9 @@ export const GamificationPage = () => {
         event: "daily_checkin",
         custom_xp: 50
       });
-    } catch (e) {}
+    } catch (e) {
+      console.warn("Daily XP sync skipped (offline/unavailable):", e);
+    }
 
     const updated = {
       ...profile,

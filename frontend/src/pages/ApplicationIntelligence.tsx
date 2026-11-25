@@ -1,28 +1,18 @@
-import React, { useState, useEffect } from "react";
-import { 
-  Search, 
-  Compass, 
-  CheckCircle, 
-  Clock, 
-  ShieldAlert, 
-  Sparkles, 
-  Map,
-  TrendingUp,
-  Building2,
-  Users2,
-  ArrowUpRight,
-  Zap,
-  Target,
-  Send,
-  HelpCircle,
-  BarChart3
-} from "lucide-react";
 import client from "@/api/client";
-import { toast } from "sonner";
-import { Link } from "react-router-dom";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import {
+    BarChart3,
+    CheckCircle,
+    Clock,
+    Compass,
+    Search,
+    Sparkles,
+    Zap
+} from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 interface Tactic {
   tactic_name: string;
@@ -89,7 +79,7 @@ export const ApplicationIntelligence = () => {
   const [report, setReport] = useState<IntelligenceReport>(DEFAULT_REPORT);
   const [targetList, setTargetList] = useState("Google, Stripe, Flipkart, Swiggy");
   const [plan, setPlan] = useState<any>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [, setIsLoading] = useState(false);
   const [isPlanLoading, setIsPlanLoading] = useState(false);
 
   const fetchCompanyReport = async (name: string) => {
@@ -102,9 +92,10 @@ export const ApplicationIntelligence = () => {
         toast.success(`Hiring intelligence for ${name} loaded!`);
       } else {
         // Calibrated response
+        const titledName = name.replace(/\b\w/g, (c) => c.toUpperCase());
         setReport({
           ...DEFAULT_REPORT,
-          company_name: name.title ? name.title() : name
+          company_name: titledName
         });
         toast.success(`Hiring patterns loaded for ${name}!`);
       }

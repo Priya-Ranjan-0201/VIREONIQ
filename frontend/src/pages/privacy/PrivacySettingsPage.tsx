@@ -1,21 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import {
-  Shield,
-  Lock,
-  Eye,
-  EyeOff,
-  Download,
-  Trash2,
-  CheckCircle2,
-  AlertTriangle,
-  Scale,
-  Activity,
-  FileJson,
-  Key,
-  RefreshCw,
-  UserCheck
-} from 'lucide-react';
 import { careerIntelligenceApi } from '@/api/careerIntelligenceApi';
+import {
+    Activity,
+    AlertTriangle,
+    CheckCircle2,
+    Download,
+    Eye,
+    EyeOff,
+    FileJson,
+    Lock,
+    RefreshCw,
+    Scale,
+    Shield,
+    Trash2,
+    UserCheck
+} from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 
 export const PrivacySettingsPage: React.FC = () => {
   const [preferences, setPreferences] = useState<{
@@ -32,8 +31,8 @@ export const PrivacySettingsPage: React.FC = () => {
 
   const [auditLogs, setAuditLogs] = useState<any[]>([]);
   const [fairnessReport, setFairnessReport] = useState<any>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [exportData, setExportData] = useState<any>(null);
+  const [, setLoading] = useState<boolean>(true);
+  const [, setExportData] = useState<any>(null);
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
   const [savedSuccess, setSavedSuccess] = useState<boolean>(false);
 

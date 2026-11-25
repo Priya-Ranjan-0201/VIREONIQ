@@ -1,22 +1,20 @@
-import { useState, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
 import {
-  Building2,
-  ChevronRight,
-  Search,
-  Briefcase,
-  MapPin,
-  Sparkles,
-  Code2,
-  Award,
-  ArrowUpRight,
-  CheckCircle2,
-  X,
-  Layers,
-  Cpu,
-  Clock
+    ArrowUpRight,
+    Briefcase,
+    Building2,
+    CheckCircle2,
+    ChevronRight,
+    Code2,
+    Cpu,
+    Layers,
+    MapPin,
+    Search,
+    Sparkles,
+    X
 } from 'lucide-react';
-import { COMPANY_PROFILES, CompanyProfile } from './companyProfilesData';
+import { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { COMPANY_PROFILES, type CompanyProfile } from './companyProfilesData';
 
 const DIFFICULTY_COLOR: Record<string, string> = {
   Expert: 'text-red-400 bg-red-500/10 border border-red-500/20',

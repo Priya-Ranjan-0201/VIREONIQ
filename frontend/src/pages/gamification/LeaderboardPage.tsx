@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
-import { Crown, ChevronUp, Trophy, Sparkles, Flame, Users, ArrowUpRight, Search, Filter } from 'lucide-react';
 import client from '@/api/client';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { ChevronUp, Crown, Search, Sparkles, Trophy } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 const LEADERBOARDS = {

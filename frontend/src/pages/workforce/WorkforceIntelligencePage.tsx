@@ -1,31 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import {
-  Building2,
-  Users,
-  AlertTriangle,
-  CheckCircle2,
-  TrendingUp,
-  Layers,
-  ArrowRight,
-  ShieldAlert,
-  Sparkles,
-  RefreshCw,
-  GitPullRequest,
-  BarChart3,
-  Search,
-  Briefcase,
-  Play
-} from 'lucide-react';
-import { careerIntelligenceApi } from '@/api/careerIntelligenceApi';
 import type {
-  OrganizationCapabilitiesData,
-  WorkforceCriticalGapItem,
-  WorkforceConcentrationRiskItem
+    OrganizationCapabilitiesData
 } from '@/api/careerIntelligenceApi';
+import { careerIntelligenceApi } from '@/api/careerIntelligenceApi';
+import {
+    AlertTriangle,
+    Briefcase,
+    Building2,
+    CheckCircle2,
+    Play,
+    RefreshCw,
+    ShieldAlert,
+    Sparkles
+} from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 
 export const WorkforceIntelligencePage: React.FC = () => {
   const [capabilities, setCapabilities] = useState<OrganizationCapabilitiesData | null>(null);
-  const [matrixData, setMatrixData] = useState<any | null>(null);
+  const [, setMatrixData] = useState<any | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedCompetency, setSelectedCompetency] = useState<string>('Kubernetes');
   const [tradeoffs, setTradeoffs] = useState<any | null>(null);

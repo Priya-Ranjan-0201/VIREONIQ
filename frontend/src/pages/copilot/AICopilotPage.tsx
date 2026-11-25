@@ -1,29 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import {
-  Bot,
-  Send,
-  Sparkles,
-  Shield,
-  CheckCircle2,
-  AlertTriangle,
-  Layers,
-  Terminal,
-  Activity,
-  DollarSign,
-  Clock,
-  User,
-  Building2,
-  Briefcase,
-  Cpu,
-  RefreshCw,
-  EyeOff
-} from 'lucide-react';
+import type { AIObservabilityData, CopilotChatResponse } from '@/api/careerIntelligenceApi';
 import { careerIntelligenceApi } from '@/api/careerIntelligenceApi';
-import type { CopilotChatResponse, AIObservabilityData } from '@/api/careerIntelligenceApi';
+import {
+    Activity,
+    Bot,
+    Briefcase,
+    Building2,
+    CheckCircle2,
+    Layers,
+    Send,
+    Sparkles,
+    User
+} from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 
 export const AICopilotPage: React.FC = () => {
   const [roleMode, setRoleMode] = useState<'CANDIDATE' | 'RECRUITER' | 'EMPLOYER'>('CANDIDATE');
-  const [targetRole, setTargetRole] = useState<string>('Backend Engineer');
+  const [targetRole] = useState<string>('Backend Engineer');
   const [inputMessage, setInputMessage] = useState<string>('Why am I not ready for Backend Engineer?');
   const [messages, setMessages] = useState<Array<{ sender: 'USER' | 'AI'; data: any }>>([]);
   const [loading, setLoading] = useState<boolean>(false);

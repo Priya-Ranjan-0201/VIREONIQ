@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { GraduationCap, BookOpen, CheckCircle, Calendar, Users, TrendingUp, AlertCircle, Award } from "lucide-react";
 import client from "@/api/client";
+import { AnimatePresence, motion } from "framer-motion";
+import { AlertCircle, Award, BookOpen, TrendingUp, Users } from "lucide-react";
+import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 interface YearPlan {
@@ -88,7 +88,7 @@ export const HighSchoolTrajectory = () => {
 
   const handleCheckMilestone = async (year: number, index: number) => {
     try {
-      const res = await client.post("/highschool/log-milestone", {
+      await client.post("/highschool/log-milestone", {
         year_number: year,
         milestone_index: index
       });

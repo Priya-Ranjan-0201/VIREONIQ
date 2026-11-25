@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { Award, Users, Calendar, Video, Clock, Star, TrendingUp, AlertCircle, CheckCircle, RefreshCw } from "lucide-react";
 import client from "@/api/client";
+import { CheckCircle, Video } from "lucide-react";
+import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 interface Mentor {
@@ -149,7 +149,7 @@ export const MentorNetwork = () => {
         ...activationForm,
         placement_ctc: activationForm.placement_ctc ? parseInt(activationForm.placement_ctc) : null
       };
-      const res = await client.post("/mentors/activate", payload);
+      await client.post("/mentors/activate", payload);
       toast.success("Mentor profile activated successfully! Congratulations!");
       fetchData();
       setActiveTab("mentor-mode");

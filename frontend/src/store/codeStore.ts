@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import { codeApi } from '../api/codeApi';
 import type { CodeExecutionResponse } from '../api/codeApi';
+import { codeApi } from '../api/codeApi';
 
 export interface CodeLanguage {
   id: number;
@@ -74,7 +74,9 @@ export const useCodeStore = create<CodeState>((set, get) => ({
     if (matched) {
       try {
         localStorage.setItem('vireoniq_preferred_coding_language', matched.key);
-      } catch {}
+      } catch (err) {
+        console.warn('Unable to persist coding language preference:', err);
+      }
       set({ languageId: id, selectedLanguageKey: matched.key });
     } else {
       set({ languageId: id });
@@ -86,7 +88,9 @@ export const useCodeStore = create<CodeState>((set, get) => ({
     if (matched) {
       try {
         localStorage.setItem('vireoniq_preferred_coding_language', matched.key);
-      } catch {}
+      } catch (err) {
+        console.warn('Unable to persist coding language preference:', err);
+      }
       set({ languageId: matched.id, selectedLanguageKey: matched.key });
     }
   },

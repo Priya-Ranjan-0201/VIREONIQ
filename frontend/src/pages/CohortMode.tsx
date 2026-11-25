@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Users, Calendar, Video, Star, Award, ShieldAlert, Check, Plus, MessageSquare, Loader2 } from 'lucide-react';
-import { toast } from 'sonner';
 import api from '@/lib/axios';
+import { Loader2, MessageSquare, Video } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 interface StudySession {
   id: string;

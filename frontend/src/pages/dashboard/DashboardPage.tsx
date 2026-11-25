@@ -1,27 +1,43 @@
+import type {
+    CareerReadinessV3,
+    DailyMissionData,
+    NextBestActionsResponse,
+    SkillEvidenceItem
+} from "@/api/careerIntelligenceApi";
+import { careerIntelligenceApi } from "@/api/careerIntelligenceApi";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import {
+    ArrowRight,
+    Brain,
+    CheckCircle2,
+    ChevronRight,
+    Circle,
+    Code2,
+    Compass,
+    Cpu, DollarSign,
+    FileText,
+    Flame,
+    RefreshCw,
+    ShieldCheck,
+    Sparkles,
+    Target,
+    Zap
+} from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { 
-  TrendingUp, Brain, Zap, Target, CheckCircle2, Circle, 
-  Sparkles, Layers, ShieldCheck, ArrowRight, Activity, Clock, Award,
-  RefreshCw, HelpCircle, FileText, Cpu, DollarSign, Code2, Flame,
-  Compass, ChevronRight, Play, CheckCircle
-} from "lucide-react";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { 
-  Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer 
+import {
+    PolarAngleAxis,
+    PolarGrid,
+    PolarRadiusAxis,
+    Radar, RadarChart,
+    ResponsiveContainer
 } from "recharts";
-import { cn } from "@/lib/utils";
-import { careerIntelligenceApi } from "@/api/careerIntelligenceApi";
-import type { 
-  CareerReadinessV3, SkillEvidenceItem, 
-  NextBestActionsResponse, DailyMissionData 
-} from "@/api/careerIntelligenceApi";
 
 export const DashboardPage: React.FC = () => {
   const [readiness, setReadiness] = useState<CareerReadinessV3 | null>(null);
   const [skills, setSkills] = useState<SkillEvidenceItem[]>([]);
-  const [nextActions, setNextActions] = useState<NextBestActionsResponse | null>(null);
+  const [, setNextActions] = useState<NextBestActionsResponse | null>(null);
   const [mission, setMission] = useState<DailyMissionData | null>(null);
   const [selectedDimension, setSelectedDimension] = useState<string>("core_technical_mastery");
   const [loading, setLoading] = useState<boolean>(true);
@@ -84,7 +100,11 @@ export const DashboardPage: React.FC = () => {
       setSimulationResult({
         scenario: `Counterfactual Simulation: ${dimensionName}`,
         explanation: sim.explanation || `Projected capability increase if ${dimensionName} is assessed at 90+ mastery.`,
-        projected_readiness: sim.projected_readiness || Math.min(100, Math.round((readiness?.overall_readiness_score || 75) + 4.5)),
+        projected_readiness:
+          typeof sim.projected_readiness === "number"
+            ? sim.projected_readiness
+            : sim.projected_readiness?.projected_base ||
+              Math.min(100, Math.round((readiness?.overall_readiness_score || 75) + 4.5)),
         projected_readiness_delta: sim.projected_delta || "+4.5"
       });
     } catch (err) {
@@ -107,14 +127,6 @@ export const DashboardPage: React.FC = () => {
         { subject: "Evidence Integrity", A: 92, fullMark: 100 },
         { subject: "Communication", A: 80, fullMark: 100 },
       ];
-
-  const tierColors: Record<string, { bg: string; text: string; border: string }> = {
-    VERIFIED: { bg: "bg-emerald-500/10", text: "text-emerald-400", border: "border-emerald-500/30" },
-    ASSESSED: { bg: "bg-cyan-500/10", text: "text-cyan-400", border: "border-cyan-500/30" },
-    DEMONSTRATED: { bg: "bg-indigo-500/10", text: "text-indigo-400", border: "border-indigo-500/30" },
-    INFERRED: { bg: "bg-amber-500/10", text: "text-amber-400", border: "border-amber-500/30" },
-    CLAIMED: { bg: "bg-slate-500/10", text: "text-slate-400", border: "border-slate-500/30" },
-  };
 
   const activeDim = readiness?.dimension_contributions?.[selectedDimension] || {
     dimension: selectedDimension,
@@ -534,27 +546,27 @@ export const DashboardPage: React.FC = () => {
               mission.tasks.map((task) => (
                 <div
                   key={task.task_id}
-                  onClick={() => handleToggleTask(task.task_id, task.is_completed)}
+                  onClick={() => handleToggleTask(task.task_id, Boolean(task.is_completed ?? task.status === 'COMPLETED'))}
                   className={cn(
                     "p-3 rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-3 text-xs",
-                    task.is_completed
+                    (task.is_completed ?? task.status === 'COMPLETED')
                       ? "bg-emerald-500/5 border-emerald-500/20 text-slate-400 line-through"
                       : "bg-white/[0.02] border-white/5 hover:border-indigo-500/30 text-slate-200"
                   )}
                 >
                   <div className="flex items-center gap-3">
-                    {task.is_completed ? (
+                    {(task.is_completed ?? task.status === 'COMPLETED') ? (
                       <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
                     ) : (
                       <Circle className="w-4 h-4 text-slate-500 shrink-0" />
                     )}
                     <div>
                       <p className="font-semibold">{task.title}</p>
-                      <p className="text-[10px] text-slate-400">{task.description}</p>
+                      <p className="text-[10px] text-slate-400">{task.description ?? task.why}</p>
                     </div>
                   </div>
                   <span className="badge-neon badge-neon-indigo shrink-0">
-                    +{task.expected_gain_points} pts
+                    +{task.expected_gain_points ?? task.projected_delta} pts
                   </span>
                 </div>
               ))

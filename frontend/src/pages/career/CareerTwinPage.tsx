@@ -1,18 +1,32 @@
-import React, { useEffect, useState } from "react";
-import { 
-  Brain, ShieldCheck, Target, AlertTriangle, Layers, ArrowRight,
-  TrendingUp, Activity, CheckCircle2, Circle, Clock, Sparkles,
-  HelpCircle, Eye, GitBranch, Compass, RefreshCw, X, ChevronRight,
-  Zap, Code, Flame, Sliders, Calendar, DollarSign, Award, Check, BarChart3
-} from "lucide-react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { careerIntelligenceApi } from "@/api/careerIntelligenceApi";
-import type { 
-  CareerTwinSnapshot, 
-  SkillEvidenceItem 
+import type {
+    CareerTwinSnapshot,
+    SkillEvidenceItem
 } from "@/api/careerIntelligenceApi";
+import { careerIntelligenceApi } from "@/api/careerIntelligenceApi";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
+import {
+    Activity,
+    AlertTriangle,
+    Award,
+    Brain,
+    Check,
+    CheckCircle2,
+    ChevronRight,
+    Clock,
+    DollarSign,
+    GitBranch,
+    HelpCircle,
+    Layers,
+    RefreshCw,
+    ShieldCheck,
+    Sparkles,
+    Target,
+    TrendingUp,
+    Zap
+} from "lucide-react";
+import React, { useEffect, useState } from "react";
 
 export interface RoleTwinProfile {
   targetRole: string;
@@ -472,7 +486,6 @@ export const CareerTwinPage: React.FC = () => {
   // Trajectory Simulation State
   const [forecastWeeklyHours, setForecastWeeklyHours] = useState<number>(10);
   const [activeScenario, setActiveScenario] = useState<"MOST_LIKELY" | "OPTIMISTIC" | "RISK">("MOST_LIKELY");
-  const [selectedHorizon, setSelectedHorizon] = useState<number>(3);
 
   const fetchTwinData = async (roleOverride?: string) => {
     setLoading(true);

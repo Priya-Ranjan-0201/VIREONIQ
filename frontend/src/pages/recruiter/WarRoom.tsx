@@ -1,11 +1,9 @@
-import React from 'react';
-import { 
-  Users, 
-  Target, 
-  TrendingUp, 
-  AlertTriangle,
-  Brain,
-  ShieldCheck
+import {
+    AlertTriangle,
+    Brain,
+    ShieldCheck,
+    Target,
+    TrendingUp
 } from 'lucide-react';
 
 const RecruiterWarRoom = () => {

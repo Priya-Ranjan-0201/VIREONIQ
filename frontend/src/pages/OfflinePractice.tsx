@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { Download, Wifi, WifiOff, RefreshCw, Play, CheckCircle, AlertTriangle, ArrowRight } from 'lucide-react';
-import { toast } from 'sonner';
 import api from '@/lib/axios';
-import axios from 'axios';
-import {
-  saveOfflineBundle,
-  getOfflineBundle,
-  queueOfflineSession,
-  getPendingSessions,
-  syncOfflineSessions
-} from '@/lib/offlineEngine';
 import type { OfflineSession } from '@/lib/offlineEngine';
+import {
+    getOfflineBundle,
+    getPendingSessions,
+    queueOfflineSession,
+    saveOfflineBundle,
+    syncOfflineSessions
+} from '@/lib/offlineEngine';
+import axios from 'axios';
+import { AlertTriangle, ArrowRight, CheckCircle, Download, Play, RefreshCw, Wifi, WifiOff } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 export const OfflinePractice = () => {
   const [downloading, setDownloading] = useState<string | null>(null);

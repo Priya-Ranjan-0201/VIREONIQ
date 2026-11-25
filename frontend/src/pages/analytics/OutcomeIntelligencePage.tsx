@@ -1,26 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import {
-  TrendingUp,
-  Award,
-  CheckCircle2,
-  Activity,
-  Layers,
-  ArrowRight,
-  Shield,
-  Sparkles,
-  BarChart3,
-  Target,
-  Users,
-  Compass,
-  RefreshCw
-} from 'lucide-react';
 import { careerIntelligenceApi } from '@/api/careerIntelligenceApi';
+import {
+    Award,
+    BarChart3,
+    CheckCircle2,
+    RefreshCw,
+    Shield,
+    Sparkles,
+    Target,
+    TrendingUp
+} from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 
 export const OutcomeIntelligencePage: React.FC = () => {
   const [funnelData, setFunnelData] = useState<any>(null);
   const [candidateProgress, setCandidateProgress] = useState<any>(null);
   const [executiveInsights, setExecutiveInsights] = useState<any>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [, setLoading] = useState<boolean>(true);
 
   const loadData = async () => {
     setLoading(true);

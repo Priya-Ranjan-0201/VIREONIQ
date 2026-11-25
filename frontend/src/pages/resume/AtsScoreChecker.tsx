@@ -1,10 +1,18 @@
-import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { 
-  Sparkles, FileText, CheckCircle2, AlertTriangle, ArrowRight, 
-  Gauge, RefreshCw, Layers, Copy, Check, Info, ShieldCheck, Download, Code2
-} from "lucide-react";
 import { careerIntelligenceApi } from "@/api/careerIntelligenceApi";
+import { AnimatePresence, motion } from "framer-motion";
+import {
+    AlertTriangle, ArrowRight,
+    Check,
+    CheckCircle2,
+    Code2,
+    Copy,
+    FileText,
+    Gauge,
+    Layers,
+    RefreshCw,
+    Sparkles
+} from "lucide-react";
+import React, { useState } from "react";
 import { toast } from "sonner";
 
 export const AtsScoreChecker: React.FC = () => {

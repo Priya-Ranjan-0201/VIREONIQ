@@ -1,25 +1,18 @@
-import { useState } from "react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { 
-  CreditCard, 
-  TrendingUp, 
-  Zap, 
-  ArrowRight, 
-  CheckCircle2, 
-  MessageSquare,
-  Sparkles,
-  Building2,
-  Send,
-  DollarSign,
-  ShieldCheck,
-  RotateCcw,
-  Scale
-} from "lucide-react";
 import client from "@/api/client";
-import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import {
+    CheckCircle2,
+    MessageSquare,
+    Scale,
+    Send,
+    Sparkles,
+    Zap
+} from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 
 const PRESET_OFFERS = [
   {
@@ -72,40 +65,16 @@ const PRESET_OFFERS = [
 
 export const OfferNegotiatorPage = () => {
   const [activeOffer, setActiveOffer] = useState<any>(PRESET_OFFERS[0]);
-  const [isLoading, setIsLoading] = useState(false);
+
   const [selectedTactic, setSelectedTactic] = useState<string>("competing");
   const [counterResponse, setCounterResponse] = useState<any>(null);
   const [isCountering, setIsCountering] = useState(false);
-  const [sessionId, setSessionId] = useState("");
+
 
   const handleSelectPreset = (preset: any) => {
     setActiveOffer(preset);
     setCounterResponse(null);
     toast.success(`Loaded ${preset.company} offer simulation!`);
-  };
-
-  const handleCustomGenerate = async () => {
-    if (!sessionId.trim()) {
-      toast.info("Select one of the 1-click MNC simulation presets below or enter an ID.");
-      return;
-    }
-    setIsLoading(true);
-    try {
-      const res = await client.post(`/offers/generate/${sessionId}`);
-      if (res.data) {
-        setActiveOffer({
-          ...res.data,
-          company: "Partner MNC",
-          role: "Software Engineer"
-        });
-        toast.success("Offer generated from interview session!");
-      }
-    } catch (e) {
-      toast.info("Using calibrated senior SDE offer package.");
-      setActiveOffer(PRESET_OFFERS[0]);
-    } finally {
-      setIsLoading(false);
-    }
   };
 
   const handleSimulateCounter = async () => {

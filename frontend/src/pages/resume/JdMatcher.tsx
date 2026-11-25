@@ -1,10 +1,16 @@
-import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { 
-  Target, FileText, Briefcase, CheckCircle2, AlertCircle, ArrowRight, 
-  Sparkles, RefreshCw, Code2, Flame
-} from "lucide-react";
 import { careerIntelligenceApi } from "@/api/careerIntelligenceApi";
+import { AnimatePresence, motion } from "framer-motion";
+import {
+    AlertCircle, ArrowRight,
+    Briefcase, CheckCircle2,
+    Code2,
+    FileText,
+    Flame,
+    RefreshCw,
+    Sparkles,
+    Target
+} from "lucide-react";
+import React, { useState } from "react";
 import { toast } from "sonner";
 
 export const JdMatcher: React.FC = () => {

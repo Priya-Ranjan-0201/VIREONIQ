@@ -1,10 +1,15 @@
-import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { 
-  Sparkles, FileText, ArrowRight, Check, Copy, RefreshCw, 
-  Wand2, Flame, ShieldCheck, Target, Award, Layers, Zap, Info
-} from "lucide-react";
 import { careerIntelligenceApi } from "@/api/careerIntelligenceApi";
+import { AnimatePresence, motion } from "framer-motion";
+import {
+    ArrowRight, Check, Copy,
+    FileText,
+    Info,
+    Layers,
+    RefreshCw,
+    Sparkles,
+    Wand2
+} from "lucide-react";
+import React, { useState } from "react";
 import { toast } from "sonner";
 
 const SAMPLE_STARTERS = [

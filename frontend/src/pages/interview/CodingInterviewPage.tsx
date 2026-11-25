@@ -1,12 +1,12 @@
-import { useEffect, useRef, useState } from "react";
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Play, Send, BrainCircuit, Activity, Terminal, Code2, CheckCircle2, RotateCcw, Sparkles } from "lucide-react";
-import Editor from "@monaco-editor/react";
-import { useInterviewStore } from "../../store/interviewStore";
-import { useCodeStore } from "../../store/codeStore";
+import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { CODING_LANGUAGES, LanguageConfig, PROBLEM_PRESETS, ProblemPreset } from "./codingInterviewData";
+import Editor from "@monaco-editor/react";
+import { Activity, BrainCircuit, CheckCircle2, Code2, Play, RotateCcw, Send, Terminal } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { useCodeStore } from "../../store/codeStore";
+import { useInterviewStore } from "../../store/interviewStore";
+import { CODING_LANGUAGES, type LanguageConfig, PROBLEM_PRESETS, type ProblemPreset } from "./codingInterviewData";
 
 export const CodingInterviewPage = () => {
   const { status, startInterview, submitAnswer, history, isLoading, lastEvaluation, reset } = useInterviewStore();
@@ -19,7 +19,9 @@ export const CodingInterviewPage = () => {
         const found = CODING_LANGUAGES.find(l => l.key === stored);
         if (found) return found;
       }
-    } catch {}
+    } catch (err) {
+      console.warn('Unable to read preferred coding language:', err);
+    }
     return CODING_LANGUAGES[0];
   };
 
@@ -66,7 +68,9 @@ export const CodingInterviewPage = () => {
     setLanguageId(lang.id);
     try {
       localStorage.setItem('vireoniq_preferred_coding_language', lang.key);
-    } catch {}
+    } catch (err) {
+      console.warn('Unable to read preferred coding language:', err);
+    }
     const code = selectedProblem.starterCodes[lang.key] || selectedProblem.starterCodes.python || "";
     setSourceCode(code);
   };

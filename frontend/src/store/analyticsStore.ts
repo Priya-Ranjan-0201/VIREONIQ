@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import { analyticsApi } from '../api/analyticsApi';
 import type { DashboardOverview } from '../api/analyticsApi';
+import { analyticsApi } from '../api/analyticsApi';
 
 interface AnalyticsState {
   overview: DashboardOverview | null;

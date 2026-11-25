@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { BarChart3, Globe, Users2, Trophy, ArrowUpRight, ArrowDownRight, Info } from "lucide-react";
-import { reportApi } from "@/api/reportApi";
 import type { BenchmarkReport } from "@/api/reportApi";
+import { reportApi } from "@/api/reportApi";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { ArrowDownRight, ArrowUpRight, BarChart3, Globe, Info, Trophy, Users2 } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export const BenchmarkReportPage = () => {
   const [report, setReport] = useState<BenchmarkReport | null>(null);

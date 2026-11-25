@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react';
-import { Activity, Cpu, AlertTriangle, CheckCircle2, Zap, Clock } from 'lucide-react';
+import { Activity, AlertTriangle, Cpu, Zap } from 'lucide-react';
 
 const MOCK_EVENTS = [
   { session: 'Amazon Mock - Session 4', question: 3, load_score: 0.82, action: 'difficulty_reduced', before: 6.5, after: 6.0, signals: { long_pauses: 4, backspace_rate: 0.38 } },

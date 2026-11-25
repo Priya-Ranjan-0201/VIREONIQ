@@ -1,32 +1,28 @@
-import { useState, useMemo } from "react";
-import { 
-  ClipboardList, 
-  Clock, 
-  MessageSquare, 
-  Gift, 
-  Search, 
-  ArrowRight, 
-  Target, 
-  Plus, 
-  Sparkles, 
-  Building2, 
-  CheckCircle2, 
-  X,
-  ExternalLink,
-  ChevronRight,
-  TrendingUp
-} from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-import { toast } from "sonner";
-import { Spinner } from "@/components/shared/Spinner";
 import { useApplications, useUpdateAppStage } from "@/api/hooks/useCRM";
-import { Card, CardContent } from "@/components/ui/card";
+import { Spinner } from "@/components/shared/Spinner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { ApplicationDetail } from "./ApplicationDetail";
-import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { AnimatePresence, motion } from "framer-motion";
+import {
+    ArrowRight,
+    Building2,
+    ChevronRight,
+    ClipboardList,
+    Clock,
+    Gift,
+    MessageSquare,
+    Plus,
+    Search,
+    Target,
+    X
+} from "lucide-react";
+import { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
+import { toast } from "sonner";
+import { ApplicationDetail } from "./ApplicationDetail";
 
 const COLUMNS = [
   { id: "saved", label: "Saved", icon: Clock, color: "text-slate-400", bg: "bg-slate-500/10" },
@@ -150,7 +146,9 @@ export const SmartApplyTracker = () => {
     if (saved) {
       try {
         return JSON.parse(saved);
-      } catch (e) {}
+      } catch (e) {
+        console.warn("Failed to parse saved applications:", e);
+      }
     }
     return DEFAULT_APPLICATIONS;
   });
@@ -205,7 +203,9 @@ export const SmartApplyTracker = () => {
 
       try {
         updateStage({ appId: app.id, status: nextStage });
-      } catch (err) {}
+      } catch (err) {
+        console.warn("Stage update sync failed:", err);
+      }
 
       toast.success(`Advanced to ${nextStage.toUpperCase()}! +25 XP awarded 🎯`);
     }

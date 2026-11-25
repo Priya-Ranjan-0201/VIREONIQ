@@ -1,34 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import {
-  Compass,
-  Sparkles,
-  TrendingUp,
-  Clock,
-  CheckCircle2,
-  ArrowRight,
-  Layers,
-  BarChart3,
-  Columns,
-  RefreshCw,
-  GitBranch,
-  Shield,
-  HelpCircle,
-  Play,
-  Check,
-  ChevronRight
-} from 'lucide-react';
-import { careerIntelligenceApi } from '@/api/careerIntelligenceApi';
 import type { CareerScenarioData } from '@/api/careerIntelligenceApi';
+import { careerIntelligenceApi } from '@/api/careerIntelligenceApi';
+import {
+    CheckCircle2,
+    Columns,
+    Compass,
+    Play,
+    Sparkles
+} from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 
 export const CareerSimulatorPage: React.FC = () => {
   const [targetRole, setTargetRole] = useState<string>('Cybersecurity Engineer');
   const [simulationType, setSimulationType] = useState<string>('ROLE_SWITCH');
   const [dailyTimeMin, setDailyTimeMin] = useState<number>(60);
   const [targetSkill, setTargetSkill] = useState<string>('Threat Detection');
-  const [targetScore, setTargetScore] = useState<number>(85);
+  const [targetScore] = useState<number>(85);
   
   const [activeScenario, setActiveScenario] = useState<CareerScenarioData | null>(null);
-  const [history, setHistory] = useState<CareerScenarioData[]>([]);
+  const [, setHistory] = useState<CareerScenarioData[]>([]);
   const [pathComparisons, setPathComparisons] = useState<any | null>(null);
   const [simulating, setSimulating] = useState<boolean>(false);
   const [converting, setConverting] = useState<boolean>(false);

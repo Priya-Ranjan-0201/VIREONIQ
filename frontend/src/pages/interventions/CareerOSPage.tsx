@@ -1,54 +1,42 @@
-import React, { useState, useEffect } from 'react';
-import {
-  Compass,
-  Target,
-  CheckCircle2,
-  Circle,
-  Clock,
-  Sparkles,
-  ArrowRight,
-  TrendingUp,
-  RefreshCw,
-  Layers,
-  Award,
-  Zap,
-  Calendar,
-  AlertCircle,
-  ThumbsUp,
-  ThumbsDown,
-  RotateCcw,
-  BookOpen,
-  Code,
-  ShieldCheck,
-  ExternalLink,
-  Building2,
-  Play,
-  Pause,
-  Copy,
-  Check,
-  X,
-  Flame,
-  FileCode2,
-  SlidersHorizontal,
-  Plus,
-  CheckCheck,
-  RefreshCcw,
-  BarChart3,
-  ChevronRight
-} from 'lucide-react';
-import { careerIntelligenceApi } from '@/api/careerIntelligenceApi';
 import type {
-  DailyMissionData,
-  DailyMissionTask,
-  InterventionPlanData,
-  WeeklyCareerReviewData
+    DailyMissionData,
+    DailyMissionTask,
+    InterventionPlanData,
+    WeeklyCareerReviewData
 } from '@/api/careerIntelligenceApi';
+import { careerIntelligenceApi } from '@/api/careerIntelligenceApi';
 import {
-  TOP_25_MNCS,
-  normalizeRole,
-  getRoleDailyMission,
-  ROLE_MISSIONS_PRIMARY,
-  ROLE_MISSIONS_ALT
+    AlertCircle,
+    BarChart3,
+    BookOpen,
+    Building2,
+    Calendar,
+    Check,
+    CheckCircle2,
+    Circle,
+    Clock,
+    Code,
+    Compass,
+    Copy,
+    ExternalLink,
+    Flame,
+    Layers,
+    Pause,
+    Play,
+    Plus,
+    RefreshCw,
+    RotateCcw,
+    ShieldCheck,
+    SlidersHorizontal,
+    Sparkles,
+    Target,
+    X,
+    Zap
+} from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import {
+    getRoleDailyMission,
+    TOP_25_MNCS
 } from './roleMissionsData';
 
 
@@ -155,7 +143,6 @@ async def execute_with_jitter_retry(payload: dict, max_retries: int = 3) -> dict
 export const CareerOSPage: React.FC = () => {
   const [targetRole, setTargetRole] = useState<string>('AI/ML Engineer');
   const [strategy, setStrategy] = useState<string>('BALANCED');
-  const [dailyMinutes, setDailyMinutes] = useState<number>(60);
   const [missionCycle, setMissionCycle] = useState<number>(0);
   const [isRefreshingMissions, setIsRefreshingMissions] = useState<boolean>(false);
   const [dailyMission, setDailyMission] = useState<DailyMissionData | null>(() => getRoleDailyMission('AI/ML Engineer', 0));
@@ -213,7 +200,7 @@ export const CareerOSPage: React.FC = () => {
   const [isReplanModalOpen, setIsReplanModalOpen] = useState<boolean>(false);
   const [replanTrigger, setReplanTrigger] = useState<string>('ASSESSMENT_PREREQUISITE_IDENTIFIED');
   const [replanningLoading, setReplanningLoading] = useState<boolean>(false);
-  const [lastReplanDiff, setLastReplanDiff] = useState<any | null>(null);
+  const [, setLastReplanDiff] = useState<any | null>(null);
 
   // Add Custom Milestone Modal State
   const [isAddMilestoneOpen, setIsAddMilestoneOpen] = useState<boolean>(false);
@@ -485,7 +472,9 @@ public class Solution {
       const next = { ...prev, [mId]: !prev[mId] };
       try {
         localStorage.setItem('vireoniq_completed_milestones', JSON.stringify(next));
-      } catch {}
+      } catch (err) {
+        console.warn('Unable to persist completed milestones:', err);
+      }
       return next;
     });
     setFeedbackSuccess('Milestone status updated! +25 XP awarded');
@@ -499,13 +488,17 @@ public class Solution {
       const next = { ...prev, [taskId]: !prev[taskId] };
       try {
         localStorage.setItem('vireoniq_completed_daily_missions', JSON.stringify(next));
-      } catch {}
+      } catch (err) {
+        console.warn('Unable to persist completed daily missions:', err);
+      }
       return next;
     });
 
     try {
       await careerIntelligenceApi.completeInterventionTask(taskId).catch(() => null);
-    } catch {}
+    } catch (err) {
+      console.warn('Task completion sync failed:', err);
+    }
 
     if (dailyMission) {
       setDailyMission({
@@ -1565,7 +1558,9 @@ if __name__ == '__main__':
                               setBlueprintLang(l.key);
                               try {
                                 localStorage.setItem('vireoniq_preferred_coding_language', l.key);
-                              } catch {}
+                              } catch (err) {
+                                console.warn('Unable to persist coding language preference:', err);
+                              }
                             }}
                             className={`px-2 py-0.5 rounded text-[10px] font-mono transition ${
                               blueprintLang === l.key

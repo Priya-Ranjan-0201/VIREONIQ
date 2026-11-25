@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { ToggleLeft, ToggleRight, Settings, Sliders, CheckCircle2, ShieldCheck, ZapOff, Wifi } from 'lucide-react';
+import { ShieldCheck, Sliders, ToggleLeft, ToggleRight, Wifi } from 'lucide-react';
+import { useState } from 'react';
 import { toast } from 'sonner';
 
 export const LabMode = () => {

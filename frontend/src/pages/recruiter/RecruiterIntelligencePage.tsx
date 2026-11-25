@@ -1,25 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import {
-  Users,
-  Search,
-  CheckCircle2,
-  AlertTriangle,
-  Award,
-  Layers,
-  Sparkles,
-  Plus,
-  ArrowRight,
-  ShieldCheck,
-  TrendingUp,
-  Filter,
-  Columns,
-  Clock,
-  Briefcase,
-  ChevronRight,
-  ExternalLink
-} from 'lucide-react';
+import type { CandidateDiscoveryMatchData, RecruiterJobData } from '@/api/careerIntelligenceApi';
 import { careerIntelligenceApi } from '@/api/careerIntelligenceApi';
-import type { RecruiterJobData, CandidateDiscoveryMatchData } from '@/api/careerIntelligenceApi';
+import {
+    Award,
+    CheckCircle2,
+    Columns,
+    Plus,
+    Search,
+    Users
+} from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 
 const DEFAULT_RECRUITER_JOBS: RecruiterJobData[] = [
   {
@@ -135,7 +124,7 @@ export const RecruiterIntelligencePage: React.FC = () => {
   const [jobs, setJobs] = useState<RecruiterJobData[]>(DEFAULT_RECRUITER_JOBS);
   const [selectedJob, setSelectedJob] = useState<RecruiterJobData | null>(DEFAULT_RECRUITER_JOBS[0]);
   const [candidates, setCandidates] = useState<CandidateDiscoveryMatchData[]>(DEFAULT_CANDIDATES);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [, setLoading] = useState<boolean>(false);
   const [searching, setSearching] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>('');
   
@@ -213,7 +202,7 @@ export const RecruiterIntelligencePage: React.FC = () => {
 
   const handleCreateJob = async () => {
     try {
-      const created = await careerIntelligenceApi.createRecruiterJob({
+      await careerIntelligenceApi.createRecruiterJob({
         title: newTitle,
         target_role: newRole,
         description: newDesc,

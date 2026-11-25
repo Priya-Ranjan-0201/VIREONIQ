@@ -1,10 +1,21 @@
-import React, { useState, useEffect } from "react";
-import {
-  Code2, Users2, Trophy, MessageSquare, Clock, Zap, ChevronRight,
-  Flame, Target, Globe, Heart, Share2, Star, Timer, Play
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
 import client from "@/api/client";
+import { Button } from "@/components/ui/button";
+import {
+    ChevronRight,
+    Clock,
+    Code2,
+    Flame,
+    Globe, Heart,
+    MessageSquare,
+    Play,
+    Share2, Star,
+    Target,
+    Timer,
+    Trophy,
+    Users2,
+    Zap
+} from "lucide-react";
+import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 interface Challenge {

@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Award, Zap, BookOpen, Share2, Bug, Check, Loader2, Lock } from 'lucide-react';
-import { toast } from 'sonner';
 import api from '@/lib/axios';
+import { Award, Loader2, Lock } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 // Premium Gate wrapper component for premium-locked views
 export const PremiumGate: React.FC<{ children: React.ReactNode; featureName: string }> = ({ children, featureName }) => {

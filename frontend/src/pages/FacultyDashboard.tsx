@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Users, BookOpen, AlertCircle, PhoneCall, ChevronRight, BarChart3, Mail, Plus } from 'lucide-react';
-import { toast } from 'sonner';
 import api from '@/lib/axios';
+import { AlertCircle, Plus, Users } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 interface ClassData {
   id: string;

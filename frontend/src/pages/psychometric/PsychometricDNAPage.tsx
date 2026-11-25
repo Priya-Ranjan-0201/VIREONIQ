@@ -1,5 +1,5 @@
+import { Brain, Cpu, Dna, Shield, Star, Target, TrendingUp, Zap } from 'lucide-react';
 import { useState } from 'react';
-import { Brain, Dna, TrendingUp, Cpu, Shield, Zap, Target, Star } from 'lucide-react';
 
 const TRAIT_LABELS = [
   { key: 'Technical Precision', icon: Cpu, color: '#6366F1', desc: 'Accuracy & depth in technical answers' },

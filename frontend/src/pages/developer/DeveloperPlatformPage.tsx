@@ -1,31 +1,27 @@
-import React, { useState, useEffect } from 'react';
-import {
-  Code2,
-  Key,
-  Webhook,
-  Network,
-  Cpu,
-  ShieldCheck,
-  Plus,
-  Trash2,
-  Copy,
-  CheckCircle2,
-  AlertCircle,
-  RefreshCw,
-  ExternalLink,
-  Activity,
-  Layers,
-  Database
-} from 'lucide-react';
 import { careerIntelligenceApi } from '@/api/careerIntelligenceApi';
+import {
+    Activity,
+    CheckCircle2,
+    Code2,
+    Copy,
+    Cpu,
+    Key,
+    Network,
+    Plus,
+    RefreshCw,
+    ShieldCheck,
+    Trash2,
+    Webhook
+} from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 
 export const DeveloperPlatformPage: React.FC = () => {
   const [apiKeys, setApiKeys] = useState<any[]>([]);
   const [webhooks, setWebhooks] = useState<any[]>([]);
   const [connectors, setConnectors] = useState<any[]>([]);
-  const [entitlements, setEntitlements] = useState<any>(null);
+  const [, setEntitlements] = useState<any>(null);
   const [health, setHealth] = useState<any>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [, setLoading] = useState<boolean>(true);
 
   // New Key Form State
   const [showKeyModal, setShowKeyModal] = useState<boolean>(false);

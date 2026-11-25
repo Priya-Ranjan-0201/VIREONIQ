@@ -1,4 +1,4 @@
-import { Eye, TrendingUp, CheckCircle2, AlertCircle, Calendar, Brain } from 'lucide-react';
+import { AlertCircle, Calendar, CheckCircle2, Eye } from 'lucide-react';
 
 const MOCK_DATA = {
   student_name: 'Priyansh Sharma',

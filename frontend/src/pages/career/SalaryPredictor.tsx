@@ -1,10 +1,16 @@
-import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { 
-  DollarSign, MapPin, Briefcase, Award, TrendingUp, Info, 
-  RefreshCw, Sparkles, CheckCircle2, Globe, ArrowRight, ShieldCheck
-} from "lucide-react";
 import { careerIntelligenceApi } from "@/api/careerIntelligenceApi";
+import { AnimatePresence, motion } from "framer-motion";
+import {
+    Award,
+    Briefcase,
+    CheckCircle2,
+    DollarSign,
+    Info,
+    MapPin,
+    RefreshCw, Sparkles,
+    TrendingUp
+} from "lucide-react";
+import React, { useState } from "react";
 import { toast } from "sonner";
 
 const ROLES = [

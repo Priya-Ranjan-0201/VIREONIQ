@@ -1,24 +1,20 @@
-import { useState, useEffect, useMemo } from 'react';
+import { skillDecayApi, type SkillDecayItem } from '@/api/skillDecayApi';
 import {
-  Brain,
-  AlertTriangle,
-  Clock,
-  RefreshCw,
-  CheckCircle2,
-  Sparkles,
-  Zap,
-  TrendingUp,
-  Sliders,
-  Plus,
-  X,
-  HelpCircle,
-  Award,
-  ChevronRight,
-  ShieldAlert,
-  Calendar,
-  History
+    AlertTriangle,
+    Brain,
+    Calendar,
+    CheckCircle2,
+    Clock,
+    History,
+    Plus,
+    RefreshCw,
+    ShieldAlert,
+    Sparkles,
+    TrendingUp,
+    X,
+    Zap
 } from 'lucide-react';
-import { skillDecayApi, SkillDecayItem } from '@/api/skillDecayApi';
+import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
 // Authentic Question Bank for Spaced Repetition Flash-Recall
@@ -186,7 +182,7 @@ export const SkillDecayPage = () => {
   const [timeTravelDays, setTimeTravelDays] = useState<number>(0);
   const [activePracticeTopic, setActivePracticeTopic] = useState<string | null>(null);
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, number>>({});
-  const [showExplanation, setShowExplanation] = useState<boolean>(false);
+  const [, setShowExplanation] = useState<boolean>(false);
   const [isSubmittingPractice, setIsSubmittingPractice] = useState<boolean>(false);
   const [filterCategory, setFilterCategory] = useState<string>('all');
   const [showAddModal, setShowAddModal] = useState<boolean>(false);

@@ -1,10 +1,16 @@
-import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { 
-  Globe, GitBranch, Code2, Linkedin, CheckCircle2, AlertTriangle, ArrowRight, 
-  Sparkles, RefreshCw, ShieldCheck, Award, Flame, ExternalLink
-} from "lucide-react";
 import { careerIntelligenceApi } from "@/api/careerIntelligenceApi";
+import { AnimatePresence, motion } from "framer-motion";
+import {
+    AlertTriangle, ArrowRight,
+    CheckCircle2,
+    Code2,
+    GitBranch,
+    Globe,
+    Linkedin,
+    RefreshCw, ShieldCheck,
+    Sparkles
+} from "lucide-react";
+import React, { useState } from "react";
 import { toast } from "sonner";
 
 export const PortfolioIntelligence: React.FC = () => {

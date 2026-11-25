@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { Search, ShieldAlert, Award, ArrowUpRight, ArrowDownRight, Clipboard, Star } from "lucide-react";
 import client from "@/api/client";
-import { toast } from "sonner";
+import { Clipboard, Search, ShieldAlert } from "lucide-react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "sonner";
 
 interface EmployerScore {
   company_name: string;

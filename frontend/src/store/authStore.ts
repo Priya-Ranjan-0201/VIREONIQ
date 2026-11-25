@@ -1,10 +1,13 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-interface User {
+export interface User {
   id: string;
   email: string;
   full_name?: string;
+  role_id?: string;
+  is_active?: boolean;
+  is_email_verified?: boolean;
   token?: string;
 }
 

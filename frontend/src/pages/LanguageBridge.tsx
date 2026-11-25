@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { Globe, Award, CheckCircle, RefreshCw, HelpCircle, ArrowRight, BookOpen, Volume2 } from "lucide-react";
 import client from "@/api/client";
+import { ArrowRight } from "lucide-react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 interface Language {
@@ -28,7 +28,7 @@ interface Progression {
 export const LanguageBridge = () => {
   const [languages, setLanguages] = useState<Record<string, Language>>({});
   const [progression, setProgression] = useState<Progression | null>(null);
-  const [phaseDetails, setPhaseDetails] = useState<any>(null);
+  const [, setPhaseDetails] = useState<any>(null);
   const [vocabCards, setVocabCards] = useState<VocabularyCard[]>([]);
   const [flippedIndex, setFlippedIndex] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);

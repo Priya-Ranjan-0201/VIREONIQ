@@ -3,17 +3,63 @@ import client from "./client";
 export interface SkillEvidenceItem {
   skill_name: string;
   evidence_tier: "CLAIMED" | "INFERRED" | "DEMONSTRATED" | "ASSESSED" | "VERIFIED";
-  weight: number;
+  weight?: number;
   score: number;
   confidence: "LOW" | "MEDIUM" | "HIGH" | "VERY_HIGH";
   freshness_score: number;
   evidence_count: number;
   explanation: string;
   source_provenance?: any;
-  proficiency_level?: number;
+  proficiency_level?: number | string;
   proficiency_label?: string;
   conflict_report?: any;
   relationships?: any[];
+  multidimensional_mastery?: {
+    evidence_coverage_pct: number;
+    weakest_dimension?: string;
+    dimensions?: Array<{ dimension_name: string; score: number }>;
+  };
+}
+
+export interface CareerTwinSnapshot {
+  candidate?: {
+    id: string;
+    email?: string;
+    name?: string;
+    target_role?: string;
+  };
+  career_goals?: any[];
+  career_readiness?: {
+    overall_score: number;
+    percentile?: number;
+    readiness_band?: string;
+    confidence?: string;
+    dimensions?: Record<string, any>;
+  };
+  role_alignment?: any;
+  skills_inventory?: {
+    total_skills: number;
+    verified_count: number;
+    skills: SkillEvidenceItem[];
+  };
+  evidence_integrity?: {
+    active_conflicts_count: number;
+    conflicts: any[];
+    integrity_status: string;
+  };
+  prerequisite_bottleneck?: any;
+  evidence_summary?: Record<string, any>;
+  trajectory_forecast?: any[];
+  skill_transfer_intelligence?: any;
+  skill_transfer_bridges?: any[];
+  interview_memory?: any;
+  trajectory?: any;
+  snapshot_metadata?: {
+    twin_version: string;
+    generated_at: string;
+    uncertainty_tier: string;
+    source_versions?: Record<string, number>;
+  };
 }
 
 export interface DimensionContributionItem {
@@ -192,6 +238,9 @@ export interface DailyMissionTask {
   projected_delta: string;
   status: string;
   why: string;
+  is_completed?: boolean;
+  description?: string;
+  expected_gain_points?: number | string;
   difficulty?: string;
   how?: MissionTaskHow;
   where?: MissionTaskWhere;
@@ -417,6 +466,8 @@ export interface CareerScenarioData {
     driver_explanation: string;
   };
   hypothetical_evidence?: any[];
+  explanation?: string;
+  projected_delta?: string;
   created_at: string;
 }
 

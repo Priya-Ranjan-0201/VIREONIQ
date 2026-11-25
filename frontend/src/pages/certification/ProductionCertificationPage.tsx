@@ -1,25 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import {
-  ShieldCheck,
-  Award,
-  Cpu,
-  CheckCircle2,
-  Lock,
-  Eye,
-  Layers,
-  Sparkles,
-  Zap,
-  Play,
-  RefreshCw,
-  FileCheck,
-  ChevronRight,
-  TrendingUp,
-  Target,
-  ArrowRight,
-  CheckCircle,
-  HelpCircle
-} from 'lucide-react';
 import { careerIntelligenceApi } from '@/api/careerIntelligenceApi';
+import {
+    Award,
+    ChevronRight,
+    Cpu,
+    FileCheck,
+    Layers,
+    Play,
+    ShieldCheck
+} from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 
 export const ProductionCertificationPage: React.FC = () => {
   const [scorecard, setScorecard] = useState<any>(null);
@@ -28,7 +17,7 @@ export const ProductionCertificationPage: React.FC = () => {
   const [isRunningDemo, setIsRunningDemo] = useState<boolean>(false);
   const [activeStageIndex, setActiveStageIndex] = useState<number>(0);
   const [receipt, setReceipt] = useState<any>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [, setLoading] = useState<boolean>(true);
 
   const loadData = async () => {
     setLoading(true);

@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { BookOpen, Search, Sparkles, Languages, MessageSquare, Loader2 } from 'lucide-react';
-import { toast } from 'sonner';
 import api from '@/lib/axios';
+import { Languages, Loader2, Search, Sparkles } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 interface VernacularConcept {
   id: string;

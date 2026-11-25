@@ -1,33 +1,27 @@
-import { useState, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { 
-  MapPin, 
-  Sparkles, 
-  ChevronRight, 
-  CheckCircle2, 
-  XCircle, 
-  ArrowUpRight,
-  ShieldCheck,
-  Zap,
-  Info,
-  Search,
-  Building2,
-  Trophy,
-  Filter,
-  DollarSign,
-  Briefcase,
-  Check,
-  X
-} from "lucide-react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { OpportunityStats } from "./components/OpportunityStats";
-import { useRecommendations, useEmployabilityStats, useTrackApplication } from "../../api/hooks/useRecommendations";
-import { Spinner } from "@/components/shared/Spinner";
-import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { AnimatePresence, motion } from "framer-motion";
+import {
+    ArrowUpRight,
+    Briefcase,
+    Check,
+    CheckCircle2,
+    ChevronRight,
+    Info,
+    MapPin,
+    Search,
+    ShieldCheck,
+    Sparkles,
+    X,
+    XCircle
+} from "lucide-react";
+import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "sonner";
+import { useEmployabilityStats, useRecommendations, useTrackApplication } from "../../api/hooks/useRecommendations";
+import { OpportunityStats } from "./components/OpportunityStats";
 
 // Built-in verified high-fidelity jobs fallback catalog
 const FALLBACK_JOBS = [
@@ -174,8 +168,8 @@ const FALLBACK_JOBS = [
 ];
 
 export const OpportunityHub = () => {
-  const { data: recommendations, isLoading: isLoadingRecs } = useRecommendations();
-  const { data: stats, isLoading: isLoadingStats } = useEmployabilityStats();
+  const { data: recommendations } = useRecommendations();
+  const { data: stats } = useEmployabilityStats();
   const { mutate: trackApp } = useTrackApplication();
 
   const [selectedJob, setSelectedJob] = useState<any>(FALLBACK_JOBS[0]);

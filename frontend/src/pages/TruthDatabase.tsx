@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Search, MapPin, Calendar, Clock, DollarSign, Award, ChevronRight, ArrowLeft, Send, CheckCircle, ShieldAlert, Sparkles } from "lucide-react";
 import client from "@/api/client";
+import { motion } from "framer-motion";
+import { ArrowLeft, ChevronRight, Search, Sparkles } from "lucide-react";
+import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 interface CompanyAggregate {

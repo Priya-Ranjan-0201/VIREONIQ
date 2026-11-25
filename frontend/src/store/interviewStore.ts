@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import { interviewApi } from '../api/interviewApi';
 import type { StartInterviewRequest } from '../api/interviewApi';
+import { interviewApi } from '../api/interviewApi';
 
 interface ChatTurn {
   role: 'assistant' | 'user';

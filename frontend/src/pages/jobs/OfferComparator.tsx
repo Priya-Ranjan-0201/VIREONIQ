@@ -1,28 +1,22 @@
-import { useState, useMemo } from "react";
-import { 
-  Gift, 
-  TrendingUp, 
-  MapPin, 
-  Calendar,
-  ArrowLeft,
-  Plus,
-  DollarSign,
-  ShieldCheck,
-  CheckCircle2,
-  Sparkles,
-  Building2,
-  X,
-  Scale,
-  Award,
-  ChevronRight
-} from "lucide-react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { useApplications } from "../../api/hooks/useCRM";
 import { Spinner } from "@/components/shared/Spinner";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+    ArrowLeft,
+    Award,
+    Calendar,
+    ChevronRight,
+    MapPin,
+    Plus,
+    Scale,
+    Sparkles,
+    X
+} from "lucide-react";
+import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
+import { useApplications } from "../../api/hooks/useCRM";
 
 interface OfferItem {
   id: string;
@@ -211,7 +205,7 @@ export const OfferComparator = () => {
 
       {/* Offer Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {activeOffers.map((offer, idx) => {
+        {activeOffers.map((offer) => {
           const totalAnnual = offer.base_salary + offer.bonus + offer.equity_per_year;
           const monthlyInHand = calculateInHand(offer.base_salary);
           const isHighestCTC = activeOffers.every(

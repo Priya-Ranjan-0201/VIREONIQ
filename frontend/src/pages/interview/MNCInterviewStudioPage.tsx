@@ -1,24 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import {
-  Building2,
-  Code2,
-  Cpu,
-  CheckCircle2,
-  RefreshCw,
-  Play,
-  GraduationCap,
-  Sparkles,
-  ShieldCheck,
-  FileCheck,
-  Zap,
-  MessagesSquare,
-  BadgeCheck,
-  Clock,
-  AlertTriangle,
-  BarChart3
-} from 'lucide-react';
 import { careerIntelligenceApi } from '@/api/careerIntelligenceApi';
-import { CODING_LANGUAGES, LanguageConfig, PROBLEM_PRESETS } from './codingInterviewData';
+import {
+    BadgeCheck,
+    CheckCircle2,
+    Clock,
+    Code2,
+    Cpu,
+    FileCheck,
+    MessagesSquare,
+    Play,
+    RefreshCw,
+    ShieldCheck,
+    Sparkles,
+    Zap
+} from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { CODING_LANGUAGES, type LanguageConfig, PROBLEM_PRESETS } from './codingInterviewData';
 
 export const COMPANY_ARCHETYPES_CATALOG: Record<string, any> = {
   // General & Universal Sections
@@ -319,7 +315,9 @@ export const MNCInterviewStudioPage: React.FC = () => {
         const found = CODING_LANGUAGES.find(l => l.key === stored);
         if (found) return found;
       }
-    } catch {}
+    } catch (err) {
+      console.warn('Unable to read preferred coding language:', err);
+    }
     return CODING_LANGUAGES[0];
   };
 
@@ -328,7 +326,7 @@ export const MNCInterviewStudioPage: React.FC = () => {
 
   // Multi-Language Coding State
   const [selectedCodingLang, setSelectedCodingLang] = useState<LanguageConfig>(initialCodingLang);
-  const [blueprint, setBlueprint] = useState<any>(DEFAULT_BLUEPRINT_FALLBACK);
+  const [, setBlueprint] = useState<any>(DEFAULT_BLUEPRINT_FALLBACK);
   const [codingQuestion, setCodingQuestion] = useState<any>(DEFAULT_QUESTION_FALLBACK);
   const [codeSubmission, setCodeSubmission] = useState<string>(
     initialPreset.starterCodes[initialCodingLang.key] || DEFAULT_QUESTION_FALLBACK.starter_code
@@ -387,7 +385,9 @@ export const MNCInterviewStudioPage: React.FC = () => {
     setSelectedCodingLang(lang);
     try {
       localStorage.setItem('vireoniq_preferred_coding_language', lang.key);
-    } catch {}
+    } catch (err) {
+      console.warn('Unable to read preferred coding language:', err);
+    }
     const preset = PROBLEM_PRESETS.find(p => p.id === 'subarray-sum') || PROBLEM_PRESETS[0];
     if (preset && preset.starterCodes[lang.key]) {
       setCodeSubmission(preset.starterCodes[lang.key]);

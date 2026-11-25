@@ -1,23 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import {
-  ShieldCheck,
-  Award,
-  ExternalLink,
-  Share2,
-  CheckCircle2,
-  Lock,
-  Layers,
-  Sparkles,
-  Copy,
-  Clock,
-  Trash2,
-  AlertTriangle,
-  Code2,
-  ChevronRight,
-  TrendingUp
-} from 'lucide-react';
-import { careerIntelligenceApi } from '@/api/careerIntelligenceApi';
 import type { TalentPassportData, VerifiedCompetencyItem } from '@/api/careerIntelligenceApi';
+import { careerIntelligenceApi } from '@/api/careerIntelligenceApi';
+import {
+    Award,
+    CheckCircle2,
+    ChevronRight,
+    Code2,
+    Copy,
+    ExternalLink,
+    Layers,
+    Share2,
+    ShieldCheck,
+    Trash2
+} from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 
 export const TalentPassportPage: React.FC = () => {
   const [targetRole, setTargetRole] = useState<string>('Backend Engineer');

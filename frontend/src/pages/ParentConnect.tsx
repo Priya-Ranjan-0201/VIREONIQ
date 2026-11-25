@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { ShieldCheck, PhoneCall, Trash2, Send, Clock, ToggleLeft, ToggleRight, Sparkles } from 'lucide-react';
-import { toast } from 'sonner';
 import api from '@/lib/axios';
+import { Send, ShieldCheck } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 interface ParentConnection {
   id: string;

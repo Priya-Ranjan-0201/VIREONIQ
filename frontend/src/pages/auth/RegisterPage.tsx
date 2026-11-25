@@ -1,11 +1,12 @@
-import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { toast } from 'sonner';
 import api from '@/lib/axios';
+import { extractApiErrorMessage, isNetworkError as isApiNetworkError } from '@/lib/errors';
 import { isMockAuthEnabled, mockRegister } from '@/lib/mockAuth';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 
 export const RegisterPage = () => {
   const [email, setEmail] = useState('');
@@ -38,8 +39,8 @@ export const RegisterPage = () => {
       await api.post('/auth/register', { email, password, role_name: 'User' });
       toast.success('Registration successful! Please log in.');
       navigate('/login');
-    } catch (backendError: any) {
-      const isNetworkError = !backendError.response;
+    } catch (backendError: unknown) {
+      const isNetworkError = isApiNetworkError(backendError);
 
       if (isNetworkError && isMockAuthEnabled()) {
         // Explicit dev-only fallback when backend is unreachable
@@ -53,8 +54,8 @@ export const RegisterPage = () => {
       } else if (isNetworkError) {
         toast.error('Registration server is unreachable. Please try again later.');
       } else {
-        const detail = backendError.response?.data?.detail;
-        const message = typeof detail === 'string' ? detail : 'Registration failed.';
+
+        const message = extractApiErrorMessage(backendError, 'Registration failed.');
         toast.error(message);
       }
     } finally {

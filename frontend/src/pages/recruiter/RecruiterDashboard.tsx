@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Search, Filter, Users, Star, ArrowUpRight, ShieldCheck, Mail, FileBarChart } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { recruiterApi } from "@/api/recruiterApi";
 import type { Candidate } from "@/api/recruiterApi";
+import { recruiterApi } from "@/api/recruiterApi";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { ArrowUpRight, FileBarChart, Filter, Mail, Search, ShieldCheck, Star, Users } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export const RecruiterDashboard = () => {
   const [candidates, setCandidates] = useState<Candidate[]>([]);

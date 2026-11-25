@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { Award, Globe, FileText, Share2, Compass, CheckCircle, ChevronDown, RefreshCw } from "lucide-react";
 import client from "@/api/client";
+import { CheckCircle, Compass, FileText, Globe } from "lucide-react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 interface Passport {
@@ -40,7 +40,7 @@ export const TalentPassport = () => {
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
   const [targetMarket, setTargetMarket] = useState("US");
   const [translation, setTranslation] = useState<Translation | null>(null);
-  const [countryGuide, setCountryGuide] = useState<any>(null);
+  const [, setCountryGuide] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchPassportData = async () => {

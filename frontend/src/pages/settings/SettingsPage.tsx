@@ -1,16 +1,16 @@
-import { 
-  User, 
-  Bell, 
-  Shield, 
-  CreditCard, 
-  RefreshCw
-} from "lucide-react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
-import { useCalendarStatus } from "../../api/hooks/useNotifications";
+import {
+    Bell,
+    CreditCard,
+    RefreshCw,
+    Shield,
+    User
+} from "lucide-react";
 import { toast } from "sonner";
+import { useCalendarStatus } from "../../api/hooks/useNotifications";
 
 export const SettingsPage = () => {
   const { data: calendars } = useCalendarStatus();

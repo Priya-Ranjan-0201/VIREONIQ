@@ -1,5 +1,5 @@
+import { AlertCircle, BarChart3, Briefcase, DollarSign, Download, TrendingDown, TrendingUp } from 'lucide-react';
 import { useState } from 'react';
-import { TrendingUp, TrendingDown, BarChart3, Briefcase, AlertCircle, DollarSign, Download } from 'lucide-react';
 import { toast } from 'sonner';
 
 const MOCK_INTEL = {

@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Mic, MicOff, Volume2, VolumeX, BrainCircuit, Activity, Power, Send, RotateCcw, MessageSquare } from "lucide-react";
-import { useInterviewStore } from "../../store/interviewStore";
 import { cn } from "@/lib/utils";
+import { Activity, BrainCircuit, MessageSquare, Mic, MicOff, RotateCcw, Send, Volume2, VolumeX } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { useInterviewStore } from "../../store/interviewStore";
 
 // Types for Speech Recognition
 interface SpeechRecognitionEvent extends Event {

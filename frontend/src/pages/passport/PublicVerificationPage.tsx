@@ -1,19 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import {
-  ShieldCheck,
-  CheckCircle2,
-  XCircle,
-  AlertTriangle,
-  Award,
-  Lock,
-  ExternalLink,
-  Search,
-  Calendar,
-  Compass
-} from 'lucide-react';
-import { careerIntelligenceApi } from '@/api/careerIntelligenceApi';
 import type { PublicVerificationResult } from '@/api/careerIntelligenceApi';
+import { careerIntelligenceApi } from '@/api/careerIntelligenceApi';
+import {
+    CheckCircle2,
+    Lock,
+    Search,
+    ShieldCheck,
+    XCircle
+} from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
 
 export const PublicVerificationPage: React.FC = () => {
   const { reference } = useParams<{ reference?: string }>();

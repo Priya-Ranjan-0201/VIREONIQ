@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { Sparkles, Compass, FileText, ArrowRight, CheckCircle, RefreshCw, CheckSquare } from "lucide-react";
 import client from "@/api/client";
+import { CheckCircle, CheckSquare, Compass, FileText, RefreshCw, Sparkles } from "lucide-react";
+import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 interface TransferableSkill {
@@ -45,7 +45,7 @@ export const CareerRebirth = () => {
     break_duration_months: 0
   });
 
-  const [analyzeText, setAnalyzeText] = useState("");
+  // Transferable skills state
   const [skillsReport, setSkillsReport] = useState<TransferableSkill[]>([]);
   
   // Resume rewriter states

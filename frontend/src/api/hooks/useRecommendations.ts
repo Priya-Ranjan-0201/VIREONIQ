@@ -1,5 +1,5 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import client from "@/api/client";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const useRecommendations = () => {
   return useQuery({

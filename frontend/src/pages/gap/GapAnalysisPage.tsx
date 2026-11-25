@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Target, ArrowRight, BrainCircuit, Activity, Zap, Shield, Code } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
+import { Activity, ArrowRight, BrainCircuit, Code, Shield, Target, Zap } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useGapStore } from "../../store/gapStore";
 
 export const GapAnalysisPage = () => {
@@ -175,7 +175,7 @@ export const GapAnalysisPage = () => {
               </div>
               <CardContent className="p-0">
                  <div className="divide-y divide-white/5">
-                    {analysis.recommendations?.map((rec: any, idx: number) => (
+                    {analysis.recommendations?.map((rec, idx: number) => (
                       <div key={idx} className="p-6 hover:bg-white/[0.02] transition-colors flex gap-6 group">
                          <div className="flex flex-col items-center justify-center bg-slate-900 border border-white/10 rounded-2xl w-24 h-24 shrink-0 group-hover:border-primary/50 transition-colors">
                             <span className="text-2xl font-black text-white">{rec.time_horizon_days}</span>
@@ -190,9 +190,9 @@ export const GapAnalysisPage = () => {
                             <p className="text-slate-200 font-medium text-lg leading-snug mb-3">
                                {rec.task_description}
                             </p>
-                            {rec.resources?.length > 0 && (
+                            {(rec.resources?.length ?? 0) > 0 && (
                                <div className="flex gap-4">
-                                  {rec.resources.map((res: string, i: number) => (
+                                  {rec.resources?.map((res: string, i: number) => (
                                     <a key={i} href={res} target="_blank" rel="noreferrer" className="text-sm text-blue-400 hover:text-blue-300 flex items-center gap-1 font-medium">
                                       <ArrowRight className="w-3 h-3" /> Resource {i+1}
                                     </a>

@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import { offerApi } from '../api/offerApi';
 import type { MockOffer } from '../api/offerApi';
+import { offerApi } from '../api/offerApi';
 
 interface OfferState {
   currentOffer: MockOffer | null;

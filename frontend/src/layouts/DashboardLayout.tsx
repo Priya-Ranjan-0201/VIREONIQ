@@ -1,9 +1,9 @@
-import { useState } from 'react';
-import { Outlet, useLocation, Link } from 'react-router-dom';
-import { Sidebar } from '@/components/navigation/Sidebar';
 import { NotificationCenter } from '@/components/navigation/NotificationCenter';
-import { Menu, Sparkles, Brain, ShieldCheck, Search, Compass, Target } from 'lucide-react';
+import { Sidebar } from '@/components/navigation/Sidebar';
 import { Button } from '@/components/ui/button';
+import { Brain, Menu, Sparkles } from 'lucide-react';
+import { useState } from 'react';
+import { Link, Outlet, useLocation } from 'react-router-dom';
 
 export const DashboardLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);

@@ -1,27 +1,21 @@
-import { useState, useMemo, useEffect } from 'react';
-import {
-  Calendar,
-  Download,
-  CheckCircle2,
-  Clock,
-  BookOpen,
-  Zap,
-  ExternalLink,
-  ChevronRight,
-  Sparkles,
-  Play,
-  Plus,
-  X,
-  Share2,
-  CalendarDays,
-  Target,
-  Code2,
-  CheckSquare,
-  Square
-} from 'lucide-react';
 import client from '@/api/client';
-import { toast } from 'sonner';
+import {
+    BookOpen,
+    Calendar,
+    CalendarDays,
+    CheckCircle2,
+    ChevronRight,
+    Clock,
+    Code2,
+    Download,
+    Play,
+    Sparkles,
+    Target,
+    X
+} from 'lucide-react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 
 interface PrepDay {
   day: number;
@@ -108,26 +102,6 @@ export const CalendarExportPage = () => {
     }
     setSelectedWeek('all');
     toast.info(`Switched to ${type}-Day Calibrated Preparation Plan! 📅`);
-  };
-
-  // Toggle individual day task completion
-  const handleToggleTask = (dayNum: number, taskIdx: number) => {
-    setDays((prev) => {
-      const updated = prev.map((d) => {
-        if (d.day === dayNum) {
-          const newTasks = [...d.tasks];
-          // We toggle day done status based on tasks
-          return {
-            ...d,
-            done: !d.done
-          };
-        }
-        return d;
-      });
-      localStorage.setItem(`vireoniq_prep_days_${planType}`, JSON.stringify(updated));
-      return updated;
-    });
-    toast.success("Progress saved! +15 XP awarded! ⚡");
   };
 
   // Toggle whole day status

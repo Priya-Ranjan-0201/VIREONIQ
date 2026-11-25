@@ -1,12 +1,12 @@
-import { lazy, Suspense, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Toaster, toast } from 'sonner';
 import { syncOfflineSessions } from '@/lib/offlineEngine';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { lazy, Suspense, useEffect } from 'react';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { toast, Toaster } from 'sonner';
 
 import { AuthGuard } from '@/layouts/AuthGuard';
-import { GuestGuard } from '@/layouts/GuestGuard';
 import { DashboardLayout } from '@/layouts/DashboardLayout';
+import { GuestGuard } from '@/layouts/GuestGuard';
 
 // ──────────────────────────────────────────────
 // Code-split page imports (React.lazy)
@@ -44,9 +44,6 @@ function lazyWithRetry<T extends React.ComponentType<any>>(
 // Auth (eagerly loaded — small bundles)
 import { LoginPage } from '@/pages/auth/LoginPage';
 import { RegisterPage } from '@/pages/auth/RegisterPage';
-
-// Public (no auth required)
-const CredentialProfile = lazyWithRetry(() => import('@/pages/CredentialProfile').then(m => ({ default: m.CredentialProfile })));
 
 // Core
 const DashboardPage = lazyWithRetry(() => import('@/pages/dashboard/DashboardPage').then(m => ({ default: m.DashboardPage })));
@@ -108,7 +105,6 @@ const EmployerTruthScore = lazyWithRetry(() => import('@/pages/EmployerTruthScor
 // Admin
 const CollegeAdminDashboard = lazyWithRetry(() => import('@/pages/college/CollegeAdminDashboard').then(m => ({ default: m.CollegeAdminDashboard })));
 const ParentDashboard = lazyWithRetry(() => import('@/pages/parent/ParentDashboard').then(m => ({ default: m.ParentDashboard })));
-const RecruiterDashboard = lazyWithRetry(() => import('@/pages/recruiter/RecruiterIntelligencePage').then(m => ({ default: m.RecruiterIntelligencePage })));
 const RecruiterIntelligencePage = lazyWithRetry(() => import('@/pages/recruiter/RecruiterIntelligencePage').then(m => ({ default: m.RecruiterIntelligencePage })));
 const WorkforceIntelligencePage = lazyWithRetry(() => import('@/pages/workforce/WorkforceIntelligencePage').then(m => ({ default: m.WorkforceIntelligencePage })));
 
