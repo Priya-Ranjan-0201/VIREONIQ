@@ -47,7 +47,7 @@ export const MyCredential = () => {
           domain_expertise: 70,
           recruiter_summary: "High capability data engineer with verified proficiency in backend logic configurations.",
           credential_hash: "MOCK_HASH_ABCD",
-          public_url: "https://placeiq.app/verify/mock-slug",
+          public_url: "https://vireoniq.app/verify/mock-slug",
           is_public: true
         });
       } else {

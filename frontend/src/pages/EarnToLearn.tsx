@@ -30,7 +30,7 @@ export const PremiumGate: React.FC<{ children: React.ReactNode; featureName: str
         <div className="space-y-2">
           <h3 className="text-xl font-bold text-white">Premium Feature Locked</h3>
           <p className="text-slate-400 text-xs leading-relaxed">
-            Access to this premium feature is restricted. Earn free days of premium access by contributing to the PlaceIQ student community.
+            Access to this premium feature is restricted. Earn free days of premium access by contributing to the VIREONIQ student community.
           </p>
         </div>
         <button

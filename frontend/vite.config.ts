@@ -13,9 +13,9 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'robots.txt', 'apple-touch-icon.png'],
       manifest: {
-        name: 'PlaceIQ',
-        short_name: 'PlaceIQ',
-        description: 'AI-powered placement preparation platform',
+        name: 'VIREONIQ',
+        short_name: 'VIREONIQ',
+        description: 'Career and interview preparation platform',
         theme_color: '#09090b',
         background_color: '#09090b',
         display: 'standalone',

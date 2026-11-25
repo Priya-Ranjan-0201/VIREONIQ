@@ -27,7 +27,7 @@ async def create_study_group_session(
         raise HTTPException(status_code=404, detail="Study group not found")
 
     # Generate Jitsi meeting link
-    meeting_room_id = f"placeiq-peer-{uuid.uuid4().hex[:12]}"
+    meeting_room_id = f"vireoniq-peer-{uuid.uuid4().hex[:12]}"
     meeting_link = f"https://meet.jit.si/{meeting_room_id}"
 
     session = StudyGroupSession(

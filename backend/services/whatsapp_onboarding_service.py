@@ -12,13 +12,13 @@ from services.interview.engine import check_prompt_injection
 
 ONBOARDING_FLOW_STATES = {
     "greeting": {
-        "message": "Hi! I'm PlaceIQ. I help you prepare for placements for free, right "
+        "message": "Hi! I'm VIREONIQ. I help you prepare for placements for free, right "
                     "here on WhatsApp. Takes 2 minutes to set up. Ready?",
         "options": ["Yes, let's go", "What is this?"],
         "next_state": {"Yes, let's go": "ask_year", "What is this?": "explain"}
     },
     "explain": {
-        "message": "PlaceIQ asks you daily practice questions for your target job role, "
+        "message": "VIREONIQ asks you daily practice questions for your target job role, "
                     "gives you feedback, and tracks your improvement. No app download "
                     "needed. It's free to start. Want to begin?",
         "options": ["Yes, let's go", "Not now"],
@@ -255,7 +255,7 @@ async def process_onboarding_reply(
 
     # Check for direct APP link request
     if message_text.upper().strip() == "APP":
-        return f"Here is your link to the full web app. It auto-fills your login:\nhttps://placeiq.app/welcome?phone={phone}&source=whatsapp_onboarding"
+        return f"Here is your link to the full web app. It auto-fills your login:\nhttps://vireoniq.app/welcome?phone={phone}&source=whatsapp_onboarding"
 
     return next_message
 
@@ -271,7 +271,7 @@ async def generate_referral_share_message(user_id: str, db: AsyncSession) -> str
     sessions = (await db.execute(session_count_stmt)).scalars().first() or 1
 
     return (
-        f"I've been prepping for placements with PlaceIQ — it's free and works right on "
+        f"I've been prepping for placements with VIREONIQ — it's free and works right on "
         f"WhatsApp, no app needed. I have already completed {sessions} practice rounds. Try it: "
         f"https://wa.me/{settings.SMTP_USER or '911234567890'}?text=Hi"
     )

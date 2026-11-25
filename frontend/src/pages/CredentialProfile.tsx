@@ -65,7 +65,7 @@ export const CredentialProfile = () => {
 
   const shareToX = () => {
     if (!credential) return;
-    const text = encodeURIComponent(`Check out my verified skill credential on PlaceIQ! 🎓 Tier: ${credential.tier.toUpperCase()} | Overall PRS: ${credential.overall_prs}%\n\n`);
+    const text = encodeURIComponent(`Check out my verified skill credential on VIREONIQ! Tier: ${credential.tier.toUpperCase()} | Overall PRS: ${credential.overall_prs}%\n\n`);
     const url = encodeURIComponent(window.location.href);
     window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, "_blank");
   };
@@ -98,7 +98,7 @@ export const CredentialProfile = () => {
         <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-primary/10 border border-primary/20 rounded-full text-xs font-bold text-primary uppercase tracking-wider">
           <ShieldCheck className="w-4 h-4" /> Secure Verification Signature Matches
         </div>
-        <h2 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-white to-[#9CA3AF] bg-clip-text text-transparent">PlaceIQ Verified Credential</h2>
+        <h2 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-white to-[#9CA3AF] bg-clip-text text-transparent">VIREONIQ Verified Credential</h2>
         <p className="text-[#9CA3AF] text-sm uppercase tracking-widest font-semibold">Decentralized, tamper-proof proof-of-work profiles</p>
       </header>
 

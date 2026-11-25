@@ -89,7 +89,7 @@ async def get_my_passport_pdf(
             spaceAfter=6
         )
 
-        story.append(Paragraph("<b>PLACEIQ GLOBAL TALENT PASSPORT</b>", title_style))
+        story.append(Paragraph("<b>VIREONIQ GLOBAL TALENT PASSPORT</b>", title_style))
         story.append(Paragraph(f"<b>Passport ID:</b> {passport.passport_id}", body_style))
         story.append(Paragraph(f"<b>Verified Role:</b> {passport.verified_role}", body_style))
         story.append(Paragraph(f"<b>Skill Tier:</b> {passport.skill_tier.upper()}", body_style))
@@ -101,7 +101,7 @@ async def get_my_passport_pdf(
             ["Metric", "Value"],
             ["Global Tier Eligibility", ", ".join(passport.eligible_company_tiers or [])],
             ["Contractor Rate range", f"${passport.contractor_rate_min} - ${passport.contractor_rate_max} / hr"],
-            ["Verification URL", passport.public_passport_url or "https://placeiq.app"]
+            ["Verification URL", passport.public_passport_url or "https://vireoniq.app"]
         ]
         t = Table(data, colWidths=[150, 350])
         t.setStyle(TableStyle([
@@ -136,7 +136,7 @@ stream
 BT
 /F1 20 Tf
 50 700 Td
-(PLACEIQ GLOBAL TALENT PASSPORT) Tj
+(VIREONIQ GLOBAL TALENT PASSPORT) Tj
 /F1 11 Tf
 0 -40 Td
 (Passport ID: {passport.passport_id}) Tj

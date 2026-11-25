@@ -1,7 +1,7 @@
 import { openDB } from 'idb';
 import api from './axios';
 
-const DB_NAME = 'placeiq-offline';
+const DB_NAME = 'vireoniq-offline';
 const DB_VERSION = 1;
 
 export interface OfflineSession {

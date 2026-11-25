@@ -171,7 +171,7 @@ async def schedule_mentor_session(
         raise ValueError("Mentor profile not found.")
 
     # Generate meeting link
-    room_name = f"placeiq-{secrets.token_hex(8)}"
+    room_name = f"vireoniq-{secrets.token_hex(8)}"
     meeting_link = f"https://meet.jit.si/{room_name}"
 
     # Generate agenda based on type

@@ -151,7 +151,7 @@ async def generate_talent_passport(
     completed_sessions = credential.sessions_completed if credential else 5
     bridge_phase = prog.current_bridge_phase if prog else 3
     
-    passport_id = f"PLACEIQ-{str(user_id)[:8].upper()}-{datetime.now().year}"
+    passport_id = f"VIREONIQ-{str(user_id)[:8].upper()}-{datetime.now().year}"
 
     # Classify eligible remote tiers
     eligible_tiers = []
@@ -170,7 +170,7 @@ async def generate_talent_passport(
     elif tier == "diamond":
         min_rate = country_profile["typical_contractor_rate_usd"]["senior"]
 
-    public_passport_url = f"https://placeiq.app/passport/{passport_id}"
+    public_passport_url = f"https://vireoniq.app/passport/{passport_id}"
 
     # Upsert TalentPassport table
     stmt = select(TalentPassport).where(TalentPassport.user_id == user_id)

@@ -221,7 +221,7 @@ async def generate_day_of_interview_protocol(
     one_hour_before = f"Review your strong areas ({', '.join(strong_topics)}). Remind yourself of your key architectural design patterns."
     thirty_min_before = f"Do a quick mental review of critical parameters for: {', '.join(critical_topics)}. Do not write new code."
     ten_min_before = f"Close all tabs. Stand up, do a power pose for 2 minutes, and remember: {best_session_stats}."
-    post_instruction = "Open PlaceIQ and complete your 5-minute debrief immediately while feedback is fresh!"
+    post_instruction = "Open VIREONIQ and complete your 5-minute debrief immediately while feedback is fresh!"
 
     return DayOfPlan(
         strong_topics=strong_topics,

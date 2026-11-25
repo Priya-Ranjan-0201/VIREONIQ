@@ -122,7 +122,7 @@ export const HighSchoolTrajectory = () => {
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-750">
       <header className="flex justify-between items-center">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-white to-[#9CA3AF] bg-clip-text text-transparent">PlaceIQ for High Schools</h2>
+          <h2 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-white to-[#9CA3AF] bg-clip-text text-transparent">VIREONIQ for High Schools</h2>
           <p className="text-[#9CA3AF] mt-2 text-sm uppercase tracking-widest font-semibold">4-Year adaptive career trajectories starting at age 16</p>
         </div>
         {trajectory && (

@@ -34,7 +34,7 @@ export const RecruiterDashboard = () => {
           <h2 className="text-3xl font-bold tracking-tight text-slate-50 flex items-center gap-3">
              <ShieldCheck className="w-8 h-8 text-primary" /> Recruiter Intelligence
           </h2>
-          <p className="text-slate-400 mt-2">Discover and acquire top-tier talent vetted by PLACEIQ AI.</p>
+          <p className="text-slate-400 mt-2">Discover and acquire top-tier talent vetted by VIREONIQ AI.</p>
         </div>
         <div className="flex gap-4">
            <Button variant="outline" className="rounded-xl border-white/10 bg-slate-900/50">
@@ -148,7 +148,7 @@ export const RecruiterDashboard = () => {
                </div>
                <h3 className="text-lg font-bold text-white mb-2">Talent Acquisition AI</h3>
                <p className="text-xs text-slate-400 leading-relaxed mb-6">
-                  PLACEIQ AI has flagged 4 new candidates matching your "Big Tech" criteria in the last 24 hours.
+                  VIREONIQ AI has flagged 4 new candidates matching your "Big Tech" criteria in the last 24 hours.
                </p>
                <Button className="w-full rounded-xl bg-primary hover:bg-primary/90 text-white font-bold">
                   View Flagged Talent

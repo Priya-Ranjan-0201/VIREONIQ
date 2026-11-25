@@ -56,10 +56,10 @@ YEAR_BY_YEAR_FRAMEWORK = {
         "primary_goal": "Convert your 3 years of building into placement readiness.",
         "weekly_hours_recommended": 15,
         "milestones": [
-            "Complete PlaceIQ gap analysis and close all critical gaps",
+            "Complete VIREONIQ gap analysis and close all critical gaps",
             "Reach Gold tier credential (PRS >= 75)",
             "Secure one strong referral for target company",
-            "Complete 15+ PlaceIQ interview sessions"
+            "Complete 15+ VIREONIQ interview sessions"
         ]
     }
 }

@@ -260,7 +260,7 @@ export const MentorNetwork = () => {
             <div className="glass-panel p-6 rounded-3xl">
               <h4 className="text-sm text-slate-300 font-bold uppercase tracking-wider mb-3">Structured Give-Back Protocol</h4>
               <p className="text-xs text-slate-400 leading-relaxed">
-                PlaceIQ utilizes a closed-loop alumni commitment protocol. Every placed candidate pledges 12 hours of mock technical coaching, resume reviews, and career counseling to help students behind them.
+                VIREONIQ utilizes a closed-loop alumni commitment protocol. Every placed candidate pledges 12 hours of mock technical coaching, resume reviews, and career counseling to help students behind them.
               </p>
             </div>
           </div>

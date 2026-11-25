@@ -291,7 +291,7 @@ export const OfflinePractice = () => {
                 </li>
                 <li className="flex gap-2">
                   <CheckCircle className="text-primary w-4 h-4 shrink-0" />
-                  <span>Open PlaceIQ anytime, select a downloaded role, and practice without network requirements.</span>
+                  <span>Open VIREONIQ anytime, select a downloaded role, and practice without network requirements.</span>
                 </li>
                 <li className="flex gap-2">
                   <CheckCircle className="text-primary w-4 h-4 shrink-0" />

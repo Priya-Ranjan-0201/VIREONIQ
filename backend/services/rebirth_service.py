@@ -199,7 +199,7 @@ async def generate_transition_roadmap(
             "title": "Interview Language Acquisition",
             "weeks": f"{weeks_needed // 3 + 1}-{weeks_needed // 2}",
             "goal": "Speak the exact language hiring managers in your target role use",
-            "placeiq_sessions": "Start 5 PlaceIQ simulation sessions, focusing on technical depth.",
+            "placeiq_sessions": "Start 5 VIREONIQ simulation sessions, focusing on technical depth.",
             "story_work": "Draft 5 stories reframing original domain accomplishments as tech project assets."
         },
         {

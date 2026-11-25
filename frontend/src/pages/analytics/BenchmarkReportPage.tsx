@@ -117,7 +117,7 @@ export const BenchmarkReportPage = () => {
                <div className="mt-8 p-4 bg-primary/5 border border-primary/10 rounded-2xl flex gap-3">
                   <Info className="w-4 h-4 text-primary shrink-0" />
                   <p className="text-[10px] text-slate-400 leading-normal italic">
-                     These metrics are derived from real-time global talent data within the PLACEIQ ecosystem and historical Big Tech placement benchmarks.
+                     These metrics are derived from real-time global talent data within the VIREONIQ ecosystem and historical benchmark datasets.
                   </p>
                </div>
             </CardContent>

@@ -139,7 +139,7 @@ export const TalentPassport = () => {
             <div>
               <div className="flex justify-between items-start">
                 <div>
-                  <span className="text-[10px] font-bold tracking-widest uppercase text-amber-500">PlaceIQ Global Passport</span>
+                  <span className="text-[10px] font-bold tracking-widest uppercase text-amber-500">VIREONIQ Global Passport</span>
                   <h3 className="text-sm font-semibold text-slate-300 uppercase mt-1">Talent Credential</h3>
                 </div>
                 <span className="px-2.5 py-1 bg-amber-500/10 border border-amber-500/25 text-amber-500 text-[10px] font-bold rounded-lg uppercase tracking-wider">

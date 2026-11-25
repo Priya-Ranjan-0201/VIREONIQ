@@ -73,7 +73,7 @@ async def confirm_parent_link(
     # In production, this would trigger a Twilio WhatsApp message
     print(
         f"[MOCK WHATSAPP] To: {link.parent_phone}\n"
-        f"Hi {link.parent_name}, this is PlaceIQ. {student_name} has added you to "
+        f"Hi {link.parent_name}, this is VIREONIQ. {student_name} has added you to "
         f"receive a simple weekly update on their placement preparation progress. "
         f"You'll get one message every Sunday. Reply STOP anytime to opt out."
     )

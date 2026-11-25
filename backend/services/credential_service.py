@@ -275,7 +275,7 @@ async def generate_credential_badge_svg(user_id: uuid.UUID, db: AsyncSession) ->
     <path d="M 10 20 L 190 20 L 190 140 C 190 190, 100 230, 100 230 C 100 230, 10 190, 10 140 Z" fill="url(#shieldGrad)" stroke="{tier_color}" stroke-width="3"/>
     
     <!-- Branding Header -->
-    <text x="100" y="45" fill="#FFFFFF" font-size="12" font-family="sans-serif" font-weight="bold" text-anchor="middle" letter-spacing="1">PLACEIQ</text>
+    <text x="100" y="45" fill="#FFFFFF" font-size="12" font-family="sans-serif" font-weight="bold" text-anchor="middle" letter-spacing="1">VIREONIQ</text>
     <text x="100" y="58" fill="{tier_color}" font-size="7" font-family="sans-serif" text-anchor="middle" letter-spacing="0.5">VERIFIED SKILL CREDENTIAL</text>
     
     <!-- Tier Label -->
