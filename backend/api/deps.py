@@ -11,10 +11,33 @@ from db.session import get_db
 from crud import crud_user
 from db.models import User
 
-from typing import Optional
+from typing import Callable, Iterable, Optional
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{settings.API_V1_STR}/auth/login")
 oauth2_scheme_optional = OAuth2PasswordBearer(tokenUrl=f"{settings.API_V1_STR}/auth/login", auto_error=False)
+
+
+def user_has_role(user: User, allowed_roles: Iterable[str]) -> bool:
+    """Case-insensitive role check against allowed role names."""
+    if not user or not user.role or not user.role.name:
+        return False
+    allowed = {r.strip().lower() for r in allowed_roles}
+    return user.role.name.strip().lower() in allowed
+
+
+def require_roles(allowed_roles: Iterable[str], error_detail: Optional[str] = None) -> Callable:
+    """Dependency factory enforcing case-insensitive RBAC role membership."""
+    allowed_set = tuple(r.strip().lower() for r in allowed_roles)
+
+    async def _dependency(current_user: User = Depends(get_current_active_user)) -> User:
+        if not user_has_role(current_user, allowed_set):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=error_detail or "Access denied: insufficient role privileges.",
+            )
+        return current_user
+
+    return _dependency
 
 async def get_optional_current_user(
     db: AsyncSession = Depends(get_db),
@@ -88,7 +111,7 @@ async def get_current_recruiter_user(
     """
     Validates that the logged-in user is a Recruiter or Admin.
     """
-    if not current_user.role or current_user.role.name not in ["Recruiter", "Admin"]:
+    if not user_has_role(current_user, ["recruiter", "admin", "recruiter_admin"]):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Access denied: Recruiter or Admin role required."
@@ -101,7 +124,7 @@ async def get_current_faculty_or_admin(
     """
     Validates that the logged-in user is a Faculty, College Admin, or Platform Admin.
     """
-    if not current_user.role or current_user.role.name not in ["faculty", "college_admin", "Admin"]:
+    if not user_has_role(current_user, ["faculty", "college_admin", "admin"]):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Access denied: Faculty or College Admin role required."

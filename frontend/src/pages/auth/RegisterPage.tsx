@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import api from '@/lib/axios';
-import { mockRegister } from '@/lib/mockAuth';
+import { isMockAuthEnabled, mockRegister } from '@/lib/mockAuth';
 
 export const RegisterPage = () => {
   const [email, setEmail] = useState('');
@@ -41,15 +41,17 @@ export const RegisterPage = () => {
     } catch (backendError: any) {
       const isNetworkError = !backendError.response;
 
-      if (isNetworkError) {
-        // Backend unreachable — fall back to mock offline registration
+      if (isNetworkError && isMockAuthEnabled()) {
+        // Explicit dev-only fallback when backend is unreachable
         const result = mockRegister(email, password);
         if (result.success) {
-          toast.success('Account created (Offline Mode)! Please log in.');
+          toast.success('Account created (Dev Mock Mode)! Please log in.');
           navigate('/login');
         } else {
           toast.error(result.error || 'Registration failed.');
         }
+      } else if (isNetworkError) {
+        toast.error('Registration server is unreachable. Please try again later.');
       } else {
         const detail = backendError.response?.data?.detail;
         const message = typeof detail === 'string' ? detail : 'Registration failed.';
@@ -76,12 +78,6 @@ export const RegisterPage = () => {
         </div>
 
         <div className="bg-card/40 backdrop-blur-2xl p-8 rounded-[2rem] border border-white/10 shadow-2xl">
-          {/* Demo hint */}
-          <div className="mb-6 p-3 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-xs text-slate-300">
-            <p className="font-bold text-cyan-400 uppercase tracking-widest text-[10px] mb-1">Already have a demo account?</p>
-            <p>Go to <Link to="/login" className="text-cyan-400 font-bold underline">Login</Link> and use <span className="font-mono">demo@vireoniq.com</span> / <span className="font-mono">Demo@1234</span></p>
-          </div>
-
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
               <Label htmlFor="email" className="text-slate-400 ml-1">Work Email</Label>

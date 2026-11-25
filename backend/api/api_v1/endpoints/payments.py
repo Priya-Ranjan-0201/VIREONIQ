@@ -61,27 +61,54 @@ async def verify_payment(
     """
     Verify the cryptographic signature of the Razorpay payment to upgrade user subscription.
     """
-    # 1. Verify payment signature
-    if settings.RAZORPAY_KEY_SECRET:
-        msg = f"{order_id}|{payment_id}".encode("utf-8")
-        generated_signature = hmac.new(
-            settings.RAZORPAY_KEY_SECRET.encode("utf-8"),
-            msg,
-            hashlib.sha256
-        ).hexdigest()
-        
-        if not hmac.compare_digest(generated_signature, signature):
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Invalid payment signature verification failed."
-            )
-            
-    # 2. Update Transaction Status
+    # 1. Verify payment signature (fail closed when payment secret is not configured)
+    if not settings.RAZORPAY_KEY_SECRET:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Payment signature verification secret is not configured."
+        )
+
+    msg = f"{order_id}|{payment_id}".encode("utf-8")
+    generated_signature = hmac.new(
+        settings.RAZORPAY_KEY_SECRET.encode("utf-8"),
+        msg,
+        hashlib.sha256
+    ).hexdigest()
+
+    if not hmac.compare_digest(generated_signature, signature):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid payment signature verification failed."
+        )
+
+    if plan_id not in PRICES:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid plan"
+        )
+
+    # 2. Verify transaction ownership, pending status, and exact plan amount
     tx = await crud_payment.get_transaction_by_order_id(db, order_id)
     if not tx:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Order transaction records not found."
+        )
+    if tx.user_id != current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not authorized to verify this transaction."
+        )
+    if tx.status == "success":
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Transaction has already been verified."
+        )
+    expected_amount = PRICES[plan_id] / 100
+    if abs(float(tx.amount) - expected_amount) > 0.01:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Transaction amount does not match requested plan."
         )
         
     tx.razorpay_payment_id = payment_id

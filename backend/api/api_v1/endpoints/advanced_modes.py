@@ -1,7 +1,12 @@
 from typing import Optional, List, Dict, Any
 from fastapi import APIRouter, Depends, HTTPException, status, WebSocket, WebSocketDisconnect, Body
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
+from jose import JWTError
+import structlog
+
 from api.deps import get_db, get_current_active_user
+from core.security import decode_token
 from db.models import User, InterviewSession, InterviewAnswer
 from pydantic import BaseModel
 import uuid
@@ -9,6 +14,7 @@ import json
 
 from services import adversarial_service, reverse_interview_service, code_execution_service
 
+logger = structlog.get_logger("vireoniq.advanced_modes")
 router = APIRouter()
 
 class StartRequest(BaseModel):
@@ -47,12 +53,47 @@ async def start_adversarial_session(
     await db.refresh(session)
     return {"session_id": str(session.id), "status": "started"}
 
+async def _verify_owned_session(session_id: str, user_id: uuid.UUID, db: AsyncSession) -> InterviewSession:
+    try:
+        sid = uuid.UUID(session_id)
+    except ValueError:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid session_id")
+    sess = (await db.execute(select(InterviewSession).where(InterviewSession.id == sid))).scalars().first()
+    if not sess or sess.user_id != user_id:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Interview session not found")
+    return sess
+
+
 @router.websocket("/adversarial/{session_id}/stream")
 async def adversarial_websocket(
     websocket: WebSocket,
     session_id: str,
     db: AsyncSession = Depends(get_db)
 ):
+    token = websocket.query_params.get("token")
+    if not token:
+        auth_header = websocket.headers.get("authorization", "")
+        if auth_header.lower().startswith("bearer "):
+            token = auth_header[7:].strip()
+    if not token:
+        await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
+        return
+    try:
+        payload = decode_token(token)
+        if payload.get("type") != "access" or not payload.get("sub"):
+            await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
+            return
+        user_uuid = uuid.UUID(str(payload["sub"]))
+        sid = uuid.UUID(session_id)
+    except (JWTError, ValueError):
+        await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
+        return
+
+    sess = (await db.execute(select(InterviewSession).where(InterviewSession.id == sid))).scalars().first()
+    if not sess or sess.user_id != user_uuid:
+        await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
+        return
+
     await websocket.accept()
     session_state = {"tactic_usage": {}, "composure_scores": []}
     exchange_number = 1
@@ -94,9 +135,11 @@ async def adversarial_websocket(
 @router.get("/adversarial/{session_id}/debrief")
 async def get_adversarial_debrief(
     session_id: str,
+    db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_active_user)
 ) -> dict:
-    # Build default mockup log if no DB records found
+    await _verify_owned_session(session_id, current_user.id, db)
+    # Build default log if no DB records found
     tactic_log = [
         {"tactic": "challenge_correct", "composure_before": 85.0, "composure_after": 60.0},
         {"tactic": "feign_confusion", "composure_before": 75.0, "composure_after": 70.0}
@@ -127,6 +170,7 @@ async def reverse_ask(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_active_user)
 ) -> dict:
+    await _verify_owned_session(session_id, current_user.id, db)
     try:
         return await reverse_interview_service.evaluate_reverse_question(
             student_question=req.student_question,
@@ -145,6 +189,7 @@ async def get_reverse_scorecard(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_active_user)
 ) -> dict:
+    await _verify_owned_session(session_id, current_user.id, db)
     return await reverse_interview_service.generate_reverse_interview_scorecard(session_id, db)
 
 @router.post("/code/execute")
@@ -205,6 +250,3 @@ async def get_supported_languages(
     current_user: User = Depends(get_current_active_user)
 ) -> dict:
     return {"languages": list(code_execution_service.LANGUAGE_IDS.keys())}
-
-import logging
-logger = logging.getLogger(__name__)

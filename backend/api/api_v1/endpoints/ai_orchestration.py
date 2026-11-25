@@ -35,18 +35,25 @@ async def chat_with_copilot(
 async def execute_task(
     task_type: str = Body("READINESS_EXPLANATION", embed=True),
     user_input: str = Body("Explain readiness", embed=True),
-    acting_role_name: str = Body("candidate", embed=True),
+    acting_role_name: Optional[str] = Body(None, embed=True),
     required_tools: List[str] = Body([], embed=True),
     tool_inputs: Dict[str, Any] = Body({}, embed=True),
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_active_user)
 ) -> Dict[str, Any]:
-    """Executes a structured task via the central AI Orchestrator with tool permissions and logging."""
+    """Executes a structured task via the central AI Orchestrator using the caller's authoritative RBAC role."""
+    resolved_role = (
+        current_user.role.name.strip().lower()
+        if current_user.role and current_user.role.name
+        else "candidate"
+    )
+    if resolved_role == "user":
+        resolved_role = "candidate"
     return await orchestrate_ai_task(
         user=current_user,
         task_type=task_type,
         user_input=user_input,
-        acting_role_name=acting_role_name,
+        acting_role_name=resolved_role,
         required_tools=required_tools,
         tool_inputs=tool_inputs,
         db=db

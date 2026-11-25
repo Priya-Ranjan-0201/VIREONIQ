@@ -157,11 +157,20 @@ async def mark_submitted(
 async def log_outcome(
     referral_id: uuid.UUID,
     payload: LogOutcomeRequest,
+    current_user: User = Depends(deps.get_current_active_user),
     db: AsyncSession = Depends(get_db)
 ):
     """
-    Allows logging of final referrals outcomes (e.g. hired, rejected, withdrew).
+    Allows authorized referrer, candidate, or admin to log final referral outcomes.
     """
+    stmt = select(ReferralSlot).where(ReferralSlot.id == referral_id)
+    slot = (await db.execute(stmt)).scalars().first()
+    if not slot:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Referral slot not found.")
+    is_admin = deps.user_has_role(current_user, ["admin"])
+    if not is_admin and slot.referrer_id != current_user.id and slot.candidate_id != current_user.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized to update this referral slot.")
+
     try:
         slot = await referral_economy_service.log_referral_outcome(
             referral_slot_id=referral_id,

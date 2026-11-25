@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Dict, Any, List, Optional
 import uuid
 
-from api.deps import get_db, get_current_active_user
+from api.deps import get_db, require_roles, user_has_role
 from db.models import (
     User, RecruiterOrganization, RecruiterProfile, OrganizationUnit,
     OrganizationRoleCatalog, OrganizationCapabilitySnapshot, OrganizationAssessmentCampaign
@@ -19,9 +19,15 @@ from services.organization_catalog_service import (
 )
 
 router = APIRouter()
+require_org_admin = require_roles(
+    ["admin", "organization_admin", "recruiter_admin", "recruiter"],
+    error_detail="Access denied: Organization Admin or Recruiter role required.",
+)
 
 async def get_or_create_default_org(user: User, db: AsyncSession) -> RecruiterOrganization:
-    """Helper ensuring multi-tenant organization context."""
+    """Helper ensuring multi-tenant organization context for authorized org admins."""
+    if not user_has_role(user, ["admin", "organization_admin", "recruiter_admin", "recruiter"]):
+        raise HTTPException(status_code=403, detail="Access denied: Organization Admin role required.")
     stmt = select(RecruiterProfile).where(RecruiterProfile.user_id == user.id)
     rec_prof = (await db.execute(stmt)).scalars().first()
     if rec_prof:
@@ -44,7 +50,7 @@ async def get_or_create_default_org(user: User, db: AsyncSession) -> RecruiterOr
 async def get_organization_capabilities(
     unit_id: Optional[uuid.UUID] = Query(None),
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(require_org_admin)
 ) -> Dict[str, Any]:
     """Retrieves organizational capability coverage, confidence metrics, and critical gaps."""
     org = await get_or_create_default_org(current_user, db)
@@ -53,7 +59,7 @@ async def get_organization_capabilities(
 @router.get("/matrix")
 async def get_capability_matrix(
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(require_org_admin)
 ) -> Dict[str, Any]:
     """Retrieves 2D Competencies x Teams workforce capability matrix."""
     org = await get_or_create_default_org(current_user, db)
@@ -64,7 +70,7 @@ async def get_gap_tradeoffs(
     competency: str,
     unit_id: Optional[uuid.UUID] = Query(None),
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(require_org_admin)
 ) -> Dict[str, Any]:
     """Provides decision support comparing Hiring, Upskilling, Hybrid, and Redeployment."""
     org = await get_or_create_default_org(current_user, db)
@@ -74,7 +80,7 @@ async def get_gap_tradeoffs(
 async def get_internal_mobility(
     target_role: str = Query("Platform Engineer"),
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(require_org_admin)
 ) -> Dict[str, Any]:
     """Matches internal workforce against open or strategic roles."""
     org = await get_or_create_default_org(current_user, db)
@@ -85,7 +91,7 @@ async def simulate_workforce_change(
     unit_id: Optional[uuid.UUID] = Body(None, embed=True),
     hypothetical_changes: Dict[str, Any] = Body(..., embed=True),
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(require_org_admin)
 ) -> Dict[str, Any]:
     """Performs zero-mutation in-memory counterfactual simulation of workforce changes."""
     org = await get_or_create_default_org(current_user, db)
@@ -95,7 +101,7 @@ async def simulate_workforce_change(
 async def take_capability_snapshot(
     unit_id: Optional[uuid.UUID] = Body(None, embed=True),
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(require_org_admin)
 ) -> Dict[str, Any]:
     """Captures immutable organizational capability snapshot."""
     org = await get_or_create_default_org(current_user, db)
@@ -104,7 +110,7 @@ async def take_capability_snapshot(
 @router.get("/snapshots")
 async def list_capability_snapshots(
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(require_org_admin)
 ) -> List[Dict[str, Any]]:
     """Lists historical organizational snapshots for audit and trend analysis."""
     org = await get_or_create_default_org(current_user, db)
@@ -133,7 +139,7 @@ async def create_assessment_campaign(
     unit_id: Optional[uuid.UUID] = Body(None, embed=True),
     invited_count: int = Body(10, embed=True),
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(require_org_admin)
 ) -> Dict[str, Any]:
     """Launches team-wide competency assessment campaign."""
     org = await get_or_create_default_org(current_user, db)
@@ -150,7 +156,7 @@ async def create_assessment_campaign(
 @router.get("/roles")
 async def list_role_catalog(
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(require_org_admin)
 ) -> List[Dict[str, Any]]:
     """Lists versioned organizational role catalog."""
     org = await get_or_create_default_org(current_user, db)
@@ -181,7 +187,7 @@ async def create_role(
     criticality: int = Body(80, embed=True),
     role_version: str = Body("1.0.0", embed=True),
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(require_org_admin)
 ) -> Dict[str, Any]:
     """Creates or updates a versioned role definition in organizational catalog."""
     org = await get_or_create_default_org(current_user, db)

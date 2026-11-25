@@ -309,19 +309,18 @@ async def submit_code_for_execution(
                                     integrity_signals=integrity_signals
                                 )
     except Exception as e:
-        logger.info(f"Sandbox runner offline ({e}). Running deterministic local evaluator.")
+        logger.warning(f"Sandbox runner unavailable ({e}). Returning explicit unavailable status.")
 
-    # Graceful local fallback for sandboxed tests
-    test_results = [{"test_case": 1, "expected": "Optimal Output", "actual": "Optimal Output", "passed": True}]
+    # Fail closed honestly when remote sandbox is unconfigured or offline
     return CodeResult(
-        stdout="Execution completed successfully.\nLocal test verification passed.",
-        stderr=None,
+        stdout="",
+        stderr="Execution sandbox is unavailable or unreachable. Results were not simulated.",
         compile_output=None,
-        time_ms=14.5,
-        memory_kb=1840.0,
-        status_id=3,
-        status_desc="Accepted",
-        passed=True,
-        test_results=test_results,
+        time_ms=0.0,
+        memory_kb=0.0,
+        status_id=13,
+        status_desc="Sandbox Unavailable",
+        passed=False,
+        test_results=[],
         integrity_signals=integrity_signals
     )

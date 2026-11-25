@@ -2,12 +2,15 @@ import uuid
 from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
+import structlog
+
 from db.session import get_db
 from api import deps
 from db.models import User, CareerRebirthPlan
 from services import rebirth_service
 from pydantic import BaseModel, Field
 
+logger = structlog.get_logger("vireoniq.career_rebirth")
 router = APIRouter()
 
 class GenerateRoadmapRequest(BaseModel):
@@ -42,9 +45,10 @@ async def generate_roadmap(
         )
         return plan
     except Exception as e:
+        logger.exception("career_rebirth_generate_failed", user_id=str(current_user.id), error=str(e))
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to generate roadmap: {str(e)}"
+            detail="Failed to generate transition roadmap."
         )
 
 @router.get("/my-plan")

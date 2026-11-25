@@ -77,8 +77,10 @@ def fuzzy_match_option(user_input: str, options: List[str]) -> Optional[str]:
 
 async def start_whatsapp_onboarding(phone: str, db: AsyncSession, redis_client: Any) -> str:
     """Initializes the onboarding state machine in Redis and creates a minimal user row."""
-    # Check if user already exists
-    user_stmt = select(User).where(User.email == f"{phone}@placeiq.whatsapp")
+    # Check if user already exists (support legacy and current WhatsApp domains)
+    user_stmt = select(User).where(
+        User.email.in_([f"{phone}@vireoniq.whatsapp", f"{phone}@placeiq.whatsapp"])
+    )
     existing_user = (await db.execute(user_stmt)).scalars().first()
     if existing_user:
         return "You have already completed onboarding. I'll send you daily questions here!"
@@ -91,10 +93,10 @@ async def start_whatsapp_onboarding(phone: str, db: AsyncSession, redis_client: 
         db.add(role)
         await db.flush()
 
-    # Create minimal user
+    # Create minimal user with explicitly unusable password hash
     user = User(
-        email=f"{phone}@placeiq.whatsapp",
-        password_hash="whatsapp_signup_no_pass",
+        email=f"{phone}@vireoniq.whatsapp",
+        password_hash="!unusable-whatsapp-account",
         role_id=role.id,
         is_active=True
     )

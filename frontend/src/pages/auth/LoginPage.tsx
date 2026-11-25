@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import api from '@/lib/axios';
-import { mockLogin } from '@/lib/mockAuth';
+import { isMockAuthEnabled, mockLogin } from '@/lib/mockAuth';
 
 export const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -32,16 +32,18 @@ export const LoginPage = () => {
     } catch (backendError: any) {
       const isNetworkError = !backendError.response;
 
-      if (isNetworkError) {
-        // Backend unreachable — fall back to mock auth
+      if (isNetworkError && isMockAuthEnabled()) {
+        // Explicit dev-only fallback when backend is unreachable
         const result = mockLogin(email, password);
         if (result.success && result.token && result.user) {
           setAuth(result.user as any, result.token);
-          toast.success('Access Granted (Offline Mode). Welcome back!');
+          toast.success('Access Granted (Dev Mock Mode). Welcome back!');
           navigate('/app/dashboard');
         } else {
           toast.error(result.error || 'Invalid credentials.');
         }
+      } else if (isNetworkError) {
+        toast.error('Authentication server is unreachable. Please try again later.');
       } else {
         const message = backendError.response?.data?.detail || 'Authentication failed.';
         toast.error(message);
@@ -67,12 +69,12 @@ export const LoginPage = () => {
         </div>
 
         <div className="bg-card/40 backdrop-blur-2xl p-8 rounded-[2rem] border border-white/10 shadow-2xl">
-          {/* Demo Credentials Banner */}
-          <div className="mb-6 p-3 rounded-xl bg-primary/10 border border-primary/20 text-xs text-slate-300 space-y-1">
-            <p className="font-bold text-primary uppercase tracking-widest text-[10px] mb-1">Demo Credentials</p>
-            <p>📧 <span className="font-mono">demo@vireoniq.com</span></p>
-            <p>🔑 <span className="font-mono">Demo@1234</span></p>
-          </div>
+          {isMockAuthEnabled() && (
+            <div className="mb-6 p-3 rounded-xl bg-primary/10 border border-primary/20 text-xs text-slate-300 space-y-1">
+              <p className="font-bold text-primary uppercase tracking-widest text-[10px] mb-1">Dev Mock Mode Active</p>
+              <p>Email: <span className="font-mono">demo@vireoniq.com</span></p>
+            </div>
+          )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">

@@ -41,7 +41,9 @@ def compute_canonical_hmac_signature(
     Computes a deterministic HMAC-SHA256 digital signature over the canonical credential payload.
     """
     canonical_payload = f"{credential_id}:{user_reference}:{competency}:{level}:{issuer}:{issued_at_iso}:{version}"
-    raw_key = getattr(settings, "SECRET_KEY", None) or "vireoniq-production-secret-hmac-key-v6"
+    raw_key = getattr(settings, "CREDENTIAL_SIGNING_KEY", None) or getattr(settings, "SECRET_KEY", None)
+    if not raw_key:
+        raise RuntimeError("Credential signing key is not configured.")
     secret_key = raw_key.encode('utf-8')
     signature = hmac.new(secret_key, canonical_payload.encode('utf-8'), hashlib.sha256).hexdigest()
     return signature
@@ -79,10 +81,16 @@ async def evaluate_and_issue_credential(
         and_(SkillEvidence.user_id == user_id, SkillEvidence.skill_name == norm_comp)
     )
     skill = (await db.execute(skill_stmt)).scalars().first()
-    
+    if not skill:
+        return {
+            "status": "NOT_ELIGIBLE",
+            "competency": norm_comp,
+            "reason": "No verified or assessed skill evidence found for this competency.",
+        }
+
     # Eligibility rules
-    score_val = float(skill.score or 0.0) if skill else 75.0
-    tier_val = skill.evidence_tier if skill else "ASSESSED"
+    score_val = float(skill.score or 0.0)
+    tier_val = skill.evidence_tier or "CLAIMED"
 
     if tier_val == "CLAIMED":
         credential_type = "PROJECT_EVIDENCE"

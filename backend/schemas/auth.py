@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, UUID4
+from pydantic import BaseModel, ConfigDict, EmailStr, UUID4
 
 class TokenResponse(BaseModel):
     access_token: str
@@ -12,7 +12,7 @@ class LoginRequest(BaseModel):
 class UserRegisterRequest(BaseModel):
     email: EmailStr
     password: str
-    role_name: str = "student"
+    role_name: str = "User"
 
 class UserResponse(BaseModel):
     id: UUID4
@@ -21,5 +21,4 @@ class UserResponse(BaseModel):
     is_email_verified: bool
     is_active: bool
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

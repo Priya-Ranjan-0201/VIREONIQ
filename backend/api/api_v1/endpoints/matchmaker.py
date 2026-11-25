@@ -1,8 +1,10 @@
-from fastapi import APIRouter, WebSocket, WebSocketDisconnect
-from typing import Dict, List
+from fastapi import APIRouter, WebSocket, WebSocketDisconnect, status
+from typing import Dict, List, Optional
 import uuid
 import json
-import asyncio
+from jose import JWTError
+
+from core.security import decode_token
 
 router = APIRouter()
 
@@ -38,8 +40,31 @@ class ConnectionManager:
 
 manager = ConnectionManager()
 
+def _extract_ws_token(websocket: WebSocket) -> Optional[str]:
+    token = websocket.query_params.get("token")
+    if token:
+        return token
+    auth_header = websocket.headers.get("authorization", "")
+    if auth_header.lower().startswith("bearer "):
+        return auth_header[7:].strip()
+    return None
+
+
 @router.websocket("/matchmaker/{user_id}")
 async def websocket_endpoint(websocket: WebSocket, user_id: str):
+    token = _extract_ws_token(websocket)
+    if not token:
+        await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
+        return
+    try:
+        payload = decode_token(token)
+        if payload.get("type") != "access" or str(payload.get("sub")) != str(user_id):
+            await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
+            return
+    except JWTError:
+        await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
+        return
+
     await manager.connect(user_id, websocket)
     try:
         while True:

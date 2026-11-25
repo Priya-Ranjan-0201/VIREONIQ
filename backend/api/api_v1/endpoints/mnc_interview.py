@@ -6,7 +6,8 @@ from pydantic import BaseModel, Field
 
 from db.session import get_db
 from api.deps import get_current_user
-from db.models import User
+from db.models import MNCInterviewSession, User
+from sqlalchemy import select
 from services.mnc_interview_intelligence_service import (
     create_company_interview_profile, generate_question_blueprint,
     generate_and_validate_coding_question, start_mnc_interview_session,
@@ -91,6 +92,7 @@ async def create_blueprint(
 @router.post("/coding/generate")
 async def generate_coding_question(
     request: CodingGenRequest,
+    current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
 ):
     """
@@ -122,6 +124,12 @@ async def start_session(
     )
     return session
 
+async def _ensure_owned_mnc_session(session_id: uuid.UUID, user_id: uuid.UUID, db: AsyncSession) -> None:
+    sess = (await db.execute(select(MNCInterviewSession).where(MNCInterviewSession.id == session_id))).scalars().first()
+    if not sess or sess.user_id != user_id:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Interview session not found")
+
+
 @router.post("/sessions/{session_id}/answer")
 async def submit_turn_answer(
     session_id: uuid.UUID,
@@ -132,6 +140,7 @@ async def submit_turn_answer(
     """
     Submit answer for a conversational interview turn and receive adaptive follow-up.
     """
+    await _ensure_owned_mnc_session(session_id, current_user.id, db)
     turn = await process_interview_turn_and_follow_up(
         session_id=session_id,
         question_text=request.question_text,
@@ -152,6 +161,7 @@ async def submit_code(
     """
     Evaluate code submission deterministically against test cases and AST complexity analyzer.
     """
+    await _ensure_owned_mnc_session(session_id, current_user.id, db)
     evaluation = evaluate_code_submission_deterministic(
         question=request.question_payload,
         code_submission=request.code_submission,
@@ -169,6 +179,7 @@ async def finalize_session(
     """
     Finalize session, elevate skill evidence (ASSESSED), update Career Twin, and return scorecard.
     """
+    await _ensure_owned_mnc_session(session_id, current_user.id, db)
     summary = await finalize_mnc_interview_and_sync_twin(
         session_id=session_id,
         user_id=current_user.id,

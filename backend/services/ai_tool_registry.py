@@ -147,16 +147,28 @@ async def execute_authorized_tool(
             }
 
         elif tool_name == "search_recruiter_candidates":
+            from sqlalchemy import select
+            from db.models import RecruiterProfile
             job_id_str = tool_input.get("job_id")
             if not job_id_str:
                 return {"status": "TOOL_ERROR", "message": "job_id is required"}
-            res = await search_candidates_for_job(uuid.UUID(job_id_str), uuid.uuid4(), None, None, db)
+            rec_stmt = select(RecruiterProfile).where(RecruiterProfile.user_id == acting_user.id)
+            rec_prof = (await db.execute(rec_stmt)).scalars().first()
+            if not rec_prof:
+                return {"status": "TOOL_DENIED", "error_code": "MISSING_ORG_CONTEXT", "message": "Recruiter organization membership required."}
+            res = await search_candidates_for_job(uuid.UUID(job_id_str), rec_prof.organization_id, None, None, db)
             return {"status": "SUCCESS", "data": res}
 
         elif tool_name == "get_organization_capability_matrix":
+            from sqlalchemy import select
+            from db.models import RecruiterProfile
             unit_id_str = tool_input.get("unit_id")
             uid = uuid.UUID(unit_id_str) if unit_id_str else None
-            res = await calculate_team_capability_coverage(uid, db)
+            rec_stmt = select(RecruiterProfile).where(RecruiterProfile.user_id == acting_user.id)
+            rec_prof = (await db.execute(rec_stmt)).scalars().first()
+            if not rec_prof:
+                return {"status": "TOOL_DENIED", "error_code": "MISSING_ORG_CONTEXT", "message": "Organization membership required."}
+            res = await calculate_team_capability_coverage(uid, rec_prof.organization_id, db)
             return {"status": "SUCCESS", "data": res}
 
         else:

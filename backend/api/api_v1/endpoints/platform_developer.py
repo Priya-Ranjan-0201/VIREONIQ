@@ -20,8 +20,17 @@ async def list_api_keys(
     current_user: User = Depends(get_current_active_user)
 ) -> List[Dict[str, Any]]:
     """Lists active scoped API keys for the user's organization."""
-    # Lookup keys associated with current user or fallback
-    stmt = select(PlatformApiKey).where(PlatformApiKey.revoked_at == None).limit(20)
+    # Scope API keys strictly to the caller's tenant
+    stmt = (
+        select(PlatformApiKey)
+        .where(
+            and_(
+                PlatformApiKey.tenant_id == current_user.id,
+                PlatformApiKey.revoked_at.is_(None),
+            )
+        )
+        .limit(20)
+    )
     keys = list((await db.execute(stmt)).scalars().all())
 
     return [
@@ -61,7 +70,9 @@ async def revoke_api_key(
     current_user: User = Depends(get_current_active_user)
 ) -> Dict[str, Any]:
     """Revokes an API key immediately."""
-    stmt = select(PlatformApiKey).where(PlatformApiKey.id == key_id)
+    stmt = select(PlatformApiKey).where(
+        and_(PlatformApiKey.id == key_id, PlatformApiKey.tenant_id == current_user.id)
+    )
     key_rec = (await db.execute(stmt)).scalars().first()
     if not key_rec:
         raise HTTPException(status_code=404, detail="API key not found")
@@ -78,7 +89,7 @@ async def list_webhook_subscriptions(
     current_user: User = Depends(get_current_active_user)
 ) -> List[Dict[str, Any]]:
     """Lists registered webhook subscriptions."""
-    stmt = select(WebhookSubscription).limit(20)
+    stmt = select(WebhookSubscription).where(WebhookSubscription.tenant_id == current_user.id).limit(20)
     subs = list((await db.execute(stmt)).scalars().all())
     return [
         {
@@ -124,17 +135,17 @@ async def list_partner_connectors(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_active_user)
 ) -> List[Dict[str, Any]]:
-    """Lists external connectors (ATS, LMS, Campus, HRIS)."""
-    stmt = select(PartnerConnector).limit(20)
+    """Lists external connectors (ATS, LMS, Campus, HRIS) scoped to the caller's organization."""
+    from db.models import RecruiterProfile
+    rec_stmt = select(RecruiterProfile).where(RecruiterProfile.user_id == current_user.id)
+    rec_prof = (await db.execute(rec_stmt)).scalars().first()
+    if not rec_prof:
+        return []
+
+    stmt = select(PartnerConnector).where(PartnerConnector.tenant_id == rec_prof.organization_id).limit(20)
     connectors = list((await db.execute(stmt)).scalars().all())
     if not connectors:
-        # Provide default connectors list for demonstration
-        return [
-            {"id": str(uuid.uuid4()), "connector_type": "ATS", "name": "Workday ATS Connector", "status": "CONNECTED", "records_synced_count": 142},
-            {"id": str(uuid.uuid4()), "connector_type": "LMS", "name": "Canvas LMS Integration", "status": "CONNECTED", "records_synced_count": 88},
-            {"id": str(uuid.uuid4()), "connector_type": "CAMPUS", "name": "University Student Roster", "status": "CONNECTED", "records_synced_count": 320},
-            {"id": str(uuid.uuid4()), "connector_type": "HRIS", "name": "BambooHR Sync", "status": "CONNECTED", "records_synced_count": 64}
-        ]
+        return []
 
     return [
         {

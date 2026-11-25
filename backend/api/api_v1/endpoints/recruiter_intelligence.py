@@ -4,7 +4,7 @@ from typing import Dict, Any, List, Optional
 from datetime import datetime, timezone
 import uuid
 
-from api.deps import get_db, get_current_active_user
+from api.deps import get_db, require_roles
 from db.models import (
     User, JobPosting, RecruiterOrganization, RecruiterProfile, RecruiterShortlist
 )
@@ -17,9 +17,16 @@ from services.recruiter_matching_service import (
 )
 
 router = APIRouter()
+require_recruiter = require_roles(
+    ["recruiter", "admin", "recruiter_admin"],
+    error_detail="Access denied: Recruiter or Admin role required.",
+)
 
 async def get_or_create_default_org(user: User, db: AsyncSession) -> RecruiterOrganization:
-    """Helper ensuring multi-tenant organization context for recruiter operations."""
+    """Helper ensuring multi-tenant organization context for authorized recruiter users."""
+    from api.deps import user_has_role
+    if not user_has_role(user, ["recruiter", "admin", "recruiter_admin"]):
+        raise HTTPException(status_code=403, detail="Access denied: Recruiter or Admin role required.")
     stmt = select(RecruiterProfile).where(RecruiterProfile.user_id == user.id)
     rec_prof = (await db.execute(stmt)).scalars().first()
     if rec_prof:
@@ -42,7 +49,7 @@ async def get_or_create_default_org(user: User, db: AsyncSession) -> RecruiterOr
 @router.get("/jobs")
 async def list_organization_jobs(
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(require_recruiter)
 ) -> List[Dict[str, Any]]:
     """Lists all job postings belonging to the recruiter's organization."""
     org = await get_or_create_default_org(current_user, db)
@@ -70,7 +77,7 @@ async def create_job(
     structured_requirements: Optional[Dict[str, Any]] = Body(None, embed=True),
     hard_requirements: Optional[List[str]] = Body(None, embed=True),
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(require_recruiter)
 ) -> Dict[str, Any]:
     """Creates a new structured job requirement profile within recruiter organization."""
     org = await get_or_create_default_org(current_user, db)
@@ -98,7 +105,7 @@ async def discover_candidates(
     query: Optional[str] = Body(None, embed=True),
     filters: Optional[Dict[str, Any]] = Body(None, embed=True),
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(require_recruiter)
 ) -> Dict[str, Any]:
     """Searches and evidence-ranks discoverable candidates for a specific job."""
     org = await get_or_create_default_org(current_user, db)
@@ -109,7 +116,7 @@ async def compare_candidates(
     job_id: uuid.UUID = Body(..., embed=True),
     candidate_ids: List[uuid.UUID] = Body(..., embed=True),
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(require_recruiter)
 ) -> Dict[str, Any]:
     """Generates side-by-side evidence comparison matrix for selected candidates."""
     org = await get_or_create_default_org(current_user, db)
@@ -119,7 +126,7 @@ async def compare_candidates(
 async def get_shortlist_for_job(
     job_id: uuid.UUID,
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(require_recruiter)
 ) -> List[Dict[str, Any]]:
     """Retrieves candidates in organization hiring pipeline for a specific job."""
     org = await get_or_create_default_org(current_user, db)
@@ -145,7 +152,7 @@ async def add_candidate_to_shortlist(
     candidate_id: uuid.UUID = Body(..., embed=True),
     stage: str = Body("SHORTLISTED", embed=True),
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(require_recruiter)
 ) -> Dict[str, Any]:
     """Adds candidate to organization shortlist."""
     org = await get_or_create_default_org(current_user, db)
@@ -181,7 +188,7 @@ async def add_private_recruiter_note(
     shortlist_id: uuid.UUID,
     note_text: str = Body(..., embed=True),
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(require_recruiter)
 ) -> Dict[str, Any]:
     """Adds private recruiter note strictly isolated from candidate visibility."""
     org = await get_or_create_default_org(current_user, db)

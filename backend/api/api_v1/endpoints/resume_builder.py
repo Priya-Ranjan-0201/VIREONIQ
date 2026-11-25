@@ -4,7 +4,7 @@ Resume Builder API Endpoints — AI-powered resume generation, parsing, MNC opti
 
 from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File, Form
 from sqlalchemy.ext.asyncio import AsyncSession
-from api.deps import get_db, get_optional_current_user
+from api.deps import get_db, get_current_active_user, get_optional_current_user
 from db.models import User
 from services import resume_builder_service
 from pydantic import BaseModel
@@ -75,7 +75,7 @@ async def parse_resume_text(
 async def parse_resume_file(
     file: UploadFile = File(...),
     target_role: str = Form("Software Engineer"),
-    current_user: Optional[User] = Depends(get_optional_current_user)
+    current_user: User = Depends(get_current_active_user)
 ) -> dict:
     """
     Upload a PDF or DOCX file to extract structured fields and compute baseline ATS score.
@@ -94,17 +94,19 @@ async def parse_resume_file(
             mime_type=mime,
             target_role=target_role,
         )
-    except Exception as e:
-        return resume_builder_service._rule_based_mnc_optimizer(
-            {"name": "Candidate"},
-            target_role=target_role
+    except HTTPException:
+        raise
+    except Exception:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Failed to parse the uploaded resume file. Please provide a valid PDF or DOCX."
         )
 
 
 @router.post("/optimize-mnc")
 async def optimize_resume_mnc(
     payload: OptimizeMNCRequest,
-    current_user: Optional[User] = Depends(get_optional_current_user)
+    current_user: User = Depends(get_current_active_user)
 ) -> dict:
     """
     Transform and upgrade any resume to 90+ ATS MNC score using Google XYZ formula,
@@ -155,7 +157,7 @@ def get_resume_metadata() -> dict:
 async def generate_resume(
     payload: GenerateResumeRequest,
     db: AsyncSession = Depends(get_db),
-    current_user: Optional[User] = Depends(get_optional_current_user)
+    current_user: User = Depends(get_current_active_user)
 ) -> dict:
     """
     Generate a complete ATS-optimized resume from profile data.
@@ -171,7 +173,7 @@ async def generate_resume(
 async def improve_section(
     payload: ImproveSectionRequest,
     db: AsyncSession = Depends(get_db),
-    current_user: Optional[User] = Depends(get_optional_current_user)
+    current_user: User = Depends(get_current_active_user)
 ) -> dict:
     """
     AI-improve a specific resume section with rewrite, expansion,
@@ -189,7 +191,7 @@ async def improve_section(
 async def get_resume_feedback(
     payload: ResumeFeedbackRequest,
     db: AsyncSession = Depends(get_db),
-    current_user: Optional[User] = Depends(get_optional_current_user)
+    current_user: User = Depends(get_current_active_user)
 ) -> dict:
     """
     Get comprehensive AI feedback on a complete resume with section-by-section

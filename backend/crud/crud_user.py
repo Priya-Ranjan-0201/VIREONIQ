@@ -35,16 +35,20 @@ async def create_user(db: AsyncSession, obj_in: UserRegisterRequest, role_id: uu
     return db_obj
 
 async def search_candidates_for_recruiter(db: AsyncSession, role: Optional[str] = None) -> list:
-    """Search candidates by role, returning their profile, ATS score, and readiness score."""
-    from db.models import Profile, ResumeScore, GapAnalysis
-    
-    stmt = select(Profile, ResumeScore.overall_score, GapAnalysis.overall_readiness_score)\
-        .join(ResumeScore, Profile.user_id == ResumeScore.resume_id, isouter=True)\
+    """Search discoverable candidates by role, returning their profile, latest ATS score, and readiness score."""
+    from db.models import Profile, Resume, ResumeScore, GapAnalysis
+
+    stmt = (
+        select(Profile, ResumeScore.overall_score, GapAnalysis.overall_readiness_score)
+        .join(Resume, Profile.user_id == Resume.user_id, isouter=True)
+        .join(ResumeScore, Resume.id == ResumeScore.resume_id, isouter=True)
         .join(GapAnalysis, Profile.user_id == GapAnalysis.user_id, isouter=True)
-    
+        .where(Profile.allow_recruiter_discovery.is_(True))
+    )
+
     if role:
         stmt = stmt.where(Profile.target_role.ilike(f"%{role}%"))
-        
+
     result = await db.execute(stmt)
     return result.all()
 

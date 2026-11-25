@@ -62,8 +62,12 @@ async def get_security_audit_logs(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_active_user)
 ) -> List[Dict[str, Any]]:
-    """Retrieves recent security and Zero-Trust access logs."""
-    stmt = select(SecurityAuditLog).order_by(desc(SecurityAuditLog.created_at)).limit(limit)
+    """Retrieves security access logs scoped to the caller (or all logs for Admin role)."""
+    stmt = select(SecurityAuditLog)
+    is_admin = bool(current_user.role and current_user.role.name and current_user.role.name.lower() == "admin")
+    if not is_admin:
+        stmt = stmt.where(SecurityAuditLog.actor_id == current_user.id)
+    stmt = stmt.order_by(desc(SecurityAuditLog.created_at)).limit(limit)
     logs = list((await db.execute(stmt)).scalars().all())
 
     return [

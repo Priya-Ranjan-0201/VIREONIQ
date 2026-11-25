@@ -19,6 +19,10 @@ async def revoke_refresh_token(db: AsyncSession, token: str) -> None:
     stmt = update(RefreshToken).where(RefreshToken.token == token).values(revoked_at=datetime.now(timezone.utc))
     await db.execute(stmt)
 
+async def get_refresh_token(db: AsyncSession, token: str):
+    stmt = select(RefreshToken).where(RefreshToken.token == token)
+    return (await db.execute(stmt)).scalar_one_or_none()
+
 async def create_session(db: AsyncSession, user_id: uuid.UUID, device_id: str = None, ip_address: str = None, user_agent: str = None) -> Session:
     db_obj = Session(
         user_id=user_id,

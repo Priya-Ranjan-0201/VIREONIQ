@@ -1,9 +1,12 @@
-// ─── Mock Authentication Service ────────────────────────────────────────────
-// This provides a fully offline auth system using localStorage.
-// It activates automatically when the backend is unreachable.
+// ─── Mock Authentication Service (DEV-ONLY) ──────────────────────────────────
+// Explicitly disabled in production builds. Only active when Vite runs in DEV
+// mode AND VITE_ENABLE_MOCK_AUTH === 'true'.
 
 const MOCK_USERS_KEY = 'vireoniq_mock_users';
 const MOCK_TOKEN_PREFIX = 'mock_jwt_';
+
+export const isMockAuthEnabled = (): boolean =>
+  Boolean(import.meta.env.DEV && import.meta.env.VITE_ENABLE_MOCK_AUTH === 'true');
 
 interface MockUser {
   id: string;
@@ -14,51 +17,37 @@ interface MockUser {
   is_email_verified: boolean;
 }
 
-// ── Pre-seeded Demo Credentials ───────────────────────────────────────────────
-// Email: demo@vireoniq.com | Password: Demo@1234
-const DEMO_USERS: MockUser[] = [
-  {
-    id: 'mock-user-test-001',
-    email: 'test@example.com',
-    passwordHash: btoa('password'),
-    role_id: 'mock-role-user-001',
-    is_active: true,
-    is_email_verified: true,
-  },
-  {
-    id: 'mock-user-demo-001',
-    email: 'demo@vireoniq.com',
-    passwordHash: btoa('Demo@1234'), // base64 - mock only, not real security
-    role_id: 'mock-role-user-001',
-    is_active: true,
-    is_email_verified: true,
-  },
-  {
-    id: 'mock-user-admin-001',
-    email: 'admin@vireoniq.com',
-    passwordHash: btoa('Admin@9876'),
-    role_id: 'mock-role-admin-001',
-    is_active: true,
-    is_email_verified: true,
-  },
-];
+function getDemoUsers(): MockUser[] {
+  if (!isMockAuthEnabled()) return [];
+  return [
+    {
+      id: 'mock-user-demo-001',
+      email: 'demo@vireoniq.com',
+      passwordHash: btoa('Demo@1234'),
+      role_id: 'mock-role-user-001',
+      is_active: true,
+      is_email_verified: true,
+    },
+  ];
+}
 
 function getUsers(): MockUser[] {
+  if (!isMockAuthEnabled()) return [];
   try {
     const stored = localStorage.getItem(MOCK_USERS_KEY);
     const users: MockUser[] = stored ? JSON.parse(stored) : [];
-    // Always ensure demo users exist
     const emails = users.map((u) => u.email);
-    for (const demo of DEMO_USERS) {
+    for (const demo of getDemoUsers()) {
       if (!emails.includes(demo.email)) users.push(demo);
     }
     return users;
   } catch {
-    return [...DEMO_USERS];
+    return getDemoUsers();
   }
 }
 
 function saveUsers(users: MockUser[]): void {
+  if (!isMockAuthEnabled()) return;
   localStorage.setItem(MOCK_USERS_KEY, JSON.stringify(users));
 }
 
@@ -67,6 +56,9 @@ function generateToken(userId: string): string {
 }
 
 export function mockRegister(email: string, password: string): { success: boolean; error?: string } {
+  if (!isMockAuthEnabled()) {
+    return { success: false, error: 'Offline mock authentication is disabled.' };
+  }
   const users = getUsers();
   if (users.find((u) => u.email === email)) {
     return { success: false, error: 'Email already registered.' };
@@ -88,6 +80,9 @@ export function mockLogin(
   email: string,
   password: string
 ): { success: boolean; token?: string; user?: object; error?: string } {
+  if (!isMockAuthEnabled()) {
+    return { success: false, error: 'Offline mock authentication is disabled.' };
+  }
   const users = getUsers();
   const user = users.find((u) => u.email === email);
   if (!user) return { success: false, error: 'Incorrect email or password.' };

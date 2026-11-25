@@ -22,16 +22,16 @@ async def health_check(db: AsyncSession = Depends(get_db)):
     try:
         await db.execute(text("SELECT 1"))
         checks["postgres"] = "ok"
-    except Exception as e:
-        checks["postgres"] = f"error: {str(e)}"
+    except Exception:
+        checks["postgres"] = "unavailable"
         overall = "degraded"
 
     # 2. Redis
     try:
         pong = await redis_client.ping()
-        checks["redis"] = "ok" if pong else "no response"
-    except Exception as e:
-        checks["redis"] = f"error: {str(e)}"
+        checks["redis"] = "ok" if pong else "unavailable"
+    except Exception:
+        checks["redis"] = "unavailable"
         overall = "degraded"
 
     # 3. Config Sanity (non-sensitive)

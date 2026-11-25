@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Request, Response
 from sqlalchemy.ext.asyncio import AsyncSession
 from core.config import settings
+from core.security import decode_token
 from db.session import get_db
 from schemas.auth import UserRegisterRequest, LoginRequest, TokenResponse, UserResponse
 from services import auth_service
@@ -36,7 +37,7 @@ async def login(
         key="refresh_token",
         value=auth_data["refresh_token"],
         httponly=True,
-        secure=True,
+        secure=settings.is_production,
         samesite="lax",
         max_age=settings.REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60
     )
@@ -46,6 +47,35 @@ async def login(
         "token_type": auth_data["token_type"],
         "expires_in": auth_data["expires_in"]
     }
+
+
+@router.post("/refresh", response_model=TokenResponse)
+async def refresh_token_endpoint(
+    request: Request,
+    response: Response,
+    db: AsyncSession = Depends(get_db),
+):
+    refresh_cookie = request.cookies.get("refresh_token")
+    ip_address = request.client.host if request.client else None
+    user_agent = request.headers.get('user-agent')
+
+    auth_data = await auth_service.refresh_session(db, refresh_cookie, ip_address, user_agent)
+
+    response.set_cookie(
+        key="refresh_token",
+        value=auth_data["refresh_token"],
+        httponly=True,
+        secure=settings.is_production,
+        samesite="lax",
+        max_age=settings.REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60
+    )
+
+    return {
+        "access_token": auth_data["access_token"],
+        "token_type": auth_data["token_type"],
+        "expires_in": auth_data["expires_in"]
+    }
+
 
 @router.post("/logout")
 async def logout(
@@ -59,7 +89,7 @@ async def logout(
     user_agent = request.headers.get('user-agent')
     
     token = await deps.oauth2_scheme(request)
-    payload = deps.decode_token(token)
+    payload = decode_token(token)
     access_jti = payload.get("jti")
     
     await auth_service.logout(db, current_user.id, access_jti, refresh_token, ip_address, user_agent)
