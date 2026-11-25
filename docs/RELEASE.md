@@ -1,76 +1,45 @@
-# 🚀 VIREONIQ X — Release Notes & Verification Matrix
+# VIREONIQ — Hardening Release Notes & Verification Status
 
-**Release Version**: `v16.0.0-rc1`  
-**Status**: **`READY WITH DOCUMENTED LIMITATIONS`**  
-**Automated Tests**: **147 / 147 Passing (100.0% Pass Rate)**  
-**Verification Date**: August 2026
-
----
-
-## 📋 Release Summary
-
-VIREONIQ X `v16.0.0-rc1` represents a major milestone in evidence-driven career intelligence. The system unites **16 continuous intelligence phases**, **Six High-Value Intelligence Capabilities**, and the newly integrated **Career Decision Explainability Engine** into a closed-loop Career Twin architecture.
-
-### ✨ Capabilities in this Release
-
-1. **Evidence Integrity & Contradiction Engine**: Multi-factor scoring with structured, non-accusatory Evidence Conflict Cards (*"Evidence conflict"*, *"Verification required"*).
-2. **Multidimensional Skill Mastery Graph**: 7–9 dimensional decomposition per competency with recursive prerequisite bottleneck traversal.
-3. **Career Trajectory Forecasting**: Multi-horizon (3, 6, 12-month) projection scenarios across `Most Likely`, `Optimistic`, and `Risk-Adjusted` bounds.
-4. **Counterfactual Career Simulator**: Multi-path progression comparisons with calculated ROI efficiency ratios.
-5. **Skill Transfer Intelligence**: Minimal learning bridge calculator for cross-role career transitions.
-6. **Cross-Session Interview Memory**: Competency progress tracking over time with adaptive difficulty scaling.
-7. **Career Decision Explainability Engine**: Transparent, evidence-backed explanations for every major recommendation exposing reasons, supporting evidence, identified gaps, market signals, expected impact ranges (without false precision), effort, confidence, assumptions, and alternatives.
+**Audit Status**: **Hardening Complete — Pending Owner Governance Decisions**  
+**API Version (`backend/main.py`)**: `0.9.0-beta`  
+**Verified Standard Suite**: **165 / 165 backend pytest tests** + **2 / 2 benchmark tests** + **14 / 14 frontend Vitest tests**
 
 ---
 
-## 🧪 Automated Test Verification Matrix
+## 1. Hardening Summary
 
-All **147 tests** execute against an in-memory SQLite/async engine with full schema integrity:
+This branch reconciles documentation with verified behavior, closes critical configuration and authorization gaps, adds a blocking GitHub Actions pipeline (`.github/workflows/ci.yml`), resolves runtime bugs and type/lint issues across backend and frontend, and adds automated regression coverage.
 
-| Test Suite | Tests | Status | Focus Areas |
-|:---|:---:|:---:|:---|
-| `test_auth_security.py` | 12 | `PASS` | RS256 JWT, Argon2id password hashing, Redis blacklist, IDOR isolation |
-| `test_career_digital_twin.py` | 14 | `PASS` | 10-tier evidence hierarchy, temporal decay math, provenance tracking |
-| `test_career_readiness.py` | 12 | `PASS` | 9D readiness index, additive contribution formula, role constraints |
-| `test_assessment_engine.py` | 10 | `PASS` | Big-O AST complexity, anti-cheat proctoring, test runner |
-| `test_intervention_engine.py` | 10 | `PASS` | Multi-strategy generation, daily time-aware planning, replanning |
-| `test_talent_passport.py` | 8 | `PASS` | HMAC-SHA256 digital signatures, public data-minimized sharing |
-| `test_recruiter_intelligence.py` | 8 | `PASS` | Multi-tenant org scoping, evidence-weighted candidate ranking |
-| `test_workforce_intelligence.py` | 8 | `PASS` | 2D capability heatmap, organizational concentration risk |
-| `test_counterfactual_simulator.py` | 8 | `PASS` | In-memory hypothetical evidence projection, multi-path comparison |
-| `test_ai_orchestrator.py` | 8 | `PASS` | Dynamic model router, bounded role copilots, tool allowlists |
-| `test_privacy_security.py` | 8 | `PASS` | GDPR data export & self-service account deletion, DIR fairness |
-| `test_outcome_intelligence.py` | 8 | `PASS` | Closed-loop career value funnel, event idempotency |
-| `test_enterprise_ecosystem.py` | 8 | `PASS` | Scoped API keys (`vrq_live_...`), webhooks with DLQ |
-| `test_autonomous_career_os.py` | 8 | `PASS` | Signal engine, Next Best Action prioritization, Level 3 safety guard |
-| `test_mnc_interview_studio.py` | 8 | `PASS` | Publicly informed question blueprints, simulated interview rounds |
-| `test_production_certification.py` | 2 | `PASS` | Universal Intelligence Receipts, 15-stage synthetic lifecycle |
-| `test_six_intelligence_capabilities.py` | 7 | `PASS` | Evidence integrity, multidimensional mastery, trajectory, simulator, skill transfer, interview memory, closed-loop integration |
-| `test_career_decision_explainability.py` | 5 | `PASS` | Structured decision explanations, no false precision, prerequisite explanations, NBA explainability integration, HTTP API endpoint |
-| `test_concurrency_load.py` | 1 | `PASS` | Concurrent request handling and rate limiting verification |
-| **Total** | **147** | **100.0%** | **Full platform verification** |
+### Key Verified Controls
+- **Startup & Config Fail-Closed**: `ENVIRONMENT=production` rejects default `SECRET_KEY`, `CREDENTIAL_SIGNING_KEY`, `POSTGRES_PASSWORD="password"`, SQLite URLs, wildcard CORS with credentials, and missing RSA keys. `JWT_PRIVATE_KEY_PATH` / `JWT_PUBLIC_KEY_PATH` aliases now bind correctly.
+- **Auth, RBAC, & Isolation**: Self-registration restricts roles to `User`/`student`/`candidate`; refresh rotation blacklists prior tokens; `/ai-orchestration` resolves permissions from DB user roles; `Recruiter`/`Org Admin`/`Faculty` routes and `/ws/matchmaker` + `/adversarial/{session_id}/stream` enforce token & ownership checks.
+- **No Unsandboxed Code Execution**: Host `sys.executable -c` fallback and fabricated passing results were removed; unconfigured or unreachable Judge0 fails closed with `status_id = 13` (`Sandbox Unavailable`).
+- **Live DB-Backed Telemetry**: `analytics`, `gamification`, `ai_observability`, `outcomes_analytics`, `autonomous_os`, and `career_twin` endpoints return empty (`0` / `[]`) or stored PostgreSQL/SQLite state rather than fabricated baseline metrics.
+- **Frontend Safety & Strictness**: Offline `mockAuth` is gated strictly behind `import.meta.env.DEV && VITE_ENABLE_MOCK_AUTH === 'true'`; ESLint errors (`0`), strict TypeScript (`0` errors), Vitest (`14` passing), and production Vite builds (`npm run build`) all pass.
 
 ---
 
-## ⚡ Empirical Performance Benchmarks (N=30 Local Benchmark)
+## 2. Observed Verification Summary (Local Offline Environment)
 
-| Endpoint | P50 Latency | P95 Latency | P99 Latency | Error Rate | Target SLA |
-|:---|:---:|:---:|:---:|:---:|:---:|
-| `POST /api/v1/auth/login` | 42 ms | 78 ms | 110 ms | 0.0% | $<150\text{ ms}$ |
-| `GET /api/v1/career-twin/snapshot` | 38 ms | 65 ms | 88 ms | 0.0% | $<100\text{ ms}$ |
-| `GET /api/v1/readiness/calculate` | 45 ms | 82 ms | 115 ms | 0.0% | $<150\text{ ms}$ |
-| `POST /api/v1/career-simulator/what-if` | 52 ms | 95 ms | 130 ms | 0.0% | $<200\text{ ms}$ |
-| `GET /api/v1/interventions/explainable-recommendations` | 40 ms | 70 ms | 95 ms | 0.0% | $<100\text{ ms}$ |
-| `POST /api/v1/assessments/respond` (AST) | 68 ms | 120 ms | 165 ms | 0.0% | $<250\text{ ms}$ |
-| `GET /api/v1/mnc-interview/blueprint` | 85 ms | 145 ms | 210 ms | 0.0% | $<300\text{ ms}$ |
+| Gate | Command | Result |
+|:---|:---|:---|
+| Backend Lint | `ruff check .` | `All checks passed!` (`0` errors) |
+| Backend Typecheck | `mypy .` (`core`, `schemas`, `db` strict) | `Success: no issues found in 300 source files` |
+| Backend Tests | `pytest tests/ -q` | `165 passed, 2 deselected` (3 consecutive deterministic runs) |
+| Backend Benchmarks | `pytest -m benchmark -v` | `2 passed, 165 deselected` |
+| Backend Dependency Audit | `pip-audit --no-deps --disable-pip -r requirements.txt --ignore-vuln PYSEC-2026-4298` | `No known vulnerabilities found, 1 ignored` |
+| Frontend Lint | `npm run lint` | `0 errors, 28 warnings` |
+| Frontend Typecheck | `npm run typecheck` (`tsc -p tsconfig.app.json --noEmit`, `strict: true`) | `0 errors` |
+| Frontend Tests | `npm test` (`vitest run`) | `6 passed files (14 tests)` |
+| Frontend Build | `npm run build` | `0 errors` |
 
 ---
 
-## 🛡️ Documented Limitations & Production Gates
+## 3. Known Limitations & Pending Owner Decisions
 
-> [!NOTE]
-> This release is classified as **`READY WITH DOCUMENTED LIMITATIONS` (Release Candidate `v16.0.0-rc1`)**.
-> 
-> 1. **Live LLM Fallbacks**: If external AI provider credentials are not configured, the system explicitly returns `AI_ANALYSIS_UNAVAILABLE` rather than generating ungrounded synthetic text.
-> 2. **Proctored Challenges**: Big-O AST complexity analysis is deterministic for Python/JavaScript; additional runtime sandboxing environments (Docker worker pools) are recommended for untrusted multi-tenant execution.
-> 3. **Outcome Projections**: Trajectory forecasts and counterfactual simulations are statistical scenario ranges calibrated against empirical benchmarks and do not constitute legal employment guarantees.
+See [`docs/KNOWN_LIMITATIONS.md`](KNOWN_LIMITATIONS.md) and [`docs/IMPROVEMENT_REPORT.md`](IMPROVEMENT_REPORT.md) for:
+- License reconciliation (`LICENSE` vs `README.md`)
+- `python-jose` (`3.5.0`, `PYSEC-2026-4298`) -> `PyJWT` and `passlib` -> `pwdlib` migration approval
+- Frontend semver-major dependency upgrades (`jspdf@4`, `react-router-dom@7`, `zod@4`)
+- Overlapping legacy service module consolidations
+- Full integration against live Postgres 16, Redis 7, MongoDB 7, Qdrant, Judge0, and CI GitHub Actions runners

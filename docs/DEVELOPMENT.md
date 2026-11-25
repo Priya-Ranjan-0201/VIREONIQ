@@ -1,74 +1,72 @@
-# VIREONIQ X — Developer Setup & Clean-Clone Guide
+# VIREONIQ — Developer Setup & Local Verification Guide
 
 ## 1. Prerequisites
 
-- **Python**: 3.10+ (Python 3.12 recommended)
-- **Node.js**: 18.0+ (Node.js 20+ recommended)
-- **Database**: PostgreSQL 15+ (Local or Docker) / SQLite (Built-in zero-config fallback)
-- **Memory**: 4GB RAM minimum (8GB recommended)
+- **Python**: 3.12 (matches `.github/workflows/ci.yml` and `backend/.venv`)
+- **Node.js**: 20+ (`npm 10+`)
+- **Database**: PostgreSQL 16 + Redis 7 (via Docker Compose or local install); SQLite (`aiosqlite`) works for local offline unit tests and development fallback (`ENVIRONMENT=development` or `test`)
+- **Memory**: 4 GB RAM minimum (8 GB recommended)
 
 ---
 
 ## 2. Quick Setup
 
-### Automated Windows Launcher (Recommended)
-Simply run the interactive setup & startup wizard from the repository root:
+### Automated Windows Launcher
+From the repository root:
 ```cmd
 run.bat
 ```
 
-### Manual Setup
-
-#### Backend Setup:
+### Manual Backend Setup
 ```powershell
 cd backend
 
-# 1. Create Virtual Environment
+# 1. Create and activate virtual environment
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 
-# 2. Install Dependencies
-pip install -r requirements.txt
+# 2. Install pinned application and dev/test dependencies
+pip install -r requirements.txt -r requirements-dev.txt
 
-# 3. Configure Environment
-copy .env.example .env
+# 3. Configure local environment variables
+copy ..\.env.example .env
 
-# 4. Initialize Database & Run Server
+# 4. Run development server (requires PostgreSQL or non-production SQLite URL)
 python -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 ```
-- **Backend API**: [http://localhost:8000](http://localhost:8000)
-- **Interactive Swagger Docs**: [http://localhost:8000/docs](http://localhost:8000/docs)
+- **Backend API**: `http://localhost:8000`
+- **Swagger UI (non-production only)**: `http://localhost:8000/docs`
 
-#### Frontend Setup:
+### Manual Frontend Setup
 ```powershell
 cd frontend
-
-# 1. Install Node Dependencies
-npm install
-
-# 2. Start Vite Dev Server
+npm ci
 npm run dev
 ```
-- **Frontend UI**: [http://localhost:5173](http://localhost:5173)
+- **Frontend UI**: `http://localhost:5173`
+
+> To enable dev-only offline mock auth (`demo@vireoniq.com`), set `VITE_ENABLE_MOCK_AUTH=true` in `frontend/.env.local`. Mock auth is stripped/disabled in production builds (`import.meta.env.DEV` gate).
 
 ---
 
-## 3. Running Automated Tests
+## 3. Running Automated Checks
 
-Run the complete 16-phase test suite:
+### Backend Verification
 ```powershell
 cd backend
-.\.venv\Scripts\python.exe -m pytest tests/ -v
+.\.venv\Scripts\python.exe -m ruff check .
+.\.venv\Scripts\python.exe -m mypy .
+.\.venv\Scripts\python.exe -m pytest tests/ -q
+.\.venv\Scripts\python.exe -m pytest -m benchmark -v
 ```
-Expected result: **147 passed** in ~8.2 seconds.
 
----
-
-## 4. Production Build Verification
-
-Build the production frontend bundle:
+### Frontend Verification
 ```powershell
 cd frontend
+npm run lint
+npm run typecheck
+npm test
 npm run build
 ```
-Expected result: **0 TypeScript / Vite compile errors**.
+
+Both suites match the CI checks defined in [`.github/workflows/ci.yml`](../.github/workflows/ci.yml).

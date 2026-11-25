@@ -1,27 +1,27 @@
-# VIREONIQ X — Privacy & Data Protection Specification
+# VIREONIQ — Privacy & Data Protection Controls
 
-## 1. Compliance Baseline
+## 1. Scope & Legal Disclaimer
 
-VIREONIQ X implements comprehensive data protection controls in alignment with **GDPR (General Data Protection Regulation)**, **CCPA (California Consumer Privacy Act)**, and global privacy standards.
+VIREONIQ implements technical privacy controls (preference toggles, JSON data export, and account deletion endpoints). **These codebase controls have not been independently audited or certified for GDPR, CCPA, or SOC2 legal compliance.**
 
 ---
 
-## 2. Privacy Principles & Implementation
+## 2. Implemented Controls (`backend/api/api_v1/endpoints/privacy_security.py`)
 
-### 1. Data Minimization & Talent Passport Isolation
-- **Private Profile**: Contact information, sensitive identity details, full assessment history, and internal notes are stored securely behind authenticated endpoints.
-- **Public Talent Passport**: Only explicitly minted credentials, verified skills, and aggregate readiness metrics are surfaced via data-minimized public links (`/api/v1/passport/share`).
+### 1. Talent Passport Minimization
+- Full candidate profile and assessment records stay behind authenticated routes.
+- Public sharing (`POST /api/v1/passport/share` -> `GET /api/v1/passport/public/{share_token}`) exposes a minimized public credential view.
 
-### 2. Candidate Discovery Opt-In / Opt-Out
-- Candidates maintain complete sovereign control over recruiter visibility.
-- Candidates can toggle `is_searchable_by_recruiters = False` at any time to immediately withdraw their profile from all talent discovery queries.
+### 2. Candidate Visibility Preferences
+- Candidates can inspect and toggle recruiter discovery, public passport exposure, assessment sharing, and demographic auditing opt-in via `GET /api/v1/privacy-security/preferences` and `PUT /api/v1/privacy-security/preferences`.
 
-### 3. Right to Data Portability (GDPR Art. 20)
-- Candidates can request an instant machine-readable JSON export of their complete record (`GET /api/v1/privacy-security/export`) encompassing:
-  - Account profile & credentials
-  - Skill evidence graph & assessments
-  - Interview transcripts & audit receipts
+### 3. JSON Data Export
+- `GET /api/v1/privacy-security/export` returns an authenticated JSON export containing:
+  - `export_metadata` (`user_id`, timestamp, version)
+  - `profile` (`first_name`, `last_name`, `target_role`)
+  - `skills` (`SkillEvidence`), `projects` (`ProjectEvidence`), `credentials` (`VerifiedCredential`), and `simulations` (`CareerSimulation`)
+  - Password hashes and internal tokens are excluded.
 
-### 4. Right to Erasure / "Right to be Forgotten" (GDPR Art. 17)
-- Executing `POST /api/v1/privacy-security/delete-account` triggers permanent, irreversible deletion across all relational databases, cache layers, and vector indices.
-- External backups discard deleted identifiers upon rotation.
+### 4. Account Deletion (`POST /api/v1/privacy-security/account/delete`)
+- Explicitly deletes `Profile`, `CandidatePrivacyPreference`, `SkillEvidence`, and the `User` row (cascading dependent relational children defined with `CASCADE`) while preserving immutable `SecurityAuditLog` entries with anonymized event metadata (`deleted_<prefix>@anonymized.local`).
+- External caches, backups, or asynchronous downstream stores require operational expiry/purge procedures (`docs/OPERATIONS.md`).

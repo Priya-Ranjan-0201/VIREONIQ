@@ -1,39 +1,39 @@
-# VIREONIQ X — Operations & Production Runbook
+# VIREONIQ — Operations & Local Runbook
 
-## 1. System Health & Probes
+## 1. System Health Probes
 
-| Probe Endpoint | Purpose | Normal Response |
+| Probe Endpoint | Purpose | Observed Response Shape |
 |:---|:---|:---|
-| `GET /api/v1/health` | Application liveness and PostgreSQL/Redis connectivity | `{"status": "ok", "database": "connected"}` |
-| `GET /api/v1/health/db` | Detailed database connection pool metrics | `{"pool_size": 20, "checked_out": 2}` |
+| `GET /health` | Root liveness & active DB `SELECT 1` probe (`backend/main.py`) | `{"status": "ok", "database": "connected" \| "disconnected", "environment": "..."}` |
+| `GET /api/v1/health` | API v1 router status (`backend/api/api_v1/router.py`) | `{"status": "ok", "message": "VIREONIQ API is running."}` |
 
 ---
 
 ## 2. Standard Operational Procedures
 
-### Database Migrations
+### Database Migrations (`backend/alembic/`)
 ```powershell
 cd backend
-.\.venv\Scripts\alembic.exe upgrade head
+.\.venv\Scripts\python.exe -m alembic upgrade head
 ```
 
-### Redis Cache Purge / Reset
+### Redis Cache Inspection / Reset (Local Dev Only)
 ```bash
-redis-cli -h localhost -p 6379 FLUSHDB
+docker compose exec redis redis-cli FLUSHDB
 ```
 
-### SSL / JWT Key Rotation
-1. Generate new RSA keypair:
+### RSA Key Rotation
+1. Generate a 2048-bit RSA keypair outside git (`backend/.secrets/` or secret manager):
    ```bash
    openssl genrsa -out private_key.pem 2048
    openssl rsa -in private_key.pem -pubout -out public_key.pem
    ```
-2. Update `.env` with new key content and restart backend service. Existing active tokens remain valid until expiration.
+2. Provide `JWT_PRIVATE_KEY` / `JWT_PUBLIC_KEY` (or `JWT_PRIVATE_KEY_PATH` / `JWT_PUBLIC_KEY_PATH`) via environment secrets and restart the backend service.
 
 ---
 
-## 3. Incident Escalation Protocol
+## 3. Degradation & Fallback Behavior
 
-1. **Severity 1 (P0)**: Service Outage / Database Unreachable $\rightarrow$ Runbook automated fallback $\rightarrow$ Page on-call lead.
-2. **Severity 2 (P1)**: LLM Gateway High Error Rate ($>5\%$) $\rightarrow$ Automatic fallback to deterministic mock logic triggers transparently; monitor LLM quota.
-3. **Severity 3 (P2)**: Degraded Non-Critical Endpoint $\rightarrow$ Log correlation ID and investigate within 4 hours.
+- **Redis unavailable**: `SafeRedis` (`backend/core/redis.py`) logs warnings, falls back to TTL-bounded in-memory rate/blacklist tracking on a 30-second cooldown, and attempts recovery automatically.
+- **Judge0 sandbox unavailable**: `code_execution_service.py` returns `status.id = 13` (`Sandbox Unavailable`, `passed = False`) without running host `python -c` commands.
+- **LLM APIs unavailable / unconfigured**: Fails over per gateway configuration (`core/llm/`) or returns explicit unavailable responses.

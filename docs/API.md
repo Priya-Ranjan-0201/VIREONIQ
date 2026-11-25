@@ -1,98 +1,111 @@
-# VIREONIQ X — Canonical API Reference
+# VIREONIQ — Canonical API Reference
 
 ## 1. API Architecture
 
-- **Base URL**: `/api/v1`
-- **Protocol**: HTTP/REST + JSON (RFC 8259)
-- **Authentication**: Bearer JWT (RS256) in `Authorization: Bearer <token>` header
-- **Error Format**:
-```json
-{
-  "detail": "Error description message",
-  "error_code": "RESOURCE_NOT_FOUND",
-  "timestamp": "2026-08-25T01:00:00Z"
-}
-```
+- **Base Prefix**: `/api/v1` (plus root `/health` probe)
+- **Protocol**: HTTP/REST + JSON (`313` OpenAPI HTTP operations mounted across `75` endpoint modules) and WebSockets (`/api/v1/ws/matchmaker/{user_id}`, `/api/v1/advanced/adversarial/{session_id}/stream`)
+- **Authentication**: Bearer JWT (`RS256`) in `Authorization: Bearer <token>` header; refresh tokens rotate via `HttpOnly` cookies
 
 ---
 
-## 2. Core Endpoint Index
+## 2. Core Endpoint Index (Verified Against Mounted Router)
 
-### Authentication & Identity (`/auth`)
+### System Health (`/health`)
 | Method | Path | Summary | Auth Required |
 |:---|:---|:---|:---:|
-| `POST` | `/auth/register` | Register new user account with Argon2id | No |
-| `POST` | `/auth/login` | Authenticate and issue RS256 JWT | No |
-| `POST` | `/auth/refresh` | Exchange secure refresh cookie for new access token | No |
-| `POST` | `/auth/logout` | Revoke session and blacklist JWT in Redis | Yes |
+| `GET` | `/health` | Application liveness and database connectivity check | No |
+| `GET` | `/api/v1/health` | API v1 status check | No |
 
-### Career Digital Twin & Evidence (`/career-twin`, `/evidence-graph`)
+### Authentication & Identity (`/api/v1/auth`)
 | Method | Path | Summary | Auth Required |
 |:---|:---|:---|:---:|
-| `GET` | `/career-twin/snapshot` | Retrieve 10-state evidence graph, 6 capabilities, and readiness | Yes |
-| `GET` | `/career-twin/change-feed` | Retrieve "What Changed?" lightweight feed powered by twin diffs | Yes |
-| `GET` | `/career-twin/forecast` | 3, 6, 12-month trajectory projection scenarios | Yes |
-| `GET` | `/career-twin/conflicts` | Structured Evidence Conflict cards with neutral terminology | Yes |
-| `GET` | `/career-twin/transitions` | Ranked skill transfer bridges to alternative target roles | Yes |
-| `POST` | `/career-twin/diff` | Calculate explainable diff between two twin states | Yes |
-| `POST` | `/evidence/ingest` | Ingest external signal into evidence graph (starts as OBSERVED) | Yes |
+| `POST` | `/api/v1/auth/register` | Register standard candidate/user account (`User`, `student`, `candidate`) with Argon2id | No |
+| `POST` | `/api/v1/auth/login` | Authenticate and issue RS256 access JWT + `HttpOnly` refresh cookie | No |
+| `POST` | `/api/v1/auth/refresh` | Rotate `HttpOnly` refresh cookie and issue new access JWT | Cookie |
+| `POST` | `/api/v1/auth/logout` | Blacklist access JTI and revoke refresh session | Yes |
+| `GET` | `/api/v1/auth/me` | Return authenticated user profile | Yes |
 
-### Counterfactual Career Simulator (`/career-simulator`)
+### Career Digital Twin & Evidence (`/api/v1/career-twin`)
 | Method | Path | Summary | Auth Required |
 |:---|:---|:---|:---:|
-| `POST` | `/career-simulator/what-if` | Simulates individual counterfactual "What if I..." decision | Yes |
-| `POST` | `/career-simulator/compare-scenarios` | Side-by-side ROI comparison matrix across paths | Yes |
-| `POST` | `/career-simulator/simulate` | Execute zero-mutation sandbox simulation | Yes |
+| `GET` | `/api/v1/career-twin` | Retrieve Career Digital Twin snapshot | Yes |
+| `GET` | `/api/v1/career-twin/skills` | Retrieve candidate skill inventory, conflicts, and relationships | Yes |
+| `GET` | `/api/v1/career-twin/evidence` | Retrieve evidence items or trace lineage by `skill_name` | Yes |
+| `GET` | `/api/v1/career-twin/forecast` | Multi-horizon trajectory projection scenarios | Yes |
+| `GET` | `/api/v1/career-twin/conflicts` | Structured evidence conflict checks | Yes |
+| `GET` | `/api/v1/career-twin/transitions` | Ranked skill transfer bridges to alternative roles | Yes |
+| `GET` | `/api/v1/career-twin/change-feed` | Diff-based snapshot change feed | Yes |
 
-### 9D Career Readiness & Interventions (`/readiness`, `/interventions`)
+### Counterfactual Career Simulator (`/api/v1/career-simulator`)
 | Method | Path | Summary | Auth Required |
 |:---|:---|:---|:---:|
-| `GET` | `/readiness/calculate` | Compute 9D Readiness Index with critical bottleneck | Yes |
-| `GET` | `/readiness/bottleneck` | Isolate top priority capability blocker | Yes |
-| `POST` | `/readiness/roi-gap` | Optimize learning investment for target role | Yes |
-| `GET` | `/interventions/next-best-actions` | Prioritize actions resolving conflicts & prerequisite bottlenecks | Yes |
-| `GET` | `/interventions/explainable-recommendations` | Generate evidence-backed, transparent decision explanations (no false precision) | Yes |
+| `POST` | `/api/v1/career-simulator/what-if` | Simulate counterfactual "What if..." career action | Yes |
+| `POST` | `/api/v1/career-simulator/compare-scenarios` | Compare counterfactual scenarios | Yes |
+| `POST` | `/api/v1/career-simulator/simulate` | Execute non-mutating career simulation | Yes |
+| `GET` | `/api/v1/career-simulator/scenarios` | List saved simulation scenarios | Yes |
 
-### Assessments & Sandboxed Coding (`/assessments`, `/coding`)
+### Career Readiness & Interventions (`/api/v1/readiness`, `/api/v1/interventions`, `/api/v1/roi-gaps`)
 | Method | Path | Summary | Auth Required |
 |:---|:---|:---|:---:|
-| `POST` | `/assessments/start` | Initialize proctored assessment session | Yes |
-| `POST` | `/assessments/{id}/respond` | Submit code attempt with deterministic AST complexity analysis | Yes |
-| `GET` | `/assessments/{id}/report` | Retrieve itemized rubric score and Intelligence Receipt | Yes |
+| `GET` | `/api/v1/readiness` | Compute Career Readiness Index for a target role | Yes |
+| `GET` | `/api/v1/readiness/bottlenecks` | Isolate priority capability bottlenecks | Yes |
+| `GET` | `/api/v1/roi-gaps/prioritized` | Compute ROI-prioritized skill gaps | Yes |
+| `GET` | `/api/v1/interventions/next-best-actions` | Retrieve prioritized Next Best Actions | Yes |
+| `GET` | `/api/v1/interventions/explainable-recommendations` | Generate structured decision explanations | Yes |
 
-### MNC-Style Interview Studio (`/mnc-interview`)
+### Assessments & Code Execution (`/api/v1/assessments`, `/api/v1/advanced`)
 | Method | Path | Summary | Auth Required |
 |:---|:---|:---|:---:|
-| `POST` | `/mnc-interview/generate-blueprint` | Generate MNC-style 8-round company blueprint | Yes |
-| `GET` | `/mnc-interview/memory` | Retrieve candidate's cross-session competency trend memory | Yes |
-| `POST` | `/mnc-interview/adaptive-next` | Adaptively select next question blueprint by performance | Yes |
-| `POST` | `/mnc-interview/turn` | Execute conversational interview turn with real-time feedback | Yes |
-| `POST` | `/mnc-interview/evaluate-coding` | Validate candidate solution with deterministic AST & test cases | Yes |
+| `POST` | `/api/v1/assessments/start` | Initialize adaptive assessment session | Yes |
+| `GET` | `/api/v1/assessments/{session_id}/next-question` | Fetch next adaptive question | Yes |
+| `POST` | `/api/v1/assessments/{session_id}/respond` | Submit assessment response | Yes |
+| `POST` | `/api/v1/assessments/{session_id}/complete` | Finalize assessment and compute evaluation | Yes |
+| `POST` | `/api/v1/advanced/code/execute` | Submit code to configured sandbox + deterministic Python AST review | Yes |
 
-### Talent Passport & Credentials (`/credentials`, `/passport`)
+### MNC-Style Interview Studio (`/api/v1/mnc-interview`)
 | Method | Path | Summary | Auth Required |
 |:---|:---|:---|:---:|
-| `POST` | `/credentials/mint` | Mint HMAC-SHA256 cryptographically signed credential | Yes |
-| `GET` | `/verify/{public_ref}` | Publicly verify digital talent credential authenticity | No |
-| `POST` | `/passport/share-link` | Generate data-minimized public passport link | Yes |
+| `POST` | `/api/v1/mnc-interview/blueprint` | Generate MNC interview round blueprint | Yes |
+| `GET` | `/api/v1/mnc-interview/memory` | Retrieve cross-session interview memory & competency trends | Yes |
+| `POST` | `/api/v1/mnc-interview/adaptive-next` | Select next adaptive question | Yes |
+| `POST` | `/api/v1/mnc-interview/sessions/start` | Start simulated interview session | Yes |
+| `POST` | `/api/v1/mnc-interview/sessions/{session_id}/answer` | Submit interview turn answer | Yes |
+| `POST` | `/api/v1/mnc-interview/sessions/{session_id}/code/submit` | Validate candidate coding submission | Yes |
 
-### Recruiter & Workforce Intelligence (`/recruiter-intelligence`, `/workforce-intelligence`)
+### Talent Passport & Credentials (`/api/v1/credentials`, `/api/v1/passport`)
 | Method | Path | Summary | Auth Required |
 |:---|:---|:---|:---:|
-| `GET` | `/recruiter-intelligence/match` | Multi-tenant candidate search and evidence-weighted ranking | Yes (Recruiter) |
-| `GET` | `/workforce-intelligence/matrix` | Organizational 2D capability heatmap and concentration risks | Yes (Org Admin) |
+| `POST` | `/api/v1/credentials/issue` | Issue HMAC-SHA256 signed credential when evidence criteria pass | Yes |
+| `GET` | `/api/v1/credentials/verify/{public_reference}` | Publicly verify issued credential authenticity | No |
+| `POST` | `/api/v1/passport/share` | Generate data-minimized public passport share link | Yes |
+| `GET` | `/api/v1/passport/public/{share_token}` | Public read-only Talent Passport view | No |
 
-### Resume Studio & Real-Time ATS Scoring (`/resume-builder`)
+### Recruiter & Workforce Intelligence (`/api/v1/recruiter-intel`, `/api/v1/org`)
 | Method | Path | Summary | Auth Required |
 |:---|:---|:---|:---:|
-| `POST` | `/resume-builder/parse-text` | Parse raw resume text into structured fields with baseline ATS score | Optional |
-| `POST` | `/resume-builder/parse-file` | Parse uploaded PDF/DOCX resume file into structured fields | Optional |
-| `POST` | `/resume-builder/calculate-ats` | Real-time 6-dimension deterministic ATS scoring (90+ MNC tier target) | Optional |
-| `POST` | `/resume-builder/optimize-mnc` | Supercharge bullets into Google XYZ format with quantified metrics & action verbs | Optional |
-| `POST` | `/resume-builder/improve-section` | Target section rewriter (rewrite, expand, condense, ATS-optimize) | Optional |
+| `POST` | `/api/v1/recruiter-intel/discover` | Multi-tenant candidate search and evidence ranking | Yes (Recruiter/Admin) |
+| `GET` | `/api/v1/recruiter-intel/jobs` | List organization job postings | Yes (Recruiter/Admin) |
+| `GET` | `/api/v1/org/capabilities` | Organizational capability coverage breakdown | Yes (Org Admin/Recruiter) |
+| `GET` | `/api/v1/org/matrix` | Organizational 2D capability matrix | Yes (Org Admin/Recruiter) |
 
-### Privacy & Governance (`/privacy-security`)
+### Resume Studio & ATS Scoring (`/api/v1/resume-builder`)
 | Method | Path | Summary | Auth Required |
 |:---|:---|:---|:---:|
-| `GET` | `/privacy-security/export` | Export complete candidate profile under GDPR/CCPA | Yes |
-| `POST` | `/privacy-security/delete-account` | Execute permanent cryptographic data erasure | Yes |
+| `GET` | `/api/v1/resume-builder/metadata` | Retrieve 30 configured company profiles and 15 role taxonomies | No |
+| `POST` | `/api/v1/resume-builder/parse-text` | Parse raw resume text into structured fields with ATS score | Optional |
+| `POST` | `/api/v1/resume-builder/parse-file` | Parse uploaded PDF/DOCX resume (max 5 MB, MIME checked) | Yes |
+| `POST` | `/api/v1/resume-builder/calculate-ats` | Compute 6-dimension ATS rubric score | Optional |
+| `POST` | `/api/v1/resume-builder/optimize-mnc` | Rewrite bullets using action-verb/XYZ templates | Yes |
+| `POST` | `/api/v1/resume-builder/improve-section` | Targeted section rewrite/condense/expand | Yes |
+
+### Privacy, Payments & Analytics (`/api/v1/privacy-security`, `/api/v1/payments`, `/api/v1/analytics`)
+| Method | Path | Summary | Auth Required |
+|:---|:---|:---|:---:|
+| `GET` | `/api/v1/privacy-security/preferences` | Retrieve candidate privacy opt-in preferences | Yes |
+| `PUT` | `/api/v1/privacy-security/preferences` | Update candidate privacy opt-in preferences | Yes |
+| `GET` | `/api/v1/privacy-security/export` | Export candidate profile, skills, projects, credentials, and simulations | Yes |
+| `POST` | `/api/v1/privacy-security/account/delete` | Delete candidate profile/preferences/skills/user while keeping `SecurityAuditLog` | Yes |
+| `GET` | `/api/v1/privacy-security/audit-logs` | List scoped security audit logs | Yes |
+| `POST` | `/api/v1/payments/order` | Create pending Razorpay payment transaction | Yes |
+| `POST` | `/api/v1/payments/verify` | Verify HMAC signature (fails closed without `RAZORPAY_KEY_SECRET`), ownership, and plan amount | Yes |
+| `GET` | `/api/v1/analytics/overview` | DB-backed dashboard stats (ATS score, applications, cognitive archetype) | Yes |

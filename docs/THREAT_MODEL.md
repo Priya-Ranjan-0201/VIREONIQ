@@ -1,19 +1,19 @@
-# VIREONIQ X — Threat Model & Risk Register
+# VIREONIQ — Threat Model & Risk Register
 
 ## 1. Threat Modeling Methodology
 
-VIREONIQ applies the **STRIDE** methodology (Spoofing, Tampering, Repudiation, Information Disclosure, Denial of Service, Elevation of Privilege) combined with OWASP Top 10 and OWASP Top 10 for Large Language Models.
+VIREONIQ maps core application controls across **STRIDE** threat categories and tracks corresponding verification tests in `backend/tests/`.
 
 ---
 
-## 2. Threat Vector Matrix & Defense Mechanisms
+## 2. Threat Vector Matrix & Verified Controls
 
-| STRIDE Threat | Potential Impact | Architectural Defense | Verification Test |
-|:---|:---|:---|:---:|
-| **Spoofing** | Impersonation of candidate or recruiter | Asymmetric RS256 JWT, Argon2id passwords, Redis token revocation | `test_jwt_rs256_token_creation_and_decoding` |
-| **Tampering** | Forgery of verified talent credentials | HMAC-SHA256 digital signature over normalized JSON payload | `test_section_92_hmac_tamper_defense` |
-| **Repudiation** | Denying interview scores or assessments | Immutable `IntelligenceReceipt` with timestamp, model, & prompt hash | `test_section_97_universal_intelligence_receipt` |
-| **Information Disclosure** | Cross-tenant data leaks (IDOR) | Mandatory `organization_id` filter bound to authenticated JWT claim | `test_section_91_idor_tenant_isolation` |
-| **Denial of Service** | Resource exhaustion via complex queries | AST static loop limit, Redis rate-limiting, DB statement timeouts | `test_rate_limit_enforcement` |
-| **Elevation of Privilege** | Candidate accessing recruiter API | Strict RBAC route dependencies (`require_roles(["recruiter"])`) | `test_role_based_access_control` |
-| **Autonomous Drift** | Unintended job applications by AI | Level 3 Safety Guard requiring explicit user confirmation | `test_section_106_autonomy_level3_confirmation_guard` |
+| STRIDE Threat | Potential Impact | Architectural Control | Verification Test(s) |
+|:---|:---|:---|:---|
+| **Spoofing** | Impersonation or self-assigned Admin signup | Argon2id password verification (handling `!` unusable markers), RS256 JWTs, refresh rotation & blacklist, candidate-only registration role allowlist, WS JWT checks | `test_jwt_rs256_token_creation_and_decoding` (`test_auth_security.py`), `test_auth_register_blocks_privilege_escalation_and_refresh_rotates` (`test_security_hardening.py`), `test_auth_me_logout_and_role_dependencies` (`test_phase4_and_ws_coverage.py`) |
+| **Tampering** | Forged credentials, tampered payments, or arbitrary RCE | HMAC-SHA256 verification on credentials & payments (fail-closed without secret, owner & amount validation); removal of host Python sandbox fallback | `test_payments_verify_fails_closed_without_secret_and_validates_owner` & `test_sandbox_and_credential_fail_closed_and_search_respects_privacy` (`test_security_hardening.py`), `test_payment_order_and_hmac_verification_lifecycle` (`test_phase4_and_ws_coverage.py`) |
+| **Repudiation** | Unrecorded intelligence outputs or security actions | `IntelligenceReceipt` lineage & `SecurityAuditLog` event capture | `test_section_147_universal_intelligence_receipt_lineage` (`test_phase15_final_convergence.py`), `test_section_102_security_audit_logging` (`test_phase11_security_privacy.py`) |
+| **Information Disclosure** | Cross-tenant data leaks (IDOR) or unscoped logs | Tenant/user scoping across recruiter, workforce, platform API keys, webhooks, and security audit logs | `test_endpoint_rbac_and_tenant_isolation` (`test_security_hardening.py`), `test_section_97_cross_tenant_isolation` (`test_phase11_security_privacy.py`) |
+| **Denial of Service** | Unbounded cache growth or concurrency contention | `SafeRedis` TTL-bounded fallback + SlowAPI limiter + concurrency load benchmark | `test_safe_redis_ttl_and_cooldown_recovery` (`test_security_hardening.py`), `test_concurrency_load.py` (`-m benchmark`) |
+| **Elevation of Privilege** | Candidate accessing admin/recruiter routes or AI role spoof | Case-insensitive `require_roles(...)` dependencies and server-side role resolution in `ai_orchestration` | `test_endpoint_rbac_and_tenant_isolation` (`test_security_hardening.py`), `test_auth_me_logout_and_role_dependencies` (`test_phase4_and_ws_coverage.py`) |
+| **Autonomous Drift** | High-impact external actions without consent | Level 3 autonomy confirmation guard (`is_confirmed` check raising `PermissionError` -> HTTP 403) | `test_section_141_autonomy_level_3_safety_guard` (`test_phase14_autonomous_career_os.py`) |

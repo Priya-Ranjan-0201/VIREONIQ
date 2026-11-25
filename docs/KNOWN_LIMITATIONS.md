@@ -8,26 +8,32 @@ This document records verified architectural debt, remaining placeholders/simula
 
 1. **Repository License Conflict (`LICENSE` vs docs)**
    - `LICENSE` contains a Proprietary & Strict Source-Available license.
-   - `README.md` previously displayed an MIT badge and claim; the conflicting badge/claim was removed from `README.md` and `LICENSE` was left untouched pending explicit owner direction.
+   - Conflicting MIT badge/text were removed from `README.md`, and `LICENSE` was preserved untouched pending explicit owner decision.
 2. **JWT & Password Hashing Libraries (`python-jose` / `passlib`)**
-   - `backend/requirements.txt` upgrades `python-jose[cryptography]==3.5.0`, which still carries `PYSEC-2026-4298` (no upstream fix release in `python-jose`).
-   - `passlib==1.7.4` is unmaintained upstream and emits `argon2.__version__` deprecation warnings under newer `argon2-cffi`.
-   - Migrating to `PyJWT[crypto]` and `pwdlib[argon2]` (or `argon2-cffi` directly) is recommended but held pending owner sign-off.
-3. **Overlapping / Legacy Service Modules**
-   - No modules or public routes were deleted during hardening; consolidation proposals with verified callers are documented in Section 3 below.
+   - `backend/requirements.txt` pins `python-jose[cryptography]==3.5.0`, which carries `PYSEC-2026-4298` (no upstream fix release in `python-jose`).
+   - `passlib==1.7.4` is unmaintained upstream and emits `argon2.__version__` deprecation warnings under `argon2-cffi==25.1.0`.
+   - Migrating to `PyJWT[crypto]` and `pwdlib[argon2]` (or direct `argon2-cffi`) is recommended pending owner sign-off.
+3. **Frontend Semver-Major Package Upgrades & Unused Packages (`frontend/package.json`)**
+   - `npm audit --omit=dev` reports 5 advisories (`3 moderate`, `1 high`, `1 critical`) where every fix requires a semver-major bump:
+     - `jspdf@^2.5.1` -> `4.2.1` (and transitive `dompurify`): `Select-String` across `frontend/src/` found **0 usages** of `jspdf` or `html2canvas`; owner should approve removal or major upgrade.
+     - `react-router-dom@^6.22.0` -> `7.18.7` (and transitive `react-router`).
+     - `zod@^3.22.4` -> `4.6.7`.
+   - Note also `vitest@2.1.9` / `jsdom@25.0.1` are used (`vite@5.4.21`); moving to `vitest@5` requires upgrading `vite@^6.4.0`. `.github/workflows/ci.yml` keeps `npm audit --omit=dev --audit-level=high` as `continue-on-error: true` until these major upgrades are approved.
+4. **Overlapping / Legacy Service Modules**
+   - No backend modules or public routes were deleted during hardening; consolidation proposals with verified callers are documented in Section 3 below.
 
 ---
 
 ## 2. Remaining Placeholders, Simulations & Schema Gaps
 
 - **Google Calendar Sync (`backend/api/api_v1/endpoints/calendar.py`)**: `POST /api/v1/calendar/sync` returns `"Event synced to Google Calendar (Simulated)"` and does not invoke the Google Calendar API.
-- **Parent Digest (`backend/api/api_v1/endpoints/parent.py`)**: `GET /api/v1/parent/digest` returns static placeholder values (`overall_placement_readiness`, `completed_interviews_count`, `recent_activity`) rather than aggregating real student DB telemetry.
-- **Code Execution Sandbox (`backend/services/code/judge0_provider.py`, `backend/services/code_execution_service.py`)**: Fails closed cleanly (`Sandbox Unavailable`, `status.id = 13`, `passed = False`) whenever `JUDGE0_API_URL` is unset or unreachable. No local unsandboxed Python fallback executes anymore; real execution requires a configured Judge0 / Piston sandbox instance.
+- **Parent Digest (`backend/api/api_v1/endpoints/parent.py`)**: `GET /api/v1/parent/digest` returns static placeholder values rather than aggregating live student DB telemetry.
+- **Code Execution Sandbox (`backend/services/code/judge0_provider.py`, `backend/services/code_execution_service.py`)**: Fails closed (`Sandbox Unavailable`, `status.id = 13`, `passed = False`) whenever `JUDGE0_API_URL` is unset or unreachable. No local unsandboxed Python fallback executes; real execution requires a configured Judge0 sandbox.
 - **Plagiarism Semantic Search (`backend/services/plagiarism_guard.py`)**: Uses lazy `SentenceTransformer` + Qdrant when reachable, falling back to token-Jaccard matching against `KNOWN_ANSWERS_SEEDS` when Qdrant or embedding weights are unavailable.
-- **Platform API Key Foreign Key vs Endpoint Tenant ID (`backend/db/models.py`, `backend/api/api_v1/endpoints/platform_developer.py`)**: `PlatformApiKey.tenant_id` defines a foreign key to `recruiter_organizations.id`, while `platform_developer.py` currently scopes `PlatformApiKey` queries and inserts by `current_user.id`. This succeeds on SQLite (where `PRAGMA foreign_keys` defaults off in tests) but will raise a foreign-key constraint violation on PostgreSQL unless `platform_developer.py` resolves or provisions the caller's `RecruiterOrganization.id`.
-- **Smart Apply Tracker Storage (`frontend/src/pages/jobs/SmartApplyTracker.tsx`)**: Persists job application tracking cards locally in browser `localStorage` rather than a backend persistence table.
-- **SQLAlchemy 1.x ORM Annotations (`backend/db/models.py`)**: Models use untyped `Column(...)` descriptors instead of SQLAlchemy 2.0 `Mapped[...]`. In `backend/pyproject.toml`, `mypy` checks `core.*`, `schemas.*`, and `db.*` with zero disabled error codes, and disables SQLAlchemy `Column[T]` mismatch noise codes on ORM-consuming packages while keeping `call-arg`, `attr-defined`, `name-defined`, `misc`, `dict-item`, and `syntax` strictly enforced everywhere.
-- **Live External Stacks**: Postgres 16, Redis 7, MongoDB, Qdrant, Celery workers, and third-party LLM providers (`OPENAI_API_KEY`, `GEMINI_API_KEY`, `ANTHROPIC_API_KEY`, `NVIDIA_NIM_API_KEY`, `DEEPSEEK_API_KEY`) were not started or exercised against live external services in local offline verification (`pytest` uses in-memory SQLite + `SafeRedis` in-memory fallback + `MockQdrantClient`).
+- **Platform API Key Foreign Key vs Endpoint Tenant ID (`backend/db/models.py`, `backend/api/api_v1/endpoints/platform_developer.py`)**: `PlatformApiKey.tenant_id` defines a foreign key to `recruiter_organizations.id`, while `platform_developer.py` currently scopes `PlatformApiKey` queries and inserts by `current_user.id`. This succeeds on SQLite (FK enforcement off by default) but will fail FK constraints on PostgreSQL unless `platform_developer.py` resolves/provisions `RecruiterOrganization.id`.
+- **Smart Apply Tracker & Auth Token Browser Persistence (`frontend/src/pages/jobs/SmartApplyTracker.tsx`, `frontend/src/store/authStore.ts`)**: `SmartApplyTracker` stores application cards in `localStorage`; `authStore.ts` retains the Bearer access token in `vireoniq-auth` storage because `backend/api/deps.py` (`OAuth2PasswordBearer`) currently reads `Authorization` headers rather than cookies.
+- **SQLAlchemy 1.x ORM Annotations (`backend/db/models.py`)**: Models use untyped `Column(...)` descriptors instead of SQLAlchemy 2.0 `Mapped[...]`. In `backend/pyproject.toml`, `mypy` checks `core.*`, `schemas.*`, and `db.*` with zero disabled error codes, and suppresses `Column[T]` noise on ORM-consuming packages while keeping bug-class checks (`call-arg`, `attr-defined`, `name-defined`, `misc`, `dict-item`, `syntax`) active globally.
+- **Live External Stacks & Remote CI**: Postgres 16, Redis 7, MongoDB 7, Qdrant, Celery workers, Judge0, LLM provider APIs (`OPENAI_API_KEY`, `GEMINI_API_KEY`, `ANTHROPIC_API_KEY`, `NVIDIA_NIM_API_KEY`, `DEEPSEEK_API_KEY`), and remote GitHub Actions cloud runners were not executed in local offline verification (`pytest` uses in-memory SQLite + `SafeRedis` in-memory fallback + `MockQdrantClient`).
 
 ---
 
@@ -44,3 +50,4 @@ The following overlapping modules remain active with distinct callers and should
 | Prescriptive Interventions | `services/intervention_service.py` | `services/career_intervention_engine.py` | `intervention_service`: `api/api_v1/endpoints/missions.py`, `tests/test_prescriptive_interventions.py`<br>`career_intervention_engine`: `api/api_v1/endpoints/interventions.py`, `api/api_v1/endpoints/market.py`, `services/career_simulation_service.py`, Phase 5/6 tests | Merge `missions.py` intervention generation onto `career_intervention_engine.py`. |
 | Analytics & Outcomes | `services/analytics_service.py` | `services/outcome_intelligence_service.py` | `analytics_service`: `api/api_v1/endpoints/analytics.py`, `services/report_service.py`<br>`outcome_intelligence_service`: `api/api_v1/endpoints/outcomes_analytics.py`, `tests/test_phase12_outcome_intelligence.py` | Keep `analytics_service.py` for user dashboard stats + GPS calculation and `outcome_intelligence_service.py` for funnel/progression events without duplicate metric definitions. |
 | Code Sandbox Fallback | `services/code/judge0_mock.py` | `services/code/judge0_provider.py`, `services/code_execution_service.py` | Zero runtime callers (`judge0_mock.py` bypassed after fail-closed Phase 2 hardening) | Safe candidate for removal once owner approves deleting `judge0_mock.py`. |
+| Duplicate Router Mount | `router.py` duplicate include of `credentials.router` | Single `/credentials` mount | `backend/api/api_v1/router.py` includes `credentials.router` on lines 33 and 77 (emits OpenAPI Duplicate Operation ID warning) | Deduplicate once route surface review is approved. |

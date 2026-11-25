@@ -2,11 +2,11 @@
 
 ## 1. Authentication, Sessions & Access Control
 
-- **Password Hashing**: Argon2id via `passlib` + `argon2-cffi` (`backend/core/security.py`). Unusable account markers (`!`-prefixed hashes) fail verification cleanly without raising 500 errors.
-- **JWT Asymmetric Tokens**: RS256 signed JWTs (`ACCESS_TOKEN_EXPIRE_MINUTES=15`, `REFRESH_TOKEN_EXPIRE_DAYS=7`) with Redis `blacklist:{jti}` access revocation and DB-backed refresh token rotation (`POST /api/v1/auth/refresh`, `HttpOnly`, `SameSite=Lax`, `Secure` in production).
-- **Registration & RBAC**: Public self-registration (`/api/v1/auth/register`) restricts `role_name` to standard candidate/user roles (`User`, `student`, `candidate`) and rejects elevated roles (`Admin`, `Recruiter`, `Faculty`) with HTTP 403. Case-insensitive RBAC dependencies (`require_roles`) guard recruiter, workforce, and faculty routes.
-- **AI Orchestration RBAC**: `POST /api/v1/ai-orchestration/tasks/execute` ignores client-supplied role overrides and resolves role permissions strictly from `current_user.role`.
-- **WebSocket Authentication**: `/ws/matchmaker/{user_id}` and `/adversarial/{session_id}/stream` verify JWT access tokens and session/user ownership prior to `websocket.accept()`.
+- **Password Hashing**: Argon2id via `passlib==1.7.4` + `argon2-cffi==25.1.0` (`backend/core/security.py`). Unusable account markers (`!`-prefixed hashes) fail verification cleanly without raising 500 errors.
+- **JWT Asymmetric Tokens**: RS256 signed JWTs (`ACCESS_TOKEN_EXPIRE_MINUTES=15`, `REFRESH_TOKEN_EXPIRE_DAYS=7`) with lazy key initialization, Redis `blacklist:{jti}` access revocation, and DB-backed refresh token rotation (`POST /api/v1/auth/refresh`, `HttpOnly`, `SameSite=Lax`, `Secure` in production).
+- **Registration & RBAC**: Public self-registration (`POST /api/v1/auth/register`) restricts `role_name` to standard candidate/user roles (`User`, `student`, `candidate`) and rejects elevated roles (`Admin`, `Recruiter`, `Faculty`) with HTTP 403. Case-insensitive RBAC dependencies (`require_roles`) guard recruiter, workforce, and faculty routes.
+- **AI Orchestration RBAC**: `POST /api/v1/ai/tasks/execute` (`endpoints/ai_orchestration.py`) ignores client-supplied role overrides and resolves permissions strictly from `current_user.role`.
+- **WebSocket Authentication**: `/api/v1/ws/matchmaker/{user_id}` and `/api/v1/advanced/adversarial/{session_id}/stream` verify JWT access tokens and session/user ownership prior to `websocket.accept()`.
 
 ## 2. Production Configuration Guardrails
 
@@ -21,14 +21,15 @@ Demo seed scripts (`backend/scripts/seed_user.py`, `seed_demo_data.py`, `seed_re
 ## 3. Tenant Isolation, Payments & Sandboxing
 
 - **Multi-Tenant Isolation**:
-  - `GET /privacy-security/audit-logs` filters `SecurityAuditLog.user_id == current_user.id` for non-admin callers.
-  - `/platform/api-keys*`, `/platform/webhooks`, and `/platform/connectors` enforce `tenant_id` ownership.
+  - `GET /api/v1/privacy-security/audit-logs` filters `SecurityAuditLog.actor_id == current_user.id` for non-admin callers.
+  - `/api/v1/platform/api-keys*`, `/webhooks`, and `/connectors` enforce `tenant_id` ownership.
   - `/uploads/offline-bundles` is the only static upload mount; private candidate resume uploads are not served statically without auth.
-- **Payment Verification**: `POST /payments/verify` fails closed (HTTP 503) if `RAZORPAY_KEY_SECRET` is unconfigured and validates HMAC signature, transaction owner (`tx.user_id == current_user.id`), pending status, and exact plan amount.
+- **Payment Verification**: `POST /api/v1/payments/verify` fails closed (HTTP 503) if `RAZORPAY_KEY_SECRET` is unconfigured and validates HMAC-SHA256 signature, transaction owner (`tx.user_id == current_user.id`), pending status (409 on replay), and exact plan amount.
 - **Credential Minting**: `evaluate_and_issue_credential` refuses to issue signed credentials when no `SkillEvidence` exists (`NOT_ELIGIBLE`) and signs payloads with `CREDENTIAL_SIGNING_KEY` + constant-time `hmac.compare_digest`.
-- **Code Execution Sandbox**: Host execution via `sys.executable -c` and synthetic passing test fabrication in `judge0_provider.py` and `code_execution_service.py` are removed; requests fail closed with explicit `Execution Sandbox Unavailable` status when `JUDGE0_API_URL` is unconfigured or unreachable.
+- **Code Execution Sandbox**: Host execution via `sys.executable -c` and synthetic passing test fabrication in `judge0_provider.py` and `code_execution_service.py` were removed; requests fail closed with explicit `Sandbox Unavailable` (`status.id = 13`, `passed = False`) when `JUDGE0_API_URL` is unconfigured or unreachable.
 
 ## 4. Known Dependency Advisories & Pending Governance Decisions
 
-- **`python-jose` (`3.5.0`)**: Upgraded from `3.3.0` (which carried 7 OSV advisories) to `3.5.0`; `GHSA-3qf3-8w2g-rqmx` / `PYSEC-2026-4298` remain open upstream. Replacing `python-jose` with `pyjwt[cryptography]` and `passlib` (unmaintained) with `pwdlib[argon2]` / direct `argon2-cffi` is flagged as an explicit architecture decision for the repository owner.
-- **Access Token Storage**: Access tokens currently persist in browser `localStorage` (`vireoniq-auth`); migrating fully to HttpOnly cookies is tracked as a future security enhancement.
+- **`python-jose` (`3.5.0`)**: Upgraded from `3.3.0` to `3.5.0`; `PYSEC-2026-4298` remains open upstream. Replacing `python-jose` with `pyjwt[cryptography]` and `passlib==1.7.4` (unmaintained) with `pwdlib[argon2]` / `argon2-cffi` requires explicit maintainer sign-off.
+- **Frontend Runtime npm Advisories**: `npm audit --omit=dev` flags 5 advisories across `jspdf@^2.5.1` (0 direct imports in `frontend/src/`), transitive `dompurify`, `react-router-dom@^6.22.0`, transitive `react-router`, and `zod@^3.22.4`. All available fixes require semver-major upgrades (`jspdf@4.2.1`, `react-router-dom@7.18.7`, `zod@4.6.7`).
+- **Access Token Storage**: `backend/api/deps.py` (`OAuth2PasswordBearer`) reads `Authorization: Bearer` tokens rather than cookies; therefore `frontend/src/store/authStore.ts` persists the access token in Zustand (`vireoniq-auth`). Migrating API auth extraction to `HttpOnly` access cookies is tracked for future hardening.
