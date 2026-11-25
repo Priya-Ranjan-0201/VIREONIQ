@@ -2,32 +2,43 @@ import json
 import logging
 from typing import List, Dict, Any, Optional
 from anthropic import AsyncAnthropic
+from anthropic.types import MessageParam, TextBlock
 from core.llm.base import BaseLLMProvider
 from core.config import settings
 
 logger = logging.getLogger(__name__)
 
+
 class ClaudeProvider(BaseLLMProvider):
     def __init__(self, api_key: str, model: Optional[str] = None):
         self.api_key = api_key
         self.client = AsyncAnthropic(api_key=api_key)
-        self.model = model or getattr(settings, "CLAUDE_MODEL", "claude-3-7-sonnet-20250219")
+        default_model = getattr(settings, "CLAUDE_MODEL", None) or "claude-3-7-sonnet-20250219"
+        self.model: str = str(model or default_model)
 
     async def chat(self, messages: List[Dict[str, str]], system_prompt: Optional[str] = None) -> str:
         try:
-            # Filter and format messages for Anthropic
-            anthropic_messages = []
+            anthropic_messages: List[MessageParam] = []
             for msg in messages:
-                role = "assistant" if msg.get("role") == "assistant" else "user"
-                anthropic_messages.append({"role": role, "content": msg.get("content", "")})
+                content = msg.get("content", "")
+                if msg.get("role") == "assistant":
+                    anthropic_messages.append({"role": "assistant", "content": content})
+                else:
+                    anthropic_messages.append({"role": "user", "content": content})
 
             response = await self.client.messages.create(
                 model=self.model,
                 max_tokens=4096,
                 system=system_prompt if system_prompt else "",
-                messages=anthropic_messages
+                messages=anthropic_messages,
             )
-            return response.content[0].text if response.content else ""
+            for block in response.content:
+                if isinstance(block, TextBlock):
+                    return block.text
+                text_val = getattr(block, "text", None)
+                if isinstance(text_val, str):
+                    return text_val
+            return ""
         except Exception as e:
             logger.error(f"Claude API Error: {str(e)}")
             raise
