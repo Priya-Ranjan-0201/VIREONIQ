@@ -11,14 +11,14 @@
 | Dimension | Initial Audit Baseline (`1a77f80`) | Final Hardened State (Phase 18) | Verified Metric Delta |
 |:---|:---:|:---:|:---|
 | **Python Version** | Drift (3.10 / 3.11 / 3.12) | **3.12.10** | Standardized across CI, Docker, devcontainer, and docs |
-| **Backend Standard Tests** | 150 unique (3 broken collection errors on `PyPDF2`) | **188 passed, 0 failed** | **+38 passing tests** |
+| **Backend Standard Tests** | 150 unique (3 broken collection errors on `PyPDF2`) | **190 passed, 0 failed** | **+40 passing tests** |
 | **Backend Benchmark Tests** | 0 runnable (broken `PyPDF2` import) | **2 passed (`pytest -m benchmark`)** | Both micro-benchmark and load tests runnable |
-| **Total Backend Test Count** | 150 unique | **190 tests total (100% passing)** | **+40 tests overall** |
+| **Total Backend Test Count** | 150 unique | **192 tests total (100% passing)** | **+42 tests overall** |
 | **Backend Statement Coverage** | 50% (11,678 statements, 5,887 missed) | **59% (16,062 statements, 6,589 missed)** | **+9% coverage (+4,384 covered stmts)** |
 | **Backend Lint Errors (Ruff)** | 3,627 errors (818 core `E4,E7,E9,F`) | **0 errors (`ruff check .`)** | **-3,627 lint errors (100% clean)** |
-| **Backend Type Errors (Mypy)** | 824 errors across 165 files | **0 errors across 318 source files** | **-824 type errors (100% clean)** |
-| **Frontend Test Suite** | 0 tests | **7 files, 18 tests (`vitest run`)** | **+18 unit & component tests** |
-| **Frontend Type Errors (tsc)** | 416 errors (`strict: false` in app config) | **0 errors (`strict: true` in app config)** | **-416 TypeScript errors** |
+| **Backend Type Errors (Mypy)** | 824 errors across 165 files | **0 errors across 324 source files** | **-824 type errors (100% clean)** |
+| **Frontend Test Suite** | 0 tests | **7 files, 18 tests (`vitest run`) + Playwright smoke** | **+18 Vitest + 2 E2E smoke specs** |
+| **Frontend Type Errors & `any`** | 416 errors (`strict: false`), 102 `any` | **0 errors (`strict: true`), 105 `any`** | **-416 TS errors; UI components added 3 `any`** |
 | **Frontend Lint Errors (ESLint)** | 16 errors, 28 warnings | **0 errors, 28 warnings** | **-16 lint errors** |
 | **Frontend Production Build** | False green (skipping `src/` typecheck) | **Clean Vite build in 7.88s** | Strict bundle + PWA service worker generated |
 | **Secret Scanning** | 0 automated CI check | **486 tracked files scanned; 0 secrets** | Automated secret regex gate in CI |
@@ -118,7 +118,8 @@
 
 ## 4. Pending Maintenance Decisions Owed by Repository Owner
 
-1. **License Harmonization**: `LICENSE` specifies a Proprietary & Source-Available license, while legacy badges historically mentioned MIT. Non-negotiable rule 6 preserved `LICENSE` intact. A formal declaration from the repository owner is queued to finalize metadata.
-2. **JWT Library Migration**: `python-jose==3.5.0` has an open advisory (`PYSEC-2026-4298`). Migrating to `PyJWT[cryptography]` and `pwdlib[argon2]` is fully architected and awaiting maintainer sign-off.
-3. **Frontend Semver-Major Upgrades**: 5 npm audit warnings in `frontend/` require semver-major migrations (`jspdf@4`, `react-router-dom@7`, `zod@4`) tracked in `docs/KNOWN_LIMITATIONS.md`.
-4. **Service Consolidation**: 4 overlapping legacy services mapped in `docs/ARCHITECTURE.md` are queued for retirement once backward-compatibility adapters are deployed.
+1. **License Harmonization (Rule A2.6)**: `LICENSE` specifies a Proprietary & Source-Available license, while legacy badges historically mentioned MIT. Non-negotiable rule 6 preserved `LICENSE` intact. Please confirm whether to keep `LICENSE` Proprietary Source-Available or adopt MIT.
+2. **JWT & Password Library Migration (Rule A2.7)**: `python-jose==3.5.0` carries advisory `PYSEC-2026-4298` and `passlib==1.7.4` emits `argon2.__version__` deprecation warnings. Migrating to `PyJWT[cryptography]` + `pwdlib[argon2]` requires maintainer sign-off.
+3. **Frontend Semver-Major Upgrades**: Remaining npm audit advisories in `frontend/` require semver-major migrations (`jspdf@4`, `react-router-dom@7`, `zod@4`) tracked in `docs/KNOWN_LIMITATIONS.md`.
+4. **Service Consolidation (Phase 4)**: 4 overlapping legacy service pairs mapped in `docs/ARCHITECTURE.md` await approval before consolidation/deletion.
+5. **Deployment Target, GPU Compute & Data Sources (Rule A1/A2.7/A2.10)**: Approve hosting target (Cloud Run / ECS / Fly / self-hosted Docker Compose), GPU compute option for fine-tuning, external datasets (`ESCO`, `O*NET`, `TalentCLEF`), and additional target Indian languages beyond English and Hindi.

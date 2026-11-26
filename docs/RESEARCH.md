@@ -117,3 +117,25 @@
 1. **Hiring Outcome Causality**: Algorithmic scoring does not prove real-world employee performance or job retention; VIREONIQ explicitly labels all scores as qualification alignment indicators, forbidding unverified claims of guaranteed job placement.
 2. **Indian Talent Data Scarcity**: Synthetic data generation paired with human validation is required for vernacular language assessment; all synthetic data must be explicitly flagged and versioned.
 3. **Minor Protection**: Features designed for high school or early-career students require explicit parental consent workflows and restricted data retention schedules under DPDP requirements.
+
+---
+
+## C4. Rule 9 Source Reachability Audit (Verified 2026-11-26)
+
+| Reference | URL | HTTP Verification | Notes |
+|:---|:---|:---|:---|
+| F1 | `https://github.com/nusratrita/resume-job-benchmark-audit` | HTTP 200 | Verified reachable |
+| F2 | `https://arxiv.org/abs/2609.04286` | HTTP 200 | Verified reachable |
+| F3 | `https://arxiv.org/abs/2507.11548` | HTTP 200 | Verified reachable |
+| F4 | `https://aclanthology.org/2025.findings-naacl.270.pdf` | HTTP 200 | Verified reachable |
+| F5 | `https://arxiv.org/abs/2606.31692` | HTTP 200 | Verified reachable |
+| F6 | `https://arxiv.org/html/2506.00049v1` | HTTP 200 | Verified reachable |
+| F7 | `https://arxiv.org/html/2504.20119v2` | HTTP 200 | Verified reachable |
+| F8 | `https://arxiv.org/abs/2601.23183` | HTTP 200 | Verified reachable |
+| F9 | `https://arxiv.org/html/2408.15620v2` | HTTP 200 | Verified reachable |
+| F10a | `https://arxiv.org/abs/2609.20188` | HTTP 200 | Verified reachable |
+| F10b | `https://arxiv.org/abs/2605.28999` | HTTP 200 | Verified reachable |
+| F11 | `https://owasp.org/www-project-top-10-for-large-language-model-applications/` | HTTP 200 | Verified reachable |
+| F12a | `https://glider.ai/ai-hiring-compliance-nyc-law-eu-ai-act/` | HTTP 200 | Vendor summary; legal review still required |
+| F12b | `https://www.morganlewis.com/pubs/2026/06/changes-to-eu-ai-act-deadlines-what-it-means-for-employers-and-hr-technology-providers` | HTTP 403 (HEAD blocked) | Automated HEAD blocked; exact EU AI Act dates require legal counsel verification |
+| F12c | `https://www.scconline.com/blog/post/2025/12/26/digital-personal-data-protection-rules-2025-key-highlights/` | HTTP 200 | Verified reachable |

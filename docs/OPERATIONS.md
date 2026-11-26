@@ -65,7 +65,7 @@ docker compose exec backend alembic downgrade -1
 
 ## 5. Observability, Metrics & Telemetry
 
-- **Prometheus Metrics**: Exposes HTTP request latency, status codes, Celery queue depth, and LLM token usage counters.
-- **Structured JSON Logging**: Every log entry contains `timestamp`, `level`, `event`, and `request_id` via `structlog`. PII (emails, names, tokens) is redacted before output.
-- **Distributed Tracing**: OpenTelemetry instrumentation tracks database query execution and external service roundtrips without transmitting payload bodies.
+- **Prometheus Metrics (`GET /metrics`)**: Implemented in `backend/core/observability.py` and exposed in `backend/main.py` (`text/plain; version=0.0.4`). Tracks `vireoniq_http_requests_total`, `vireoniq_http_errors_total`, `vireoniq_http_request_duration_seconds`, `vireoniq_llm_requests_total`, `vireoniq_llm_tokens_total`, `vireoniq_llm_cost_usd_total`, `vireoniq_llm_latency_seconds`, and `vireoniq_celery_queue_depth`.
+- **Grafana Dashboard**: Provisionable dashboard definition committed at `monitoring/grafana/vireoniq-dashboard.json`.
+- **Structured JSON Logging & Request Correlation**: `ObservabilityMiddleware` and `LoggingMiddleware` propagate `X-Request-ID` / `X-Trace-ID` headers and bind `request_id` / `trace_id` via `structlog.contextvars` with zero PII in log payloads.
 

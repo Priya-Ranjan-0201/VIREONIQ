@@ -1,0 +1,74 @@
+{
+  "title": "VIREONIQ API & LLM Observability",
+  "uid": "vireoniq-ops-01",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "30s",
+  "panels": [
+    {
+      "id": 1,
+      "title": "HTTP Request Rate (req/s)",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "sum(rate(vireoniq_http_requests_total[5m])) by (method, path)",
+          "legendFormat": "{{method}} {{path}}"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "HTTP Error Rate (4xx/5xx)",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "sum(rate(vireoniq_http_errors_total[5m])) by (path)",
+          "legendFormat": "{{path}}"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Average HTTP Latency (s)",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "sum(rate(vireoniq_http_request_duration_seconds_sum[5m])) / sum(rate(vireoniq_http_request_duration_seconds_count[5m]))",
+          "legendFormat": "avg latency"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "LLM Token Throughput by Provider/Model",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "sum(rate(vireoniq_llm_tokens_total[5m])) by (provider, model, direction)",
+          "legendFormat": "{{provider}}/{{model}} ({{direction}})"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Cumulative LLM Spend (USD)",
+      "type": "stat",
+      "targets": [
+        {
+          "expr": "sum(vireoniq_llm_cost_usd_total)"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Celery Queue Depth",
+      "type": "gauge",
+      "targets": [
+        {
+          "expr": "vireoniq_celery_queue_depth",
+          "legendFormat": "{{queue}}"
+        }
+      ]
+    }
+  ]
+}

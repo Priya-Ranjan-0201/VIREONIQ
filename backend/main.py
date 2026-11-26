@@ -1,7 +1,7 @@
 import os
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse
+from fastapi import FastAPI, Request, Response
+from fastapi.responses import JSONResponse, PlainTextResponse
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.cors import CORSMiddleware
 from slowapi import Limiter, _rate_limit_exceeded_handler
@@ -17,6 +17,7 @@ import structlog
 from core.config import settings
 from api.api_v1.router import api_router
 from core.logging import LoggingMiddleware
+from core.observability import ObservabilityMiddleware, metrics_registry
 from db.session import engine
 
 logger = structlog.get_logger("vireoniq.main")
@@ -146,8 +147,9 @@ if settings.BACKEND_CORS_ORIGINS:
         allow_headers=["*"],
     )
 
-# 2. Logging & Error Tracking
+# 2. Logging & Observability
 app.add_middleware(LoggingMiddleware)
+app.add_middleware(ObservabilityMiddleware)
 
 # 3. Security Headers Middleware
 @app.middleware("http")
@@ -199,6 +201,15 @@ def root():
         "status": "operational",
         "environment": settings.ENVIRONMENT,
     }
+
+@app.get("/metrics", tags=["system"], response_class=PlainTextResponse)
+def prometheus_metrics() -> Response:
+    """Prometheus text exposition endpoint (HTTP latency, errors, LLM tokens/cost, queue depth)."""
+    return PlainTextResponse(
+        content=metrics_registry.render_prometheus(),
+        media_type="text/plain; version=0.0.4; charset=utf-8",
+    )
+
 
 @app.get("/health", tags=["system"])
 async def health_check() -> dict:
