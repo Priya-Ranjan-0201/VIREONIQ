@@ -47,7 +47,7 @@ export const AtsScoreChecker: React.FC = () => {
         const rawContent = (e.target?.result as string) || "";
         const matches = rawContent.match(/\(([^()]{3,})\)[\s]*Tj/g) || rawContent.match(/\/([A-Za-z0-9_-]{3,})/g);
         if (matches && matches.length > 10) {
-          const extracted = matches.map(m => m.replace(/[()\/]|Tj/g, '').trim()).filter(m => m.length > 2).join(' ');
+          const extracted = matches.map(m => m.replace(/[()/]|Tj/g, '').trim()).filter(m => m.length > 2).join(' ');
           setCvText(`[PARSED FROM ${file.name.toUpperCase()}]\n\n${extracted}`);
           toast.success(`Extracted content from ${file.name}`);
         } else {
