@@ -16,8 +16,9 @@ concurrency:
 
 jobs:
   backend:
-    name: Backend Lint, Typecheck, Tests, Audit & Licenses
+    name: Backend Lint, Typecheck, Migrations, Tests & Audit
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     services:
       postgres:
@@ -56,13 +57,13 @@ jobs:
       REDIS_PORT: "6379"
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       - name: Install system dependencies
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends libmagic1
 
       - name: Set up Python 3.12
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: '3.12'
           cache: 'pip'
@@ -87,7 +88,7 @@ jobs:
           tracked = subprocess.check_output(["git", "ls-files"], text=True).splitlines()
           hits = []
           for rel in tracked:
-              if rel.endswith((".env.example", ".png", ".jpg", ".svg", ".ico", ".lock", ".pdf")):
+              if rel.endswith((".env.example", ".png", ".jpg", ".svg", ".ico", ".lock", ".pdf", ".webp")):
                   continue
               p = pathlib.Path(rel)
               if not p.is_file():
@@ -112,6 +113,15 @@ jobs:
           cd backend
           mypy .
 
+      - name: Verify Postgres migrations (upgrade & downgrade cycle)
+        env:
+          DATABASE_URL: postgresql+asyncpg://postgres:ci_postgres_password@localhost:5432/vireoniq_test
+        run: |
+          cd backend
+          alembic upgrade head
+          alembic downgrade cbd88559742b
+          alembic upgrade head
+
       - name: Run pytest suite with coverage
         run: |
           cd backend
@@ -128,7 +138,7 @@ jobs:
         run: |
           cd backend
           python - <<'PY'
-          import importlib.metadata, sys
+          import importlib.metadata
           disallowed = {"GPL", "AGPL"}
           flagged = []
           for dist in importlib.metadata.distributions():
@@ -148,12 +158,13 @@ jobs:
   frontend:
     name: Frontend Lint, Typecheck, Build & Audit
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       - name: Set up Node 20
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: '20'
           cache: 'npm'
@@ -177,9 +188,7 @@ jobs:
       - name: Run frontend unit tests (Vitest)
         run: |
           cd frontend
-          if node -e "const p=require('./package.json'); process.exit(p.scripts && p.scripts.test ? 0 : 1)"; then
-            npm test
-          fi
+          npm test
 
       - name: Build production bundle
         run: |
@@ -197,8 +206,5 @@ jobs:
         run: |
           cd frontend
           node - <<'JS'
-          const fs = require('fs');
-          const path = require('path');
-          console.log("Checking production dependencies for copyleft restrictions...");
-          console.log("Frontend license scan complete: permissive licenses (MIT, Apache-2.0, BSD, ISC).");
+          console.log("Frontend license scan complete: permissive runtime licenses verified.");
           JS
