@@ -3,7 +3,12 @@ from datetime import datetime, timedelta, timezone
 from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.security import verify_password, create_access_token, create_refresh_token, decode_token
+from core.security import (
+    verify_password, create_access_token, create_refresh_token, decode_token,
+    create_email_verification_token, decode_email_verification_token,
+    create_password_reset_token, decode_password_reset_token,
+    validate_password_complexity, check_rate_limit, get_password_hash
+)
 from core.redis import redis_client
 from core.config import settings
 from crud import crud_user, crud_auth
@@ -129,3 +134,135 @@ async def logout(db: AsyncSession, user_id: uuid.UUID, jti: str, refresh_token: 
         await crud_auth.revoke_refresh_token(db, token=refresh_token)
     
     await crud_auth.log_audit_event(db, user_id=user_id, action="LOGOUT_SUCCESS", ip_address=ip_address, user_agent=user_agent)
+
+
+async def request_email_verification(
+    db: AsyncSession, email: str, ip_address: str = None, user_agent: str = None
+) -> dict:
+    rate_key = f"rate:verify_email:{ip_address or 'anon'}"
+    if not await check_rate_limit(rate_key, max_requests=5, window_seconds=60):
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail="Too many verification requests. Please try again later.",
+        )
+
+    user = await crud_user.get_user_by_email(db, email=email)
+    token = None
+    if user and not user.is_email_verified:
+        token = create_email_verification_token(subject=user.id, email=user.email)
+        await crud_auth.log_audit_event(
+            db, user_id=user.id, action="EMAIL_VERIFICATION_SENT", ip_address=ip_address, user_agent=user_agent
+        )
+
+    return {
+        "message": "If the email is registered, a verification link has been dispatched.",
+        "status": "success",
+        "token_preview": token if not settings.is_production else None,
+    }
+
+
+async def verify_email(
+    db: AsyncSession, token: str, ip_address: str = None, user_agent: str = None
+) -> dict:
+    try:
+        payload = decode_email_verification_token(token)
+        user_id = uuid.UUID(payload["sub"])
+    except Exception:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid or expired email verification token.",
+        )
+
+    user = await crud_user.verify_user_email(db, user_id=user_id)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User associated with token not found.",
+        )
+
+    await crud_auth.log_audit_event(
+        db, user_id=user.id, action="EMAIL_VERIFIED_SUCCESS", ip_address=ip_address, user_agent=user_agent
+    )
+    return {"message": "Email address verified successfully.", "status": "success"}
+
+
+async def request_password_reset(
+    db: AsyncSession, email: str, ip_address: str = None, user_agent: str = None
+) -> dict:
+    rate_key = f"rate:forgot_pwd:{ip_address or 'anon'}"
+    if not await check_rate_limit(rate_key, max_requests=5, window_seconds=60):
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail="Too many password reset requests. Please wait a minute before retrying.",
+        )
+
+    user = await crud_user.get_user_by_email(db, email=email)
+    token = None
+    if user and user.is_active:
+        token = create_password_reset_token(subject=user.id, email=user.email)
+        await crud_auth.log_audit_event(
+            db, user_id=user.id, action="PASSWORD_RESET_REQUESTED", ip_address=ip_address, user_agent=user_agent
+        )
+
+    return {
+        "message": "If this email is registered, a password reset link has been dispatched.",
+        "status": "success",
+        "token_preview": token if not settings.is_production else None,
+    }
+
+
+async def reset_password(
+    db: AsyncSession, token: str, new_password: str, ip_address: str = None, user_agent: str = None
+) -> dict:
+    valid, err_msg = validate_password_complexity(new_password)
+    if not valid:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=err_msg or "Password does not meet complexity requirements.",
+        )
+
+    try:
+        payload = decode_password_reset_token(token)
+        user_id = uuid.UUID(payload["sub"])
+        jti = payload.get("jti")
+    except Exception:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid or expired password reset token.",
+        )
+
+    if not jti:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Malformed reset token.")
+
+    used_key = f"used_reset_jti:{jti}"
+    is_used = await redis_client.get(used_key)
+    if is_used:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Password reset token has already been used.",
+        )
+
+    new_hash = get_password_hash(new_password)
+    user = await crud_user.update_user_password(db, user_id=user_id, new_password_hash=new_hash)
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User account not found.")
+
+    await redis_client.setex(used_key, 1800, "used")
+    await crud_auth.revoke_all_user_refresh_tokens(db, user_id=user.id)
+    await crud_auth.log_audit_event(
+        db, user_id=user.id, action="PASSWORD_RESET_SUCCESS", ip_address=ip_address, user_agent=user_agent
+    )
+
+    return {"message": "Password has been successfully updated. All active sessions revoked.", "status": "success"}
+
+
+async def delete_user_account_session(
+    db: AsyncSession, user_id: uuid.UUID, jti: str = None, refresh_token: str = None, ip_address: str = None, user_agent: str = None
+) -> dict:
+    from services.security_governance_service import delete_user_account
+    res = await delete_user_account(user_id, db)
+    if jti:
+        await redis_client.setex(f"blacklist:{jti}", settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60, "revoked")
+    if refresh_token:
+        await crud_auth.revoke_refresh_token(db, token=refresh_token)
+    return res

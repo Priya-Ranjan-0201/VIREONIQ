@@ -117,3 +117,23 @@ This log records significant architectural, security, stack, and methodology dec
   - Full codebase integrity preserved: zero feature deletion.
   - User expectations are grounded in evidence: synthetic demo data is clearly marked as such.
   - Enterprise brand and trademark risks are mitigated with comprehensive non-affiliation notices.
+
+## Decision 009: Email Verification, Password Reset Tokens, and Account Deletion (Phase L2)
+
+- **Status**: Accepted
+- **Date**: 2026-11-28
+- **Context**: Opening VIREONIQ to public users requires complete account lifecycle management: email verification tokens to confirm deliverable email addresses, rate-limited and single-use password reset tokens to protect against credential stuffing and brute force attacks, session invalidation on password change, and self-service account deletion honoring GDPR/CCPA privacy rights.
+- **Options Considered**:
+  1. *Third-party hosted auth (e.g. Auth0, Clerk, Firebase Auth)*: Introduces external vendor lock-in, recurring monthly billing, and complex data sovereignty challenges.
+  2. *First-Party Cryptographic Token Lifecycle on Native Platform*:
+     - RS256-signed JWT tokens for email verification (`purpose="email_verification"`, 24h expiration) and single-use password reset (`purpose="password_reset"`, 30m expiration).
+     - Single-use replay protection backed by unique JTI blacklisting in `SafeRedis` (with TTL-aware in-memory fallback).
+     - Strict password entropy and complexity validation (minimum 8 characters with required letters and numbers).
+     - In-memory / Redis sliding-window rate limiting on sensitive authentication endpoints (`/forgot-password`, `/resend-verification`).
+     - Session invalidation across all active refresh tokens upon successful password reset.
+     - Direct self-service account deletion (`DELETE /api/v1/auth/me`) triggering GDPR anonymization and session purging.
+- **Decision**: Adopt Option 2.
+- **Consequences**:
+  - Zero external auth vendor dependencies or API fees.
+  - Complete resistance to token replay attacks via JTI blacklisting.
+  - User accounts can be securely recovered, verified, and deleted in full compliance with global privacy standards.

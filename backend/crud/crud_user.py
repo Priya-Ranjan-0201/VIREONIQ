@@ -34,6 +34,20 @@ async def create_user(db: AsyncSession, obj_in: UserRegisterRequest, role_id: uu
     await db.flush()
     return db_obj
 
+async def verify_user_email(db: AsyncSession, user_id: uuid.UUID) -> Optional[User]:
+    user = await get_user_by_id(db, user_id=user_id)
+    if user:
+        user.is_email_verified = True
+        await db.flush()
+    return user
+
+async def update_user_password(db: AsyncSession, user_id: uuid.UUID, new_password_hash: str) -> Optional[User]:
+    user = await get_user_by_id(db, user_id=user_id)
+    if user:
+        user.password_hash = new_password_hash
+        await db.flush()
+    return user
+
 async def search_candidates_for_recruiter(db: AsyncSession, role: Optional[str] = None) -> list:
     """Search discoverable candidates by role, returning their profile, latest ATS score, and readiness score."""
     from db.models import Profile, Resume, ResumeScore, GapAnalysis

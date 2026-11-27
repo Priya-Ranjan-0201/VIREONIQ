@@ -1,5 +1,6 @@
 import os
 import re
+import uuid
 from functools import lru_cache
 from datetime import datetime, timedelta, timezone
 from typing import Any, Optional, Union, Dict, Tuple
@@ -117,6 +118,77 @@ def create_refresh_token(subject: Union[str, Any], jti: str, expires_delta: Opti
 def decode_token(token: str) -> Dict[str, Any]:
     """Decode and validate an RS256 signed JWT token using the public key."""
     return jwt.decode(token, get_public_key(), algorithms=[settings.JWT_ALGORITHM])
+
+
+def create_email_verification_token(subject: Union[str, Any], email: str) -> str:
+    """Create an RS256 signed JWT email verification token (valid 24h)."""
+    expire = datetime.now(timezone.utc) + timedelta(hours=24)
+    to_encode = {
+        "exp": expire,
+        "sub": str(subject),
+        "email": email,
+        "jti": str(uuid.uuid4()),
+        "purpose": "email_verification"
+    }
+    return jwt.encode(to_encode, get_private_key(), algorithm=settings.JWT_ALGORITHM)
+
+
+def decode_email_verification_token(token: str) -> Dict[str, Any]:
+    """Decode and validate an email verification token."""
+    payload = decode_token(token)
+    if payload.get("purpose") != "email_verification":
+        raise ValueError("Invalid token purpose: expected email_verification")
+    return payload
+
+
+def create_password_reset_token(subject: Union[str, Any], email: str) -> str:
+    """Create an RS256 signed JWT single-use password reset token (valid 30m)."""
+    expire = datetime.now(timezone.utc) + timedelta(minutes=30)
+    to_encode = {
+        "exp": expire,
+        "sub": str(subject),
+        "email": email,
+        "jti": str(uuid.uuid4()),
+        "purpose": "password_reset"
+    }
+    return jwt.encode(to_encode, get_private_key(), algorithm=settings.JWT_ALGORITHM)
+
+
+def decode_password_reset_token(token: str) -> Dict[str, Any]:
+    """Decode and validate a password reset token."""
+    payload = decode_token(token)
+    if payload.get("purpose") != "password_reset":
+        raise ValueError("Invalid token purpose: expected password_reset")
+    return payload
+
+
+def validate_password_complexity(password: str) -> Tuple[bool, Optional[str]]:
+    """Validate password meets minimum security standards."""
+    if len(password) < 8:
+        return False, "Password must be at least 8 characters long."
+    if not re.search(r"[A-Za-z]", password) or not re.search(r"[0-9]", password):
+        return False, "Password must contain both letters and at least one number."
+    return True, None
+
+
+async def check_rate_limit(key: str, max_requests: int = 5, window_seconds: int = 60) -> bool:
+    """
+    Check if a key has exceeded max_requests in window_seconds.
+    Uses SafeRedis with in-memory TTL fallback. Returns True if allowed, False if exceeded.
+    """
+    from core.redis import redis_client
+    try:
+        val = await redis_client.get(key)
+        if val is None:
+            await redis_client.setex(key, window_seconds, "1")
+            return True
+        count = int(val)
+        if count >= max_requests:
+            return False
+        await redis_client.setex(key, window_seconds, str(count + 1))
+        return True
+    except Exception:
+        return True
 
 def check_prompt_injection(text: str) -> bool:
     """
