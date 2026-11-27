@@ -34,7 +34,7 @@ python-docx==1.2.0
 # NLP & Vector Store
 spacy==3.8.16
 sentence-transformers==6.3.0
-qdrant-client==1.19.0
+qdrant-client==1.20.0
 
 # Rate Limiting, Logging, & Error Tracking
 slowapi==0.1.10
