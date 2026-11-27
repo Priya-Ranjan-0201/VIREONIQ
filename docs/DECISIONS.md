@@ -178,4 +178,25 @@ This log records significant architectural, security, stack, and methodology dec
   - Zero stale connection exceptions during idle periods.
   - Complete isolation and transaction safety verified by automated test suites.
 
+---
+
+## Decision 012: Global Readiness, Legal Governance, and Launch Gate Architecture (Phase L5)
+
+- **Status**: Accepted
+- **Date**: 2026-11-28
+- **Context**: Opening VIREONIQ to public users worldwide requires clear legal terms of service, comprehensive privacy disclosures conforming to GDPR and CCPA standards, and a staged Go/No-Go launch gate checklist with operational kill switches.
+- **Options Considered**:
+  1. *Unstructured launch without formal gates or legal disclaimers*: Leaves platform exposed to liability regarding employment outcomes, intellectual property disputes, or unclear user rights.
+  2. *Standardized SaaS Legal Governance with Staged Go/No-Go Rollout*:
+     - Establish `docs/TERMS_OF_SERVICE.md` with explicit career coaching disclaimers (no guarantee of employment or specific salary), acceptable use rules for sandbox code execution, and trademark non-affiliation protections.
+     - Update `docs/PRIVACY.md` detailing technical controls (Talent Passport minimization, candidate visibility preferences, GDPR Article 15 JSON export, GDPR Article 17 self-service deletion, and zero third-party tracking pixels).
+     - Publish `docs/LAUNCH_CHECKLIST.md` defining the 3-stage rollout (Internal Canary, Closed Beta, Global Public Beta) and the 10-point Go/No-Go decision matrix.
+     - Document administrative emergency kill-switch endpoints (`POST /api/v1/system/features/{flag_name}/kill-switch`).
+- **Decision**: Adopt Option 2.
+- **Consequences**:
+  - Full legal clarity and liability boundaries established for global users.
+  - Complete transparency on data retention, access, and erasure rights.
+  - Standardized staged rollout procedure preventing unverified code or broken features from reaching public production.
+
+
 
