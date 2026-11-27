@@ -157,3 +157,25 @@ This log records significant architectural, security, stack, and methodology dec
   - Standardized branch protection settings ready for owner implementation in GitHub Repository Settings.
   - Backend codebase achieves 0 High and 0 Medium Bandit security alerts across all active modules.
 
+---
+
+## Decision 011: Database Integrity, Connection Pooling, and Migration Resilience (Phase L4)
+
+- **Status**: Accepted
+- **Date**: 2026-11-28
+- **Context**: For global go-live, database connections must withstand cloud network blips, idle firewall reapers, and traffic bursts without leaking connections or crashing sessions. The database tier requires robust connection pool parameters (`pool_pre_ping`, `pool_recycle`, `pool_size`, `max_overflow`), clean SQLite compatibility hooks for local development and unit tests, and verified reversible migrations.
+- **Options Considered**:
+  1. *Default unconfigured connection pool*: Vulnerable to `OperationalError: connection closed` on dropped TCP connections in managed cloud environments (AWS RDS / GCP Cloud SQL).
+  2. *Hardened Production Connection Pool with Pre-Ping, Recycle, and Automated Rollback Safety*:
+     - Configure `pool_pre_ping=True` to detect and discard stale or dead connections prior to checkout.
+     - Configure `pool_recycle=300` to refresh connections every 5 minutes and avoid proxy/NAT timeout drops.
+     - Expose configurable pool environment settings (`DB_POOL_SIZE=20`, `DB_MAX_OVERFLOW=10`, `DB_POOL_TIMEOUT=30`).
+     - Enforce automatic `session.commit()` on clean exit and `session.rollback()` on exceptions in `get_db`.
+     - Maintain verified reversible Alembic migrations tested in CI round-trips (`upgrade head -> downgrade base -> upgrade head`).
+- **Decision**: Adopt Option 2.
+- **Consequences**:
+  - Resilient database connection handling in multi-tenant cloud environments.
+  - Zero stale connection exceptions during idle periods.
+  - Complete isolation and transaction safety verified by automated test suites.
+
+

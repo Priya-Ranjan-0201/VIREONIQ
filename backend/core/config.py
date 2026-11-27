@@ -63,6 +63,11 @@ class Settings(BaseSettings):
     POSTGRES_PORT: str = "5432"
     POSTGRES_DB: str = "vireoniq"
     DATABASE_URL: Optional[str] = None
+    DB_POOL_SIZE: int = 20
+    DB_MAX_OVERFLOW: int = 10
+    DB_POOL_TIMEOUT: int = 30
+    DB_POOL_RECYCLE: int = 300
+    DB_POOL_PRE_PING: bool = True
 
     # Redis
     REDIS_URL: str = "redis://localhost:6379/0"
