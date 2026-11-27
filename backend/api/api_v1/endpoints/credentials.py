@@ -7,7 +7,11 @@ from api.deps import get_db, get_current_active_user
 from db.models import User, VerifiedCredential
 from sqlalchemy import select, and_
 from services.credential_issuance_service import (
-    evaluate_and_issue_credential, verify_credential_public, revoke_credential
+    evaluate_and_issue_credential,
+    verify_credential_public,
+    revoke_credential,
+    get_credential_public_key_metadata,
+    verify_canonical_asymmetric_signature
 )
 
 router = APIRouter()
@@ -73,6 +77,35 @@ async def revoke_candidate_credential(
         raise HTTPException(status_code=404, detail="Credential not found or unauthorized")
 
     return await revoke_credential(credential_id, reason, f"USER:{current_user.id}", db)
+
+@router.get("/public-key")
+async def get_credential_public_key() -> Dict[str, Any]:
+    """
+    Public key endpoint for decentralized, zero-database credential verification.
+    """
+    return get_credential_public_key_metadata()
+
+
+@router.post("/verify-payload")
+async def verify_credential_payload_signature(
+    canonical_payload: str = Body(..., embed=True),
+    signature: str = Body(..., embed=True)
+) -> Dict[str, Any]:
+    """
+    Offline verification endpoint verifying an RS256 digital signature against a canonical payload.
+    """
+    is_valid = verify_canonical_asymmetric_signature(canonical_payload, signature)
+    return {
+        "valid": is_valid,
+        "algorithm": "RS256",
+        "key_id": "vireoniq-trust-cred-2026",
+        "signature_status": "VERIFIED_AUTHENTIC" if is_valid else "SIGNATURE_MISMATCH",
+        "disclaimer": (
+            "This credential reflects skills demonstrated on the VIREONIQ interactive practice platform. "
+            "It does not constitute an accredited academic degree, proctored certification, or guarantee of employment."
+        )
+    }
+
 
 @router.get("/verify/{public_reference}")
 async def verify_public_credential(

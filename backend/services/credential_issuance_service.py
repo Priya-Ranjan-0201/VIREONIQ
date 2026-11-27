@@ -8,16 +8,20 @@ Provides:
   5. Distinction between Credential Validity and Evidence Freshness
 """
 
-from typing import Dict, Any
 import uuid
 import hmac
 import hashlib
 import logging
+import base64
 from datetime import datetime, timezone
+from typing import Dict, Any
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, and_
+from cryptography.hazmat.primitives import hashes, serialization
+from cryptography.hazmat.primitives.asymmetric import padding
 
 from core.config import settings
+from core.security import get_private_key, get_public_key
 from db.models import (
     VerifiedCredential, CredentialAuditLog, SkillEvidence
 )
@@ -26,6 +30,61 @@ from services.canonical_skill_service import normalize_skill_name
 logger = logging.getLogger(__name__)
 
 CREDENTIAL_VERSION = "1.0.0"
+CREDENTIAL_KEY_ID = "vireoniq-trust-cred-2026"
+CREDENTIAL_DISCLAIMER = (
+    "This credential reflects skills demonstrated on the VIREONIQ interactive practice platform. "
+    "It does not constitute an accredited academic degree, proctored certification, or guarantee of employment."
+)
+
+
+def compute_canonical_asymmetric_signature(canonical_payload: str) -> str:
+    """
+    Computes an RS256 digital signature over the canonical credential payload using the issuer RSA private key.
+    """
+    priv_pem = get_private_key()
+    priv_key = serialization.load_pem_private_key(priv_pem, password=None)
+    sig_bytes = priv_key.sign(
+        canonical_payload.encode("utf-8"),
+        padding.PKCS1v15(),
+        hashes.SHA256()
+    )
+    return base64.b64encode(sig_bytes).decode("ascii")
+
+
+def verify_canonical_asymmetric_signature(canonical_payload: str, signature_b64: str) -> bool:
+    """
+    Verifies an RS256 digital signature over the canonical payload using the platform public key.
+    Enables zero-database offline verification by external third parties.
+    """
+    try:
+        pub_pem = get_public_key()
+        pub_key = serialization.load_pem_public_key(pub_pem)
+        sig_bytes = base64.b64decode(signature_b64.encode("ascii"))
+        pub_key.verify(
+            sig_bytes,
+            canonical_payload.encode("utf-8"),
+            padding.PKCS1v15(),
+            hashes.SHA256()
+        )
+        return True
+    except Exception:
+        return False
+
+
+def get_credential_public_key_metadata() -> Dict[str, Any]:
+    """
+    Returns public key metadata and PEM for decentralized verification.
+    """
+    pub_pem_str = get_public_key().decode("utf-8")
+    return {
+        "algorithm": "RS256",
+        "key_id": CREDENTIAL_KEY_ID,
+        "issuer": "https://vireoniq.com",
+        "standard": "W3C-Verifiable-Credentials-Compatible",
+        "disclaimer": CREDENTIAL_DISCLAIMER,
+        "public_key_pem": pub_pem_str
+    }
+
 
 def compute_canonical_hmac_signature(
     credential_id: str,
@@ -133,15 +192,20 @@ async def evaluate_and_issue_credential(
     issued_iso = now.strftime("%Y-%m-%dT%H:%M:%SZ")
     user_ref = hashlib.sha256(str(user_id).encode()).hexdigest()[:12]
 
-    sig = compute_canonical_hmac_signature(
-        credential_id=str(cred_id),
-        user_reference=user_ref,
-        competency=norm_comp,
-        level=level,
-        issuer="VIREONIQ",
-        issued_at_iso=issued_iso,
-        version=CREDENTIAL_VERSION
-    )
+    canonical_payload = f"{cred_id}:{user_ref}:{norm_comp}:{level}:VIREONIQ:{issued_iso}:{CREDENTIAL_VERSION}"
+    try:
+        sig = compute_canonical_asymmetric_signature(canonical_payload)
+    except Exception as e:
+        logger.warning(f"Asymmetric credential signing failed ({e}); falling back to canonical HMAC.")
+        sig = compute_canonical_hmac_signature(
+            credential_id=str(cred_id),
+            user_reference=user_ref,
+            competency=norm_comp,
+            level=level,
+            issuer="VIREONIQ",
+            issued_at_iso=issued_iso,
+            version=CREDENTIAL_VERSION
+        )
 
     cred = VerifiedCredential(
         id=cred_id,
@@ -208,11 +272,18 @@ async def verify_credential_public(
             "message": "Credential reference not found in the VIREONIQ Trust Registry."
         }
 
-    # Verify HMAC signature integrity
+    # Verify cryptographic signature integrity (supports RS256 asymmetric and legacy HMAC)
     user_ref = hashlib.sha256(str(cred.user_id).encode()).hexdigest()[:12]
     issued_iso = cred.issued_at.strftime("%Y-%m-%dT%H:%M:%SZ") if cred.issued_at else ""
+    canonical_payload = f"{cred.id}:{user_ref}:{cred.competency}:{cred.level}:{cred.issuer}:{issued_iso}:{cred.version}"
 
-    is_authentic = verify_canonical_hmac_signature(
+    is_authentic = False
+    verification_algorithm = "NONE"
+
+    if verify_canonical_asymmetric_signature(canonical_payload, cred.signature):
+        is_authentic = True
+        verification_algorithm = "RS256"
+    elif verify_canonical_hmac_signature(
         credential_id=str(cred.id),
         user_reference=user_ref,
         competency=cred.competency,
@@ -221,7 +292,9 @@ async def verify_credential_public(
         issued_at_iso=issued_iso,
         version=cred.version,
         provided_signature=cred.signature
-    )
+    ):
+        is_authentic = True
+        verification_algorithm = "HMAC-SHA256"
 
     # Audit log access
     audit = CredentialAuditLog(
@@ -245,10 +318,14 @@ async def verify_credential_public(
             "freshness_state": cred.freshness_state,
             "issued_at": cred.issued_at.isoformat() if cred.issued_at else None,
             "verified_at": cred.verified_at.isoformat() if cred.verified_at else None,
-            "evidence_proof": f"Verified through controlled {cred.evidence_summary.get('source', 'ASSESSMENT')}."
+            "evidence_proof": f"Verified through controlled {cred.evidence_summary.get('source', 'ASSESSMENT')}.",
+            "disclaimer": CREDENTIAL_DISCLAIMER
         },
         "verification": {
             "signature_status": "VERIFIED_AUTHENTIC" if is_authentic else "SIGNATURE_MISMATCH",
+            "algorithm": verification_algorithm,
+            "key_id": CREDENTIAL_KEY_ID if verification_algorithm == "RS256" else "hmac-secret",
+            "public_key_url": "/api/v1/credentials/public-key",
             "checked_at": datetime.now(timezone.utc).isoformat(),
             "issuer_registry": "VIREONIQ Trust Registry v6.0.0"
         }

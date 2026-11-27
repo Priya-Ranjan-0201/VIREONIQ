@@ -198,5 +198,27 @@ This log records significant architectural, security, stack, and methodology dec
   - Complete transparency on data retention, access, and erasure rights.
   - Standardized staged rollout procedure preventing unverified code or broken features from reaching public production.
 
+---
+
+## Decision 013: Asymmetric RS256 Credential Signatures and Decentralized Public Verification (Phase L6)
+
+- **Status**: Accepted
+- **Date**: 2026-11-28
+- **Context**: Under Phase L6 (Credentials & Trust Features), trust anchors must not rely solely on server-bound HMAC checks that force verifiers to query an internal platform database. To enable zero-database offline verification and external trust federation, credentials must support asymmetric digital signatures with published public keys and explicit educational disclaimers.
+- **Options Considered**:
+  1. *Retain server-only HMAC signatures*: Verifiers cannot validate credentials offline; requires central database lookups for every check.
+  2. *Dual-Mode Asymmetric RS256 Signing with Public Key Endpoint and Backward-Compatible HMAC Fallback*:
+     - Digitally sign canonical credential payloads using RS256 PKCS#1 v1.5 private keys (`compute_canonical_asymmetric_signature`).
+     - Expose public keys via `GET /api/v1/credentials/public-key` (`vireoniq-trust-cred-2026`).
+     - Provide offline standalone signature validation endpoint (`POST /api/v1/credentials/verify-payload`).
+     - Embed explicit educational disclaimer on all verification responses: practice platform results, not accredited academic degrees or proctored certifications.
+     - Retain HMAC-SHA256 signature verification fallback for previously issued credentials.
+- **Decision**: Adopt Option 2.
+- **Consequences**:
+  - External employers and academic partners can verify credentials offline using only the issuer's public key.
+  - Prevents credential forgery and payload tampering with cryptographic proof.
+  - Preserves 100% backward compatibility for existing credentials in the database.
+
+
 
 
