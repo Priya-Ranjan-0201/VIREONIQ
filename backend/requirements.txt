@@ -22,7 +22,7 @@ pydantic-settings==2.15.0
 argon2-cffi==25.1.0
 passlib==1.7.4
 python-jose[cryptography]==3.5.0
-python-multipart==0.0.32
+python-multipart==0.0.34
 
 # Document Parsing & Validation
 python-magic==0.4.27; sys_platform != "win32"
