@@ -1,17 +1,12 @@
-# Model Card: Career Trajectory Simulator (Experimental)
+# Model Card: Career Trajectory & Skill Decay Simulator (Experimental)
 
-- **Component ID**: `career_trajectory_simulator`
-- **Status**: **EXPERIMENTAL** (Flagged Behind Experimental Controls; Excluded from Headline Claims)
-- **Evaluation Unit**: Multi-step role trajectory / scenario forecast
+> **Status**: **EXPERIMENTAL** — Excluded from headline shipped claims; gated behind explicit UI scenario labels (`docs/KNOWN_LIMITATIONS.md`).
 
-## 1. Intended Use & Out-of-Scope
-- Scenario exploration tool illustrating possible skill transitions and time-to-role horizons under explicit modeling assumptions.
-- **Strictly Out-of-Scope**: Cannot predict actual individual promotion odds, placement probabilities, or causal career earnings.
+## Model Details
+- **Component**: `career_simulator_service.py` & skill decay curve (`F(t) = 100 * e^(-0.04t)`).
+- **Evaluation Unit**: Multi-horizon scenario simulation (non-causal).
 
-## 2. Why This Component Is Experimental (Model Gate Status)
-- **Fails Gate Item 3/8 (Real Longitudinal Data)**: Trained/parameterized without proprietary longitudinal career-graph outcomes (cf. CAPER, `docs/RESEARCH.md` F9).
-- **Fails Causal Estimand Check**: Scenario deltas are parametric heuristics, not causal uplift estimates with confoundedness adjustments.
-- Skill decay uses a documented assumption (`F(t) = 100 * e^(-0.04t)`) rather than an empirically fitted decay curve.
-
-## 3. UI & Documentation Framing
-- Explicitly labeled as scenario simulation / experimental in `docs/KNOWN_LIMITATIONS.md` and `docs/IMPROVEMENT_REPORT.md`.
+## Limitations & Failure Modes
+- Currently relies on heuristic transition rules and fixed exponential decay assumptions rather than longitudinal real-world hiring outcome data.
+- Causal claims and "placement probability" framing are explicitly prohibited per Master Prompt v2 Model Gate item 12.
+- Requires longitudinal consented dataset validation and temporal backtesting (Part C, F9) before promotion out of experimental status.

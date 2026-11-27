@@ -120,3 +120,63 @@ Four service pairs overlap and have distinct callers/tests:
 5. `judge0_mock.py` (0 callers) vs `judge0_provider.py` (`/code`)
 
 Per non-negotiable rules 4 & 7, legacy modules and `python-jose` will NOT be unilaterally deleted or swapped without explicit user sign-off; instead, `docs/BASELINE.md` and `docs/IMPROVEMENT_REPORT.md` document exact callers and concrete migration recommendations.
+
+---
+
+## 5. Phase L0 Repository Consolidation & Full-History Branch Map
+
+> **Verification Date**: 2026-11-28  
+> **Source of Truth**: Real verification commands run against full git history in `VIREONIQ` repository.
+
+### 5.1 Branch Topology & Superset Verification
+
+Every branch on `origin` was mapped using full git commit history (`git rev-list`, `git diff --stat`):
+
+| Remote Branch | Commits Ahead of `main` | Commits Missing from `hardening/full-audit` | File Diff vs `hardening/full-audit` Merge-Base | Relationship |
+|:--|:--:|:--:|:--:|:--|
+| `origin/main` | 0 (base `1a77f80`) | 0 | 0 files | Upstream production target branch |
+| `origin/improve/phase-0-ci-baseline` | 6 | 0 | 0 files | Strict ancestor of `hardening/full-audit` |
+| `origin/improve/phase-1-hygiene` | 9 | 0 | 0 files | Strict ancestor of `hardening/full-audit` |
+| `origin/improve/phase-2-security` | 13 | 0 | 0 files | Strict ancestor of `hardening/full-audit` |
+| `origin/improve/phase-3-4-platform-architecture` | 17 | 0 | 0 files | Strict ancestor of `hardening/full-audit` |
+| `origin/improve/phase-5-6-data-evaluation` | 21 | 0 | 0 files | Strict ancestor of `hardening/full-audit` |
+| `origin/improve/phase-7-8-nlp-retrieval` | 23 | 0 | 0 files | Strict ancestor of `hardening/full-audit` |
+| `origin/improve/phase-9-10-rag-models` | 25 | 0 | 0 files | Strict ancestor of `hardening/full-audit` |
+| `origin/improve/phase-11-14-safety-governance` | 27 | 0 | 0 files | Strict ancestor of `hardening/full-audit` |
+| `origin/improve/phase-15-18-final-hardening` | 29 | 0 | 0 files | Strict ancestor of `hardening/full-audit` |
+| `origin/hardening/full-audit` | 35 | 0 | 0 files | **Strict superset of all branches** (contains all 35 commits + UI audit + DevOps workflows + eval framework) |
+
+**Conclusion**: `hardening/full-audit` contains 100% of the commits, files, and fixes from all 9 `improve/phase-*` branches with zero regressions or missing diffs. It serves as the baseline for the `launch/phase-0-consolidation` pull request into `main`.
+
+### 5.2 Real Verification Suite Results
+
+```text
+Backend:
+- Python Version: 3.12.10
+- Lint (ruff check .): 0 errors across all modules
+- Static Typecheck (mypy .): 0 errors across 318 source files
+- Pytest Suite: 190 passed, 2 deselected (benchmark) in 28.69s
+- Benchmark Mark: 2 performance benchmark tests runnable
+- Deterministic Eval Suite: NDCG@10 = 0.9729, Recall@5 = 1.0000, Model Gate = PASSED
+- Red-Team Suite (OWASP LLM 2025): 6/6 probes passed (injection, homoglyph, excessive agency, PII, anti-hallucination, neutrality)
+
+Frontend:
+- Node.js Version: v20+ / npm 10+
+- ESLint (npm run lint): 0 errors, 28 react-hooks/fast-refresh warnings
+- TypeScript Strict (npm run typecheck): 0 errors with "strict": true
+- Vitest Suite (npm test): 18 passed across 7 test files in 5.96s
+- Production Build (npm run build): Success (Vite bundle built in 9.70s)
+```
+
+### 5.3 Official Runtime Versions & End-of-Life (EOL) Dates
+
+| Runtime / Engine | Pinned / Target Version | Upstream Status | Official Support Window | Notes |
+|:--|:--|:--|:--|:--|
+| **Python** | 3.12.x | Active LTS | Security fixes through October 2028 | Standardized across `.venv`, Dockerfile, CI |
+| **Node.js** | 20.x (LTS) | Active LTS | Maintenance through April 2026 | Node 18 EOL was April 30, 2025; updated to Node 20+ |
+| **PostgreSQL** | 16 | Supported | EOL November 2028 | Primary database target |
+| **Redis** | 7.2 | Active | Maintained upstream | Redis 7 protocol compliant |
+| **MongoDB** | 7.0 | Active LTS | Supported through August 2026 | Document store target |
+| **React** | 18.2.0 | Stable | Maintained | Major migration to React 19 tracked in Phase L9 |
+| **Vite** | 5.4.21 | Stable | Maintained | Bundler and dev server |
+

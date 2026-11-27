@@ -1,26 +1,19 @@
-name: Playwright UI Smoke & Screenshots
+name: Playwright UI Smoke & Accessibility
 
 on:
   workflow_dispatch:
-  push:
-    branches: [ main, "improve/**", "hardening/**" ]
-    paths:
-      - 'frontend/src/**'
-      - 'frontend/tests/e2e/**'
-      - '.github/workflows/playwright.yml'
+  pull_request:
+    branches: [ main ]
+    paths: [ 'frontend/**' ]
 
 permissions:
   contents: read
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
-  ui-smoke:
-    name: Playwright Smoke & Screenshot Artifacts
+  playwright-smoke:
+    name: Playwright Smoke & Screenshots
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
 
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -32,14 +25,14 @@ jobs:
           cache: 'npm'
           cache-dependency-path: 'frontend/package-lock.json'
 
-      - name: Install dependencies & Playwright
+      - name: Install dependencies and Playwright Chromium
         run: |
           cd frontend
           npm ci
           npm install --no-save @playwright/test
-          npx playwright install --with-deps chromium
+          npx playwright install chromium
 
-      - name: Build production bundle
+      - name: Build production frontend
         run: |
           cd frontend
           npm run build
@@ -51,7 +44,7 @@ jobs:
 
       - name: Upload Playwright screenshots & report
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@ea165f8d5f8d8e4e02c9443e05f181f29a8f1030 # v4
         with:
-          name: playwright-report
+          name: playwright-ui-artifacts
           path: frontend/playwright-report/

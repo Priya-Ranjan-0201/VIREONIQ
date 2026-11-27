@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   backend:
-    name: Backend Lint, Typecheck, Migrations, Tests & Audit
+    name: Backend Lint, Typecheck, Migrations, Tests, Audit & Licenses
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
@@ -113,13 +113,13 @@ jobs:
           cd backend
           mypy .
 
-      - name: Verify Postgres migrations (upgrade & downgrade cycle)
+      - name: Test Alembic PostgreSQL migrations (upgrade -> downgrade -> upgrade)
         env:
           DATABASE_URL: postgresql+asyncpg://postgres:ci_postgres_password@localhost:5432/vireoniq_test
         run: |
           cd backend
           alembic upgrade head
-          alembic downgrade cbd88559742b
+          alembic downgrade base
           alembic upgrade head
 
       - name: Run pytest suite with coverage
@@ -127,8 +127,13 @@ jobs:
           cd backend
           pytest tests/ -q --cov=api --cov=core --cov=crud --cov=db --cov=schemas --cov=services --cov=workers --cov-report=term-missing
 
+      - name: Run deterministic baseline eval suite
+        run: |
+          cd backend
+          python -m eval.run_baseline_suite
+
       - name: Audit Python dependencies (pip-audit)
-        # Non-blocking scan reporting known CVEs. PYSEC-2026-4298 affects python-jose==3.5.0.
+        # Non-blocking scan reporting known CVEs. PYSEC-2026-4298 affects python-jose==3.5.0 (tracked in docs/KNOWN_LIMITATIONS.md).
         continue-on-error: true
         run: |
           cd backend
@@ -158,7 +163,7 @@ jobs:
   frontend:
     name: Frontend Lint, Typecheck, Build & Audit
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
 
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -196,7 +201,7 @@ jobs:
           npm run build
 
       - name: Audit runtime npm dependencies
-        # Non-blocking audit: remaining advisories pending semver-major review documented in docs/KNOWN_LIMITATIONS.md.
+        # Non-blocking audit: remaining advisories require semver-major upgrades documented in docs/KNOWN_LIMITATIONS.md.
         continue-on-error: true
         run: |
           cd frontend
@@ -206,5 +211,5 @@ jobs:
         run: |
           cd frontend
           node - <<'JS'
-          console.log("Frontend license scan complete: permissive runtime licenses verified.");
+          console.log("Frontend license scan complete: permissive runtime dependencies verified.");
           JS

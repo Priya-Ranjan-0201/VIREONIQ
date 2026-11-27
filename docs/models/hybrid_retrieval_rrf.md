@@ -1,20 +1,18 @@
-# Model Card: Hybrid Retrieval & RRF Portfolio
+# Model Card: Hybrid Retrieval & Reciprocal Rank Fusion (RRF)
 
-- **Component ID**: `hybrid_retrieval_rrf`
-- **Status**: Shipped (Deterministic Lexical + Vector Fusion Baseline)
-- **Evaluation Unit**: Candidate-query / job-description ranked list
+## Model Details
+- **Component**: `BM25Retriever` + Dense Cosine + `reciprocal_rank_fusion` (`backend/services/hybrid_retrieval_portfolio.py`)
+- **Version / Status**: `v1.0` — **Shipped**
+- **Evaluation Unit**: Candidate/document ranking list `(query, corpus -> top_k)`.
 
-## 1. Intended Use & Scope
-- Ranks job postings, learning blueprints, and candidate evidence passages by fusing Okapi BM25 lexical scores with dense cosine similarity via Reciprocal Rank Fusion (`c = 60`).
-- Evaluated end-to-end across retrieval stages (`eval/run_baseline_suite.py`).
+## Intended Use & Out-of-Scope Use
+- **Intended Use**: Multi-stage retrieval across skills, job descriptions, and career guidance chunks with human-in-the-loop review.
+- **Out-of-Scope Use**: Sole automated selection without human oversight (EU AI Act Annex III high-risk context).
 
-## 2. Out-of-Scope Use
-- Not validated for autonomous finalist selection or employment ranking without human review (classified high-risk if used for employer screening under EU AI Act Annex III / NYC LL144).
+## Metrics vs Baseline & Fairness Findings
+- Evaluated on synthetic entity-disjoint benchmarks (`docs/evals/baseline_eval.json`) with Recall@5, Precision@5, NDCG@10, and bootstrap confidence intervals.
+- Audited for gender-swap rank overlap stability as a robustness check (explicitly not treated as complete fairness proof).
 
-## 3. Baseline & Evaluation Metrics
-- Beats single-stream BM25 on multi-view synthetic evaluation fixtures (`docs/evals/baseline_eval.json`).
-- Evaluated with entity-disjoint splits (`eval/splits.py`) verified leak-free by `test_data_evaluation.py`.
-
-## 4. Failure Modes & Limitations
-- Synthetic test fixtures cannot prove real-world labor-market generalization; real licensed benchmark integration (ESCO / TalentCLEF) is pending maintainer dataset sign-off in `docs/DATA_SOURCES.md`.
-- Cross-lingual synonym drops require explicit taxonomy mapping or multilingual encoders.
+## Serving & Limitations
+- Safe pure-Python/embedding execution (no untrusted pickle artifacts); falls back cleanly to Okapi BM25 if vector service (`Qdrant`) is unavailable.
+- Real production recall depends on calibrated target pools and domain-labeled pairs (tracked in `docs/DATA_SOURCES.md`).

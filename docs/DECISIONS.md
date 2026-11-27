@@ -84,3 +84,19 @@ This log records significant architectural, security, stack, and methodology dec
 - **Consequences**:
   - Consistent external presentation without breaking runtime backwards compatibility.
 
+---
+
+## Decision 007: Phase L0 Consolidation & Staged Launch PR Strategy
+- **Status**: Accepted
+- **Date**: 2026-11-28
+- **Context**: The repository contains 11 branches on `origin`. To begin the Global Go-Live Master Prompt (Phases L0 through L15), the repository history must be consolidated cleanly without committing to `main` directly.
+- **Options Considered**:
+  1. *Merge individual phase branches piecemeal*: 9 separate merges, high risk of git conflict noise since `hardening/full-audit` is already a strict superset.
+  2. *Single verified consolidation pull request from `launch/phase-0-consolidation` (based on `hardening/full-audit`) into `main`*: Maps all history, confirms 0 missing commits across all branches, verifies all CI checks, removes public credentials, and prepares atomic staging for user review and merge.
+- **Decision**: Adopt Option 2. Create `launch/phase-0-consolidation` from the verified `hardening/full-audit` superset, verify all tests (190 backend, 18 frontend, 0 lint/type errors), and open PR into `main` for user review.
+- **Consequences**:
+  - `main` remains untouched until user reviews and merges.
+  - Zero loss of history or features.
+  - All public documents are stripped of default credentials.
+
+

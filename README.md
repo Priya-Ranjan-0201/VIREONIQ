@@ -35,7 +35,7 @@
 - [Key Features](#-key-features)
 - [System Architecture](#-system-architecture)
 - [Quick Start](#-quick-start)
-- [Login Credentials](#-login-credentials)
+- [Authentication & Local Setup](#-authentication--local-setup)
 - [All Platform Modules](#-all-platform-modules)
 - [API Reference](#-api-reference)
 - [Repository Structure](#-repository-structure)
@@ -196,8 +196,8 @@ The platform runs locally with SQLite fallback for zero-config dev, or scales to
 ### Prerequisites
 
 - **Python 3.12+**
-- **Node.js 18+** and **npm**
-- **Docker** (optional, for databases)
+- **Node.js 20+ (LTS)** and **npm 10+**
+- **Docker** (optional, for backing data services)
 
 ### Option 1: Native Dev Mode (Recommended for Local Development)
 
@@ -250,45 +250,15 @@ docker compose ps
 
 ---
 
-## 🔑 Login Credentials
+## 🔐 Authentication & Local Setup
 
-> [!IMPORTANT]
-> The platform supports two authentication modes. Use the one matching your setup.
+Authentication in VIREONIQ is powered by **Argon2id password hashing**, **RS256 asymmetric JWT access tokens**, and secure HTTP-only refresh cookies.
 
-### Mode 1: Backend Connected (PostgreSQL / SQLite)
-
-Run the seed script first to create dev users:
-
-```powershell
-cd backend
-python scripts/seed_demo_data.py
-```
-
-| Role | Email | Password |
-|:--|:--|:--|
-| Candidate / Student | `test@example.com` | `password` |
-| Demo User | `demo@vireoniq.com` | `password` |
-| Recruiter | `recruiter@example.com` | `password` |
-| Admin | `admin@example.com` | `password` |
-
-### Mode 2: Frontend Mock Auth (No Backend Needed)
-
-If the backend is unreachable, the frontend auto-falls back to offline mock auth when enabled:
-
-1. Create `frontend/.env.local` with:
-   ```
-   VITE_ENABLE_MOCK_AUTH=true
-   ```
-2. Restart the frontend dev server
-
-| Email | Password |
-|:--|:--|
-| `demo@vireoniq.com` | `Demo@1234` |
-
-You can also **register new accounts** in mock mode — they persist in `localStorage`.
+- **Production & Staging**: Default accounts are forbidden. Users create accounts via `/api/v1/auth/register` and authenticate via `/api/v1/auth/login`. Strong passwords and unique email addresses are strictly enforced.
+- **Local Development Only**: For offline testing and fixture evaluation, synthetic dev accounts and offline mock authentication instructions are documented in [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md#4-local-development-seed-accounts-non-production-only).
 
 > [!CAUTION]
-> Seed scripts refuse to run when `ENVIRONMENT=production`. Never use default credentials in production.
+> No default credentials exist in staging or production deployments. Seed scripts refuse to run when `ENVIRONMENT=production`.
 
 ---
 
@@ -514,7 +484,7 @@ VIREONIQ/
 │   │   ├── seed_jobs.py         # Job listing seeding
 │   │   └── seed_intelligence.py # Recruiter persona seeding
 │   ├── services/                # 123 service modules (business logic)
-│   ├── tests/                   # 49 test modules (165+ tests)
+│   ├── tests/                   # Backend test modules & fixtures
 │   ├── workers/                 # Celery async task workers
 │   ├── main.py                  # FastAPI application entry point
 │   └── requirements.txt         # Pinned Python dependencies
@@ -528,7 +498,7 @@ VIREONIQ/
 │   │   │   ├── axios.ts         # HTTP client with interceptors + retry
 │   │   │   ├── mockAuth.ts      # Dev-only offline mock authentication
 │   │   │   └── offlineEngine.ts # IndexedDB offline session support
-│   │   ├── pages/               # 73+ page modules (code-split with React.lazy)
+│   │   ├── pages/               # React Router pages (code-split with React.lazy)
 │   │   ├── store/               # Zustand state management
 │   │   └── __tests__/           # Vitest + RTL test suites
 │   ├── tests/e2e/               # Playwright E2E smoke tests
@@ -587,20 +557,20 @@ All tests run offline using in-memory SQLite (`aiosqlite`) and mock fallbacks (`
 ```powershell
 cd backend
 .\.venv\Scripts\Activate.ps1
-python -m ruff check .              # Lint — 0 errors
-python -m mypy .                    # Type check — 318 source files
-python -m pytest tests/ -q          # 165+ unit/integration tests
-python -m pytest -m benchmark -v    # 2 performance benchmarks
+python -m ruff check .              # Fast linting and import hygiene
+python -m mypy .                    # Strict static type checking
+python -m pytest tests/ -q          # Pytest suite (see CI status badge)
+python -m pytest -m benchmark -v    # Performance benchmark suite
 ```
 
 ### Frontend
 
 ```powershell
 cd frontend
-npm run lint                        # ESLint — 0 errors (28 hook warnings)
-npm run typecheck                   # tsc strict mode — 0 errors
-npm test                            # Vitest — 7 files, 18 tests
-npm run build                       # Production build with type check
+npm run lint                        # ESLint checks
+npm run typecheck                   # Strict TypeScript check (tsconfig.app.json)
+npm test                            # Vitest unit & component suite (see CI status badge)
+npm run build                       # Production bundle build
 ```
 
 ### Evaluation Framework

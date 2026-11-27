@@ -1,33 +1,22 @@
-name: Heavy Evaluation, Red-Team & Benchmarks
+name: Heavy Evaluation, Red-Team & Load Checks
 
 on:
   workflow_dispatch:
-    inputs:
-      run_live_llm:
-        description: "Run live LLM probes if provider secret is configured (false by default)"
-        required: false
-        default: "false"
   schedule:
-    - cron: '0 3 * * 1' # Weekly Mondays 03:00 UTC
+    - cron: '0 3 * * 0' # Weekly Sunday 03:00 UTC
 
 permissions:
   contents: read
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
-  eval-redteam-bench:
-    name: Eval Suite, Benchmarks & Red-Team
+  heavy-suite:
+    name: Benchmark, Evaluation Harness, Red-Team & Determinism
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
 
     env:
       ENVIRONMENT: test
-      SECRET_KEY: ci-eval-secret-key-not-for-prod-0001
-      CREDENTIAL_SIGNING_KEY: ci-eval-cred-key-not-for-prod-0001
-      RUN_LIVE_LLM: ${{ github.event.inputs.run_live_llm || 'false' }}
+      SECRET_KEY: heavy-eval-ci-secret-not-for-production-use
 
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -39,33 +28,31 @@ jobs:
           cache: 'pip'
           cache-dependency-path: 'backend/requirements*.txt'
 
-      - name: Install Python dependencies
+      - name: Install dependencies
         run: |
           cd backend
-          python -m pip install --upgrade pip
           pip install -r requirements.txt -r requirements-dev.txt
 
-      - name: Run deterministic baseline evaluation suite
+      - name: Run full evaluation harness and red-team suite
         run: |
           cd backend
-          python eval/run_baseline_suite.py
+          python -m eval.run_baseline_suite
 
-      - name: Run red-team & benchmark tests
+      - name: Run benchmark-marked backend tests
         run: |
           cd backend
-          pytest tests/test_redteam.py tests/test_rag_and_model_gate.py tests/test_nlp_retrieval_and_defense.py -v
           pytest -m benchmark -v
 
-      - name: Run determinism multi-seed repeatability check (3 runs)
+      - name: Multi-run determinism verification (3 consecutive runs)
         run: |
           cd backend
           for i in 1 2 3; do
-            echo "=== Determinism Run $i ==="
-            pytest tests/test_scoring_properties.py -q
+            echo "Determinism pass $i"
+            pytest tests/test_scoring_properties.py tests/test_redteam.py tests/test_rag_and_model_gate.py -q
           done
 
       - name: Upload evaluation artifacts
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@ea165f8d5f8d8e4e02c9443e05f181f29a8f1030 # v4
         with:
-          name: evaluation-reports
+          name: eval-and-redteam-reports
           path: docs/evals/

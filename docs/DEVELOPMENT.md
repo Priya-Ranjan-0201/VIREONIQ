@@ -70,3 +70,36 @@ npm run build
 ```
 
 Both suites match the CI checks defined in [`.github/workflows/ci.yml`](../.github/workflows/ci.yml).
+
+---
+
+## 4. Local Development Seed Accounts (Non-Production Only)
+
+> [!CAUTION]
+> **NON-PRODUCTION / LOCAL DEV ONLY**: Seed scripts in `backend/scripts/` refuse to execute when `ENVIRONMENT=production`. Default accounts are intended strictly for local development verification and must never exist in staging or production environments.
+
+### Local Database Seeding (Backend Connected)
+
+To populate local test records in SQLite or PostgreSQL:
+```powershell
+cd backend
+python scripts/seed_demo_data.py
+```
+
+| Role | Email | Password | Scope |
+|:--|:--|:--|:--|
+| Candidate / Student | `test@example.com` | `password` | Local test candidate workflow |
+| Demo User | `demo@vireoniq.com` | `password` | Local demo data exploration |
+| Recruiter | `recruiter@example.com` | `password` | Local recruiter intelligence |
+| Admin | `admin@example.com` | `password` | Local administrative controls |
+
+### Offline Mock Auth (Frontend-Only Dev Mode)
+
+When developing frontend features without running backend databases, offline mock auth can be enabled in `frontend/.env.local`:
+```bash
+VITE_ENABLE_MOCK_AUTH=true
+```
+- Demo credentials: `demo@vireoniq.com` / `Demo@1234`
+- Registration: Any new email/password registered while mock auth is enabled persists in browser `localStorage`.
+- Gating: Mock auth is completely stripped and disabled in production builds via `import.meta.env.DEV` checks.
+
