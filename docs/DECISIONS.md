@@ -100,3 +100,20 @@ This log records significant architectural, security, stack, and methodology dec
   - All public documents are stripped of default credentials.
 
 
+## Decision 008: Three-Tier Launch Architecture and Product Honesty Disclosures (Phase L1)
+
+- **Status**: Accepted
+- **Date**: 2026-11-28
+- **Context**: Preparing VIREONIQ for public go-live requires absolute transparency and legal compliance. Previous views contained unflagged synthetic demonstration data, heuristic formulas labeled as "placement probabilities", real university trademarks, and missing non-affiliation notices for named enterprise companies.
+- **Options Considered**:
+  1. *Delete un-integrated or experimental modules*: Destructive; loses valuable UI/UX designs and demo workflows.
+  2. *Feature-Flag Tier Architecture with Explicit Honest Disclosures*:
+     - Establish a complete inventory (`docs/FEATURE_INVENTORY.md`) classifying 73 frontend pages and 75 backend endpoints into Tier 1 (Public Beta), Tier 2 (Invite-Only), and Tier 3 (Review Gated / Hidden by default).
+     - Implement backend and frontend feature flag managers with remote sync, tier defaults, and administrative kill switches.
+     - Add `<SampleDataBadge>`, `<PreviewBanner>`, and `<TrademarkDisclaimer>` across all views displaying synthetic benchmarks (OfferComparator, MarketIntelligence, SyllabusOptimizer, CognitiveLoadMonitor, ParentDashboard, CollegeAdmin, PsychometricDNA, MyCredential, MNCInterviewStudio, and CompanyProfiles).
+     - Relabel `placement_probability` to `readiness_estimate_heuristic` with explicit `uncertainty_range` intervals.
+- **Decision**: Adopt Option 2.
+- **Consequences**:
+  - Full codebase integrity preserved: zero feature deletion.
+  - User expectations are grounded in evidence: synthetic demo data is clearly marked as such.
+  - Enterprise brand and trademark risks are mitigated with comprehensive non-affiliation notices.

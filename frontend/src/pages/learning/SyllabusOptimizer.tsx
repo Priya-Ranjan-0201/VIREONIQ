@@ -15,6 +15,7 @@ import {
     Upload
 } from "lucide-react";
 import { useState } from "react";
+import { PreviewBanner, SampleDataBadge } from "@/components/shared/SampleDataBanner";
 import { toast } from "sonner";
 
 const SAMPLE_TIER3_REPORT: SyllabusOptimization = {
@@ -121,6 +122,7 @@ const SAMPLE_TIER1_REPORT: SyllabusOptimization = {
 export const SyllabusOptimizer = () => {
   const [file, setFile] = useState<File | null>(null);
   const [report, setReport] = useState<SyllabusOptimization | null>(null);
+  const [reportLabel, setReportLabel] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleUpload = async () => {
@@ -129,10 +131,12 @@ export const SyllabusOptimizer = () => {
     try {
       const data = await learningApi.optimizeSyllabus(file);
       setReport(data);
+      setReportLabel(file.name);
       toast.success("Syllabus analyzed against Big Tech hiring rubrics! 🚀");
     } catch (error) {
       console.warn("Backend PDF upload failed, falling back to calibrated analysis:", error);
       setReport(SAMPLE_TIER3_REPORT);
+      setReportLabel("Standard Tier-3 Syllabus (Calibrated Fallback)");
       toast.info("Generated calibrated analysis based on your syllabus! ✨");
     } finally {
       setIsLoading(false);
@@ -143,6 +147,7 @@ export const SyllabusOptimizer = () => {
     setIsLoading(true);
     setTimeout(() => {
       setReport(sample);
+      setReportLabel(label);
       setIsLoading(false);
       toast.success(`Loaded ${label}! 📊`);
     }, 600);
@@ -170,6 +175,7 @@ export const SyllabusOptimizer = () => {
           <Button
             onClick={() => {
               setReport(null);
+              setReportLabel(null);
               setFile(null);
             }}
             variant="outline"
@@ -249,7 +255,20 @@ export const SyllabusOptimizer = () => {
       )}
 
       {report && !isLoading && (
-        <div className="grid gap-8 lg:grid-cols-12">
+        <div className="space-y-6">
+          {reportLabel?.includes("Syllabus") && (
+            <div className="space-y-3">
+              <PreviewBanner
+                title="Curriculum Gap Analysis (Sample Audit)"
+                description={`Viewing illustrative sample audit: "${reportLabel}". Upload your institution's syllabus above to generate your customized gap analysis.`}
+                tier="Demonstration Audit"
+              />
+              <div className="flex justify-end">
+                <SampleDataBadge label="Sample Curriculum Report" />
+              </div>
+            </div>
+          )}
+          <div className="grid gap-8 lg:grid-cols-12">
           {/* Top Stats Card */}
           <Card className="lg:col-span-12 bg-slate-950 border border-white/10 rounded-3xl p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 shadow-2xl">
             <div>
@@ -339,6 +358,7 @@ export const SyllabusOptimizer = () => {
                 ))}
               </div>
             </Card>
+          </div>
           </div>
         </div>
       )}

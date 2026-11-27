@@ -1,3 +1,4 @@
+import { PreviewBanner, SampleDataBadge, TrademarkDisclaimer } from "@/components/shared/SampleDataBanner";
 import { Spinner } from "@/components/shared/Spinner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -99,6 +100,8 @@ export const OfferComparator = () => {
 
   const [activeOffers, setActiveOffers] = useState<OfferItem[]>(initialOffers);
   const [showAddModal, setShowAddModal] = useState(false);
+
+  const isUsingSampleOffers = useMemo(() => activeOffers.some((o) => o.id.startsWith("sample_")), [activeOffers]);
 
   // Form state
   const [company, setCompany] = useState("");
@@ -203,6 +206,14 @@ export const OfferComparator = () => {
         </div>
       </header>
 
+      {isUsingSampleOffers && (
+        <PreviewBanner
+          title="Demonstration Offer Templates"
+          description="You are viewing synthetic benchmark templates to explore compensation modeling, equity vesting schedules, and estimated take-home pay. Add your custom offers above for personalized comparisons."
+          tier="Demonstration Preview"
+        />
+      )}
+
       {/* Offer Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {activeOffers.map((offer) => {
@@ -229,9 +240,14 @@ export const OfferComparator = () => {
                   <div className="w-12 h-12 rounded-2xl bg-slate-900 border border-white/10 flex items-center justify-center font-black text-white text-base shadow-md">
                     {offer.company_name[0]}
                   </div>
-                  <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 text-xs font-bold">
-                    {offer.work_mode}
-                  </Badge>
+                  <div className="flex flex-col items-end gap-1">
+                    <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 text-xs font-bold">
+                      {offer.work_mode}
+                    </Badge>
+                    {offer.id.startsWith("sample_") && (
+                      <SampleDataBadge label="Sample Template" />
+                    )}
+                  </div>
                 </div>
                 <CardTitle className="text-xl font-black text-white">{offer.title}</CardTitle>
                 <p className="text-xs text-slate-400 font-bold mt-0.5">{offer.company_name}</p>
@@ -477,6 +493,7 @@ export const OfferComparator = () => {
           </div>
         </div>
       )}
+      <TrademarkDisclaimer className="mt-8" />
     </div>
   );
 };

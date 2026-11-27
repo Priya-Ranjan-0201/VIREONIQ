@@ -1,10 +1,11 @@
 import { Activity, AlertTriangle, Cpu, Zap } from 'lucide-react';
+import { PreviewBanner, SampleDataBadge } from '@/components/shared/SampleDataBanner';
 
 const MOCK_EVENTS = [
-  { session: 'Amazon Mock - Session 4', question: 3, load_score: 0.82, action: 'difficulty_reduced', before: 6.5, after: 6.0, signals: { long_pauses: 4, backspace_rate: 0.38 } },
-  { session: 'Google Mock - Session 2', question: 7, load_score: 0.21, action: 'difficulty_increased', before: 5.0, after: 5.25, signals: { long_pauses: 0, backspace_rate: 0.05 } },
-  { session: 'Flipkart Mock - Session 1', question: 5, load_score: 0.76, action: 'difficulty_reduced', before: 7.0, after: 6.5, signals: { long_pauses: 3, backspace_rate: 0.31 } },
-  { session: 'TCS Mock - Session 3', question: 2, load_score: 0.18, action: 'difficulty_increased', before: 4.0, after: 4.25, signals: { long_pauses: 0, backspace_rate: 0.03 } },
+  { session: 'Amazon Practice — Session 4', question: 3, load_score: 0.82, action: 'difficulty_reduced', before: 6.5, after: 6.0, signals: { long_pauses: 4, backspace_rate: 0.38 } },
+  { session: 'General Backend Practice — Session 2', question: 7, load_score: 0.21, action: 'difficulty_increased', before: 5.0, after: 5.25, signals: { long_pauses: 0, backspace_rate: 0.05 } },
+  { session: 'System Architecture — Session 1', question: 5, load_score: 0.76, action: 'difficulty_reduced', before: 7.0, after: 6.5, signals: { long_pauses: 3, backspace_rate: 0.31 } },
+  { session: 'Core Engineering Mock — Session 3', question: 2, load_score: 0.18, action: 'difficulty_increased', before: 4.0, after: 4.25, signals: { long_pauses: 0, backspace_rate: 0.03 } },
 ];
 
 const LOAD_COLOR = (score: number) => score >= 0.75 ? '#EF4444' : score >= 0.4 ? '#F59E0B' : '#10B981';
@@ -16,15 +17,28 @@ export const CognitiveLoadMonitorPage = () => {
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <header>
-        <h2 className="text-3xl font-bold text-slate-50 flex items-center gap-3"><Activity className="w-8 h-8 text-cyan-400" /> Cognitive Load Monitor</h2>
-        <p className="text-slate-400 mt-2">Real-time keystroke telemetry tracks your mental load and adapts difficulty automatically.</p>
+        <div className="flex items-center gap-3 mb-1">
+          <h2 className="text-3xl font-bold text-slate-50 flex items-center gap-3">
+            <Activity className="w-8 h-8 text-cyan-400" /> Cognitive Load Monitor
+          </h2>
+          <SampleDataBadge label="Synthetic Simulation" />
+        </div>
+        <p className="text-slate-400 mt-2">
+          Research preview of simulated keystroke pacing and question-difficulty adaptation dynamics.
+        </p>
       </header>
+
+      <PreviewBanner
+        title="Cognitive Load Simulation (Calibration Demo)"
+        description="This interface demonstrates synthetic keystroke event streams for adaptive interview evaluation. No biometric or affective inferences are made about users."
+        tier="Tier 3 Preview"
+      />
 
       {/* Avg load indicator */}
       <div className="grid grid-cols-3 gap-4">
         {[
-          { label: 'Avg Load Score', value: `${Math.round(avgLoad * 100)}%`, icon: Cpu, color: 'text-cyan-400' },
-          { label: 'High-Load Events', value: MOCK_EVENTS.filter(e => e.load_score >= 0.75).length, icon: AlertTriangle, color: 'text-red-400' },
+          { label: 'Avg Simulated Load', value: `${Math.round(avgLoad * 100)}%`, icon: Cpu, color: 'text-cyan-400' },
+          { label: 'High-Pacing Events', value: MOCK_EVENTS.filter(e => e.load_score >= 0.75).length, icon: AlertTriangle, color: 'text-red-400' },
           { label: 'Auto-Adjustments', value: MOCK_EVENTS.length, icon: Zap, color: 'text-yellow-400' },
         ].map((stat, i) => (
           <div key={i} className="bg-slate-950 border border-white/10 rounded-2xl p-5">
@@ -36,7 +50,10 @@ export const CognitiveLoadMonitorPage = () => {
       </div>
 
       <div className="bg-slate-950 border border-white/10 rounded-3xl p-8">
-        <h3 className="font-bold text-slate-50 mb-6">Load Events Log</h3>
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="font-bold text-slate-50">Simulation Event Log</h3>
+          <span className="text-xs text-slate-500">Sample Stream Fixture</span>
+        </div>
         <div className="space-y-4">
           {MOCK_EVENTS.map((ev, i) => (
             <div key={i} className="border border-white/5 rounded-2xl p-5 hover:bg-white/5 transition-all">

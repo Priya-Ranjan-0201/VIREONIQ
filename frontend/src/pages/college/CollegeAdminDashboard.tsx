@@ -1,14 +1,15 @@
 import { Building2, GraduationCap, Medal, Target, Users } from 'lucide-react';
+import { PreviewBanner, SampleDataBadge } from '@/components/shared/SampleDataBanner';
 
 const MOCK_DATA = {
-  college_name: 'LPU - Lovely Professional University',
-  subscription_status: 'Pro Plan · Expires 2027',
+  college_name: 'Example Institute of Technology (Sample Campus)',
+  subscription_status: 'Evaluation Tier · Sample Data',
   total_enrolled_students: 340,
   placement_readiness_rate: 78.4,
   department_gaps: [
-    { dept: 'Computer Science', readiness: 6.8, critical: ['System Design', 'Concurrency'], total: 180 },
-    { dept: 'Electronics', readiness: 5.4, critical: ['Data Structures', 'Python Basics'], total: 90 },
-    { dept: 'Mechanical', readiness: 4.1, critical: ['Coding Fundamentals', 'OOPs'], total: 70 },
+    { dept: 'Computer Science (Sample)', readiness: 6.8, critical: ['System Design', 'Concurrency'], total: 180 },
+    { dept: 'Electronics (Sample)', readiness: 5.4, critical: ['Data Structures', 'Python Basics'], total: 90 },
+    { dept: 'Mechanical (Sample)', readiness: 4.1, critical: ['Coding Fundamentals', 'OOPs'], total: 70 },
   ],
   top_students: [
     { name: 'Priyansh S.', score: 9.4, branch: 'CSE' },
@@ -22,17 +23,30 @@ export const CollegeAdminDashboard = () => (
     <header>
       <div className="flex items-start justify-between">
         <div>
-          <h2 className="text-3xl font-bold text-slate-50 flex items-center gap-3"><Building2 className="w-8 h-8 text-indigo-400" /> College Admin Dashboard</h2>
+          <div className="flex items-center gap-3 mb-1">
+            <h2 className="text-3xl font-bold text-slate-50 flex items-center gap-3">
+              <Building2 className="w-8 h-8 text-indigo-400" /> College Admin Dashboard
+            </h2>
+            <SampleDataBadge label="Sample Campus Cohort" />
+          </div>
           <p className="text-slate-400 mt-1">{MOCK_DATA.college_name}</p>
         </div>
-        <span className="px-4 py-2 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-bold rounded-xl">{MOCK_DATA.subscription_status}</span>
+        <span className="px-4 py-2 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-bold rounded-xl">
+          {MOCK_DATA.subscription_status}
+        </span>
       </div>
     </header>
+
+    <PreviewBanner
+      title="Institutional Analytics Demonstration"
+      description="This dashboard displays sample aggregate placement cohorts for institutional evaluation. Real campus integration requires institutional SSO provisioning and data processing agreement sign-off."
+      tier="Tier 3 Review Gated"
+    />
 
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
       {[
         { label: 'Total Students', value: MOCK_DATA.total_enrolled_students, icon: Users, color: 'text-cyan-400', bg: 'bg-cyan-400/10' },
-        { label: 'Placement Ready', value: `${MOCK_DATA.placement_readiness_rate}%`, icon: Target, color: 'text-emerald-400', bg: 'bg-emerald-400/10' },
+        { label: 'Placement Ready (Sample)', value: `${MOCK_DATA.placement_readiness_rate}%`, icon: Target, color: 'text-emerald-400', bg: 'bg-emerald-400/10' },
         { label: 'Departments', value: MOCK_DATA.department_gaps.length, icon: GraduationCap, color: 'text-indigo-400', bg: 'bg-indigo-400/10' },
         { label: 'Top Score', value: `${MOCK_DATA.top_students[0].score}/10`, icon: Medal, color: 'text-yellow-400', bg: 'bg-yellow-400/10' },
       ].map((s) => (
@@ -66,17 +80,17 @@ export const CollegeAdminDashboard = () => (
     </div>
 
     <div className="bg-slate-950 border border-white/10 rounded-3xl p-8">
-      <h3 className="font-bold text-slate-50 mb-6 flex items-center gap-2"><Medal className="w-5 h-5 text-yellow-400" /> Top Performers</h3>
+      <h3 className="font-bold text-slate-50 mb-6 flex items-center gap-2"><Medal className="w-5 h-5 text-yellow-400" /> Top Performers (Demonstration Cohort)</h3>
       <div className="divide-y divide-white/5">
         {MOCK_DATA.top_students.map((s, i) => (
           <div key={s.name} className="flex items-center gap-4 py-4">
             <span className="text-xl">{['🥇', '🥈', '🥉'][i]}</span>
             <div className="w-9 h-9 rounded-full bg-gradient-to-br from-indigo-500 to-cyan-500 flex items-center justify-center text-white font-black text-sm">{s.name[0]}</div>
             <div className="flex-1">
-              <p className="font-bold text-slate-100 text-sm">{s.name}</p>
+              <p className="text-sm font-bold text-slate-200">{s.name}</p>
               <p className="text-xs text-slate-500">{s.branch}</p>
             </div>
-            <span className="text-lg font-black text-yellow-400">{s.score}</span>
+            <span className="text-sm font-black text-emerald-400">{s.score}/10</span>
           </div>
         ))}
       </div>

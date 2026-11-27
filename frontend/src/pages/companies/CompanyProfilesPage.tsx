@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { TrademarkDisclaimer } from '@/components/shared/SampleDataBanner';
 import { COMPANY_PROFILES, type CompanyProfile } from './companyProfilesData';
 
 const DIFFICULTY_COLOR: Record<string, string> = {
@@ -83,8 +84,9 @@ export const CompanyProfilesPage = () => {
             Company Interview Profiles
           </h2>
           <p className="text-slate-400 mt-2 text-sm max-w-2xl leading-relaxed">
-            Study real hiring loops, authentic brand logos, exact job profiles, salary benchmarks (CTC), and bar-raiser rubrics for 35+ top tech titans.
+            Study curated hiring loops, interview stage breakdowns, salary benchmarks (CTC), and evaluation rubrics for 35+ top technology companies.
           </p>
+          <TrademarkDisclaimer className="mt-3" />
         </div>
 
         <div className="flex items-center gap-2">

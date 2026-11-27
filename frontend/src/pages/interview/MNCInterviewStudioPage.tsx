@@ -15,6 +15,7 @@ import {
     Zap
 } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
+import { TrademarkDisclaimer } from '@/components/shared/SampleDataBanner';
 import { CODING_LANGUAGES, type LanguageConfig, PROBLEM_PRESETS } from './codingInterviewData';
 
 export const COMPANY_ARCHETYPES_CATALOG: Record<string, any> = {
@@ -598,7 +599,7 @@ export const MNCInterviewStudioPage: React.FC = () => {
           <div className="flex items-center gap-2 mb-1">
             <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1">
               <Sparkles className="w-3.5 h-3.5" />
-              POST-PHASE 15 ENHANCEMENT
+              AI INTERVIEW SIMULATION
             </span>
             <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 flex items-center gap-1">
               <ShieldCheck className="w-3.5 h-3.5" />
@@ -612,6 +613,7 @@ export const MNCInterviewStudioPage: React.FC = () => {
           <p className="text-sm text-slate-400 mt-1">
             Evidence-grounded, role-calibrated, multi-round technical evaluations with AST Big-O complexity analysis and dynamic follow-up branching.
           </p>
+          <TrademarkDisclaimer className="mt-3" />
         </div>
 
         <div className="flex items-center gap-3">

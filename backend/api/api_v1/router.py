@@ -14,11 +14,12 @@ from api.api_v1.endpoints import (
       career_twin, career_goals, roles_intelligence, assessments, interventions,
       passport, recruiter_intelligence, workforce_intelligence, ai_orchestration,
        privacy_security, outcomes_analytics, platform_developer, autonomous_os,
-       convergence_certification, mnc_interview
+       convergence_certification, mnc_interview, system
 )
 
 api_router = APIRouter()
 
+api_router.include_router(system.router, prefix="/system", tags=["system"])
 api_router.include_router(auth.router, prefix="/auth", tags=["auth"])
 api_router.include_router(mnc_interview.router, prefix="/mnc-interview", tags=["mnc-interview"])
 api_router.include_router(convergence_certification.router, prefix="/certification", tags=["certification"])

@@ -1,5 +1,6 @@
 import { AlertCircle, BarChart3, Briefcase, DollarSign, Download, TrendingDown, TrendingUp } from 'lucide-react';
 import { useState } from 'react';
+import { PreviewBanner, SampleDataBadge } from '@/components/shared/SampleDataBanner';
 import { toast } from 'sonner';
 
 const MOCK_INTEL = {
@@ -50,7 +51,12 @@ export const MarketIntelligencePage = () => {
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <header className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
-          <h2 className="text-3xl font-bold text-slate-50 flex items-center gap-3"><BarChart3 className="w-8 h-8 text-emerald-400" /> Market Intelligence</h2>
+          <div className="flex items-center gap-3">
+            <h2 className="text-3xl font-bold text-slate-50 flex items-center gap-3">
+              <BarChart3 className="w-8 h-8 text-emerald-400" /> Market Intelligence
+            </h2>
+            <SampleDataBadge label="Sample Benchmark" />
+          </div>
           <p className="text-slate-400 mt-2">Live job market signals for <span className="text-white font-bold">{data.role_category}</span> — updated weekly.</p>
         </div>
         <div className="flex items-center gap-3">
@@ -65,6 +71,12 @@ export const MarketIntelligencePage = () => {
           </button>
         </div>
       </header>
+
+      <PreviewBanner
+        title="Labor Market Signals (Aggregated Sample Preview)"
+        description="Market demand percentages and salary distributions displayed below are based on sample synthetic job description datasets for platform demonstration and syllabus benchmarking."
+        tier="Aggregated Sample Data"
+      />
 
       {/* Salary Signals */}
       <div className="grid grid-cols-3 gap-4">

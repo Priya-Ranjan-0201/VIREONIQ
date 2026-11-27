@@ -1,5 +1,5 @@
 from typing import Optional, List
-from pydantic import BaseModel, UUID4
+from pydantic import BaseModel, UUID4, Field
 from datetime import datetime
 
 class AnalyzeGapRequest(BaseModel):
@@ -37,7 +37,19 @@ class GapAnalysisResponse(BaseModel):
     consistency_gap_severity: Optional[str] = None
     
     missing_skills: Optional[List[str]] = None
-    placement_probability: Optional[float] = None
+    # placement_probability is a deprecated heuristic proxy; replaced with readiness_estimate_heuristic
+    placement_probability: Optional[float] = Field(
+        default=None,
+        description="Deprecated heuristic readiness proxy (0-100); see readiness_estimate_heuristic"
+    )
+    readiness_estimate_heuristic: Optional[float] = Field(
+        default=None,
+        description="Heuristic skill-fit readiness benchmark (not a hiring guarantee or real placement prediction)"
+    )
+    uncertainty_range: Optional[str] = Field(
+        default=None,
+        description="Estimated uncertainty interval for the heuristic score"
+    )
     expected_salary_band: Optional[str] = None
     
     recommendations: List[GapRecommendationSchema] = []
@@ -48,4 +60,3 @@ class GapAnalysisResponse(BaseModel):
 
 class GapHistoryResponse(BaseModel):
     analyses: List[GapAnalysisResponse]
-

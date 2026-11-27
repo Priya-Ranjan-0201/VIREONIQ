@@ -10,6 +10,7 @@ import {
     Wand2
 } from "lucide-react";
 import React, { useState } from "react";
+import { SampleDataBadge } from "@/components/shared/SampleDataBanner";
 import { toast } from "sonner";
 
 const SAMPLE_STARTERS = [
@@ -152,7 +153,10 @@ export const ResumeSectionRewriterPage: React.FC = () => {
 
       {/* Quick Sample Starters */}
       <div className="flex items-center gap-2 overflow-x-auto pb-1 custom-scrollbar">
-        <span className="text-xs font-bold text-slate-500 uppercase tracking-widest shrink-0 mr-1">Sample Starters:</span>
+        <div className="flex items-center gap-1.5 shrink-0 mr-1">
+          <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Sample Starters:</span>
+          <SampleDataBadge label="Template" />
+        </div>
         {SAMPLE_STARTERS.map((s, idx) => (
           <button
             key={idx}

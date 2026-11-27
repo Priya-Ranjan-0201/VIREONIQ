@@ -123,7 +123,9 @@ async def analyze_gap(parsed_resume: dict, target_role: TargetRole, company_type
         "consistency_gap_severity": _calculate_severity(cons),
         
         "missing_skills": result.get("missing_skills", []),
-        "placement_probability": round(result.get("placement_probability", 50.0), 2),
+        "placement_probability": round(result.get("placement_probability", overall * 0.8), 2),
+        "readiness_estimate_heuristic": round(result.get("placement_probability", overall * 0.8), 2),
+        "uncertainty_range": f"{max(0.0, round(round(result.get('placement_probability', overall * 0.8), 2) - 15.0, 1))}% - {min(100.0, round(round(result.get('placement_probability', overall * 0.8), 2) + 15.0, 1))}%",
         "expected_salary_band": salary_band
     }
 
@@ -145,7 +147,9 @@ def _fallback_analyze_gap(parsed_resume: dict, target_role: TargetRole, company_
     consistency_score = 80.0
     
     overall_readiness = (technical_score * 0.4) + (project_score * 0.2) + (communication_score * 0.15) + (confidence_score * 0.15) + (consistency_score * 0.1)
-    placement_probability = overall_readiness * 0.8
+    heuristic_readiness = round(overall_readiness * 0.8, 2)
+    uncertainty_low = max(0.0, round(heuristic_readiness - 15.0, 1))
+    uncertainty_high = min(100.0, round(heuristic_readiness + 15.0, 1))
     
     analysis_data = {
         "technical_gap_score": round(technical_score, 2),
@@ -162,7 +166,9 @@ def _fallback_analyze_gap(parsed_resume: dict, target_role: TargetRole, company_
         "consistency_gap_severity": _calculate_severity(consistency_score),
         
         "missing_skills": missing_skills,
-        "placement_probability": round(placement_probability, 2),
+        "placement_probability": heuristic_readiness,
+        "readiness_estimate_heuristic": heuristic_readiness,
+        "uncertainty_range": f"{uncertainty_low}% - {uncertainty_high}%",
         "expected_salary_band": "$50,000 - $70,000"
     }
     
