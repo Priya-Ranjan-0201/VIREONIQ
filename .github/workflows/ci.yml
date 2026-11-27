@@ -113,6 +113,11 @@ jobs:
           cd backend
           mypy .
 
+      - name: Security SAST scan (Bandit)
+        run: |
+          cd backend
+          bandit -r core/ api/ services/ crud/ schemas/ -ll
+
       - name: Test Alembic PostgreSQL migrations (upgrade -> downgrade -> upgrade)
         env:
           DATABASE_URL: postgresql+asyncpg://postgres:ci_postgres_password@localhost:5432/vireoniq_test

@@ -137,3 +137,23 @@ This log records significant architectural, security, stack, and methodology dec
   - Zero external auth vendor dependencies or API fees.
   - Complete resistance to token replay attacks via JTI blacklisting.
   - User accounts can be securely recovered, verified, and deleted in full compliance with global privacy standards.
+
+---
+
+## Decision 010: CI/CD Pipeline Hardening, Bandit SAST Scanning, and Branch Protection Policy (Phase L3)
+
+- **Status**: Accepted
+- **Date**: 2026-11-28
+- **Context**: As part of preparing VIREONIQ for public global go-live, code quality, security posture, and git development workflows must be protected by strict automated gates. The CI/CD pipeline needs automated static application security testing (SAST), explicit branch protection specifications for `main`, and remediation of identified weak cryptographic operations.
+- **Options Considered**:
+  1. *Rely on manual code review without automated SAST*: High risk of developer oversight, secret leakage, or introduction of vulnerable hashing/deserialization patterns.
+  2. *Automated Multi-Layer CI Security Pipeline with Bandit SAST and Strict Branch Protection Runbook*:
+     - Audit backend with Bandit SAST; remediate any detected weak hashes or insecure defaults (e.g. replaced `hashlib.md5` with RFC-compliant `uuid.uuid5(uuid.NAMESPACE_DNS, ...)` in `plagiarism_guard.py`).
+     - Pin `bandit==1.9.4` in `requirements-dev.txt` and integrate `bandit -r core/ api/ services/ crud/ schemas/ -ll` as a required blocking step in `.github/workflows/ci.yml`.
+     - Create `docs/BRANCH_PROTECTION.md` documenting branch protection configuration on `main` (required PRs, 1 human approval, stale review dismissal, required CI checks matching exact workflow job names, linear history, admin enforcement).
+- **Decision**: Adopt Option 2.
+- **Consequences**:
+  - Automated detection and prevention of SAST vulnerabilities in pull requests before merge.
+  - Standardized branch protection settings ready for owner implementation in GitHub Repository Settings.
+  - Backend codebase achieves 0 High and 0 Medium Bandit security alerts across all active modules.
+

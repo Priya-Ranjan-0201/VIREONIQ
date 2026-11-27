@@ -3,7 +3,6 @@ Plagiarism Guard service.
 Uses SentenceTransformer embeddings and Qdrant similarity searches to check for textbook answers.
 """
 
-import hashlib
 import logging
 import re
 import uuid
@@ -97,9 +96,8 @@ async def seed_known_answers(qdrant = None) -> None:
         points = []
         for seed in KNOWN_ANSWERS_SEEDS:
             emb = emb_model.encode(seed["text"]).tolist()
-            # Deterministic UUID from text hash
-            h = hashlib.md5(seed["text"].encode("utf-8")).hexdigest()
-            pt_id = str(uuid.UUID(h))
+            # Deterministic UUID from text namespace
+            pt_id = str(uuid.uuid5(uuid.NAMESPACE_DNS, seed["text"]))
             points.append(
                 PointStruct(
                     id=pt_id,
