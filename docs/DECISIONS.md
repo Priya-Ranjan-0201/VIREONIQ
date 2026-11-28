@@ -219,6 +219,26 @@ This log records significant architectural, security, stack, and methodology dec
   - Prevents credential forgery and payload tampering with cryptographic proof.
   - Preserves 100% backward compatibility for existing credentials in the database.
 
+---
+
+## Decision 014: Full Launch Governance, Human-Only Tasks Ledger, and Public Release Candidate Handover (Phases L7–L15)
+
+- **Status**: Accepted
+- **Date**: 2026-11-28
+- **Context**: Finalizing the Global Go-Live Master Prompt requires synthesizing all operational architectures, platform scale controls, quality engineering metrics, legal boundaries, and human-only administrative tasks into an authoritative Launch Readiness Report and Public Release Candidate.
+- **Options Considered**:
+  1. *Stop after Phase L6*: Leaves final release readiness undocumented and human dependencies scattered.
+  2. *Comprehensive Launch Governance and 26-Gate Audit Ledger*:
+     - Compile `docs/LAUNCH_HUMAN_TASKS.md` cataloging all non-automatable human tasks (payment KYC, legal counsel review, DNS setup, insurance).
+     - Author `docs/LAUNCH_READINESS_REPORT.md` auditing all 26 Launch Gates (G1 to G26) with concrete evidence links, before/after metrics, and component tier classifications (Tier 1 Public Beta, Tier 2 Invite-Only, Tier 3 Review Gated).
+     - Update canonical `main` branch to `1.0.0-rc1` with 100% green CI verification across all 211 backend and 22 frontend tests.
+- **Decision**: Adopt Option 2.
+- **Consequences**:
+  - Complete, auditable, evidence-backed proof of platform integrity.
+  - Clear, unambiguous operational instructions for the product owner.
+  - Product is safe, honest, and ready for staged public rollout.
+
+
 
 
 

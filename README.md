@@ -5,7 +5,7 @@
 ### AI-Powered Career & Workforce Intelligence Platform
 
 [![License](https://img.shields.io/badge/License-See_LICENSE_File-red.svg?style=for-the-badge)](LICENSE)
-[![Status](https://img.shields.io/badge/Stage-Hardened_Beta-orange.svg?style=for-the-badge)](docs/IMPROVEMENT_REPORT.md)
+[![Status](https://img.shields.io/badge/Stage-Release_Candidate_1.0.0-green.svg?style=for-the-badge)](docs/LAUNCH_READINESS_REPORT.md)
 [![CI](https://img.shields.io/github/actions/workflow/status/Priya-Ranjan-0201/VIREONIQ/ci.yml?branch=main&style=for-the-badge&label=CI)](https://github.com/Priya-Ranjan-0201/VIREONIQ/actions)
 [![Developed by](https://img.shields.io/badge/Developed%20By-Priya%20Ranjan-8A2BE2.svg?style=for-the-badge&logo=github)](https://github.com/Priya-Ranjan-0201)
 
@@ -61,6 +61,16 @@
 - **Workforce analytics** for recruiters and organizations
 
 The platform runs locally with SQLite fallback for zero-config dev, or scales to PostgreSQL + Redis + MongoDB + Qdrant for production.
+
+### 🚦 Launch Scope & Honest Feature Tiers
+
+In accordance with our [Launch Readiness Report](docs/LAUNCH_READINESS_REPORT.md) and [Feature Inventory](docs/FEATURE_INVENTORY.md), platform capabilities are grouped into three verified tiers:
+
+| Tier | Status | User Availability | Key Modules Included |
+| :--- | :---: | :--- | :--- |
+| **Tier 1: Public Beta** | 🟢 **Ready** | Open to all public users | Auth & Session Management, Talent Passport, Resume Scoring, Gap Analysis, Adaptive Practice, Verified Asymmetric Credentials, Settings, Public Verification |
+| **Tier 2: Invite-Only** | 🟡 **Cohort Gated** | Partner universities & pilot cohorts | MNC Interview Studio, Coding Sandbox (Judge0), Career Twin Simulator, College Admin Dashboard, Faculty Classrooms |
+| **Tier 3: Review Gated** | ⚪ **Disabled by Default** | Requires governance review | Recruiter Intelligence Search, Reverse Interview Matching, High School Trajectory, Parent Dashboard |
 
 ---
 
