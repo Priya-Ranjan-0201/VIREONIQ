@@ -18,7 +18,7 @@ from typing import Dict, Any
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, and_
 from cryptography.hazmat.primitives import hashes, serialization
-from cryptography.hazmat.primitives.asymmetric import padding
+from cryptography.hazmat.primitives.asymmetric import padding, rsa
 
 from core.config import settings
 from core.security import get_private_key, get_public_key
@@ -43,6 +43,8 @@ def compute_canonical_asymmetric_signature(canonical_payload: str) -> str:
     """
     priv_pem = get_private_key()
     priv_key = serialization.load_pem_private_key(priv_pem, password=None)
+    if not isinstance(priv_key, rsa.RSAPrivateKey):
+        raise TypeError("Configured signing key is not a valid RSA private key.")
     sig_bytes = priv_key.sign(
         canonical_payload.encode("utf-8"),
         padding.PKCS1v15(),
@@ -59,6 +61,8 @@ def verify_canonical_asymmetric_signature(canonical_payload: str, signature_b64:
     try:
         pub_pem = get_public_key()
         pub_key = serialization.load_pem_public_key(pub_pem)
+        if not isinstance(pub_key, rsa.RSAPublicKey):
+            return False
         sig_bytes = base64.b64decode(signature_b64.encode("ascii"))
         pub_key.verify(
             sig_bytes,
